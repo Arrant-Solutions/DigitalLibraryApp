@@ -39,6 +39,8 @@ export const themeText = '#f2f2f2'
 
 export const themeTextGray = '#757575'
 
+export const googleBlue = '#4285F4'
+
 export const theme = {
   black: '#111111',
   purpleLight: '#bb4ed9',

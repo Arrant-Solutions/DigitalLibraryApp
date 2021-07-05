@@ -41,6 +41,22 @@
 		A1788369DD3C88C3D5809175 /* Pods-DigitalLibrary-DigitalLibraryTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalLibrary-DigitalLibraryTests.release.xcconfig"; path = "Target Support Files/Pods-DigitalLibrary-DigitalLibraryTests/Pods-DigitalLibrary-DigitalLibraryTests.release.xcconfig"; sourceTree = "<group>"; };
 		A9874D504D4B0719A3AB20F6 /* libPods-DigitalLibrary-DigitalLibraryTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DigitalLibrary-DigitalLibraryTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0890D095461FB2663DA454B /* Pods-DigitalLibrary-DigitalLibraryTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalLibrary-DigitalLibraryTests.debug.xcconfig"; path = "Target Support Files/Pods-DigitalLibrary-DigitalLibraryTests/Pods-DigitalLibrary-DigitalLibraryTests.debug.xcconfig"; sourceTree = "<group>"; };
+		CC907BFE26928CF900CF69B7 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Entypo.ttf; path = "../../../../Documents/Digital Library/fonts/Entypo.ttf"; sourceTree = "<group>"; };
+		CC907BFF26928CF900CF69B7 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Fontisto.ttf; path = "../../../../Documents/Digital Library/fonts/Fontisto.ttf"; sourceTree = "<group>"; };
+		CC907C0026928CF900CF69B7 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../../../../Documents/Digital Library/fonts/Feather.ttf"; sourceTree = "<group>"; };
+		CC907C0126928CF900CF69B7 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../../../../Documents/Digital Library/fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
+		CC907C0226928CF900CF69B7 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Zocial.ttf; path = "../../../../Documents/Digital Library/fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		CC907C0326928CF900CF69B7 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Foundation.ttf; path = "../../../../Documents/Digital Library/fonts/Foundation.ttf"; sourceTree = "<group>"; };
+		CC907C0426928CF900CF69B7 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../../../Documents/Digital Library/fonts/Ionicons.ttf"; sourceTree = "<group>"; };
+		CC907C0526928CFA00CF69B7 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialIcons.ttf; path = "../../../../Documents/Digital Library/fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
+		CC907C0626928CFA00CF69B7 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = SimpleLineIcons.ttf; path = "../../../../Documents/Digital Library/fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
+		CC907C0726928CFA00CF69B7 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AntDesign.ttf; path = "../../../../Documents/Digital Library/fonts/AntDesign.ttf"; sourceTree = "<group>"; };
+		CC907C0826928CFA00CF69B7 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Octicons.ttf; path = "../../../../Documents/Digital Library/fonts/Octicons.ttf"; sourceTree = "<group>"; };
+		CC907C0926928CFA00CF69B7 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../../../Documents/Digital Library/fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		CC907C0A26928CFA00CF69B7 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Brands.ttf; path = "../../../../Documents/Digital Library/fonts/FontAwesome5_Brands.ttf"; sourceTree = "<group>"; };
+		CC907C0B26928CFA00CF69B7 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../../../Documents/Digital Library/fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
+		CC907C0C26928CFA00CF69B7 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = EvilIcons.ttf; path = "../../../../Documents/Digital Library/fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		CC907C0D26928CFA00CF69B7 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../../../Documents/Digital Library/fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		DD81B2BC1FFA4453E610A4A9 /* Pods-DigitalLibrary.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DigitalLibrary.release.xcconfig"; path = "Target Support Files/Pods-DigitalLibrary/Pods-DigitalLibrary.release.xcconfig"; sourceTree = "<group>"; };
 		E32D563985BD5FA90ACD88FB /* libPods-DigitalLibrary.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DigitalLibrary.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
@@ -86,6 +102,7 @@
 		13B07FAE1A68108700A75B9A /* DigitalLibrary */ = {
 			isa = PBXGroup;
 			children = (
+				CC907BFD26928B0300CF69B7 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -114,7 +131,6 @@
 				B0890D095461FB2663DA454B /* Pods-DigitalLibrary-DigitalLibraryTests.debug.xcconfig */,
 				A1788369DD3C88C3D5809175 /* Pods-DigitalLibrary-DigitalLibraryTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -147,6 +163,29 @@
 				00E356EE1AD99517003FC87E /* DigitalLibraryTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		CC907BFD26928B0300CF69B7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				CC907C0726928CFA00CF69B7 /* AntDesign.ttf */,
+				CC907BFE26928CF900CF69B7 /* Entypo.ttf */,
+				CC907C0C26928CFA00CF69B7 /* EvilIcons.ttf */,
+				CC907C0026928CF900CF69B7 /* Feather.ttf */,
+				CC907C0126928CF900CF69B7 /* FontAwesome.ttf */,
+				CC907C0A26928CFA00CF69B7 /* FontAwesome5_Brands.ttf */,
+				CC907C0926928CFA00CF69B7 /* FontAwesome5_Regular.ttf */,
+				CC907C0B26928CFA00CF69B7 /* FontAwesome5_Solid.ttf */,
+				CC907BFF26928CF900CF69B7 /* Fontisto.ttf */,
+				CC907C0326928CF900CF69B7 /* Foundation.ttf */,
+				CC907C0426928CF900CF69B7 /* Ionicons.ttf */,
+				CC907C0D26928CFA00CF69B7 /* MaterialCommunityIcons.ttf */,
+				CC907C0526928CFA00CF69B7 /* MaterialIcons.ttf */,
+				CC907C0826928CFA00CF69B7 /* Octicons.ttf */,
+				CC907C0626928CFA00CF69B7 /* SimpleLineIcons.ttf */,
+				CC907C0226928CF900CF69B7 /* Zocial.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

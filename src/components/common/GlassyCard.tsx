@@ -18,6 +18,7 @@ interface GlassyCardProps {
   gradientStyle?: StyleProp<ViewStyle>
   children?: React.ReactNode
   containerStyle?: StyleProp<ViewStyle>
+  cardContainerStyle?: StyleProp<ViewStyle>
 }
 
 const GlassyCard: React.FC<GlassyCardProps> = ({
@@ -25,7 +26,8 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
   angle,
   gradientStyle,
   children,
-  containerStyle
+  containerStyle,
+  cardContainerStyle
 }) => {
   return (
     <SafeAreaView style={{ display: 'flex', flex: 1 }}>
@@ -38,14 +40,17 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
         style={gradientStyle || styles.fixed}
       />
       <View style={styles.container}>
-        <BlurView blurType="light" blurAmount={20} style={styles.cardContainer}>
+        <BlurView
+          blurType="light"
+          blurAmount={20}
+          style={[styles.cardContainer, containerStyle]}>
           <LinearGradient
             colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.2)']}
             start={{ x: 0, y: 1 }}
             end={{ x: 1, y: 1 }}
             useAngle
             angle={110}
-            style={[styles.card, containerStyle]}>
+            style={[styles.card, cardContainerStyle]}>
             {children}
           </LinearGradient>
         </BlurView>

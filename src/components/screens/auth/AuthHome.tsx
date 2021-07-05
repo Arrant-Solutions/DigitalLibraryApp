@@ -1,22 +1,19 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
 import { StyleSheet, Image, View, Text } from 'react-native'
+import { SocialIcon, Button } from 'react-native-elements'
+import Icon from 'react-native-vector-icons/Ionicons'
 import { LOGIN, SIGN_UP } from '../../../constants/screens'
 import GlassyCard from '../../common/GlassyCard'
-import {
-  themeContainer,
-  theme,
-  linkText,
-  purplePallet,
-  skyBlue
-} from '../../common/style'
+import { linkText, purplePallet, skyBlue, googleBlue } from '../../common/style'
 const logo = require('../../../../assets/images/gec_logo.png')
 
 const AuthHome = () => {
   const { navigate } = useNavigation()
+
   return (
     <GlassyCard
-      containerStyle={{ padding: 20 }}
+      cardContainerStyle={{ padding: 20, paddingVertical: 30 }}
       colors={[
         purplePallet.purpleDeep,
         purplePallet.purpleDarker,
@@ -37,6 +34,49 @@ const AuthHome = () => {
           Login
         </Text>
       </Text>
+      <View
+        style={{
+          display: 'flex',
+          width: '100%',
+          flexDirection: 'column',
+          marginTop: 20
+        }}>
+        <SocialIcon
+          style={{ borderRadius: 10 }}
+          title="Sign Up With Facebook"
+          underlayColor={`${googleBlue}60`}
+          button
+          type="facebook"
+          onPress={() => console.log('pressed')}
+        />
+        <SocialIcon
+          style={{ borderRadius: 10, backgroundColor: googleBlue }}
+          underlayColor={`${googleBlue}60`}
+          title="Sign Up With Google"
+          button
+          type="google"
+          onPress={() => console.log('pressed')}
+        />
+        <Button
+          style={{ margin: 8 }}
+          buttonStyle={{
+            borderRadius: 10,
+            paddingVertical: 10,
+            backgroundColor: '#17171760'
+          }}
+          titleStyle={{ fontSize: 14, fontWeight: 'bold' }}
+          icon={
+            <Icon
+              style={{ marginRight: 15 }}
+              name="mail"
+              color="#fff"
+              size={28}
+            />
+          }
+          title="Sign Up With Email"
+          onPress={() => navigate(SIGN_UP)}
+        />
+      </View>
     </GlassyCard>
   )
 }
@@ -45,8 +85,8 @@ export default AuthHome
 
 const styles = StyleSheet.create({
   logo: {
-    width: 180,
-    height: 100,
-    marginBottom: 20
+    width: 200,
+    height: 110,
+    marginBottom: 30
   }
 })
