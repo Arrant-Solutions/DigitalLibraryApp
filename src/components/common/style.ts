@@ -1,12 +1,27 @@
 import { StyleSheet } from 'react-native'
 
-const style = StyleSheet.create({
-  container: {
-    backgroundColor: '#111111',
-    display: 'flex',
-    flex: 1
-  }
-})
+export const skyBlue = {
+  90: '#19c5ff',
+  80: '#33ccff',
+  70: '#4dd2ff',
+  60: '#66d9ff',
+  50: '#80dfff',
+  40: '#99e5ff',
+  30: '#b3ecff',
+  20: '#ccf2ff',
+  10: '#e6f9ff'
+}
+
+export const purplePallet = {
+  textLight: '#fff',
+  text: '#ffe245',
+  purpleLight: '#cf4ab7',
+  purpleDark: '#bb4ed9',
+  purpleDarker: '#6c30cc',
+  purpleDeep: '#400d88',
+  purpleDeeper: '#380b78',
+  brown: '#403034'
+}
 
 export const themeBlack = '#111111'
 
@@ -35,4 +50,15 @@ export const theme = {
   textGray: '#757575'
 }
 
-export const { container: themeContainer } = style
+const style = StyleSheet.create({
+  container: {
+    backgroundColor: '#111111',
+    display: 'flex',
+    flex: 1
+  },
+  linkText: {
+    color: skyBlue[90]
+  }
+})
+
+export const { container: themeContainer, linkText } = style

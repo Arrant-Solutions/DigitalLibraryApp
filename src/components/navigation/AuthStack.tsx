@@ -1,8 +1,10 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { AUTH_HOME } from '../../constants/screens'
+import { AUTH_HOME, LOGIN, SIGN_UP } from '../../constants/screens'
 import AuthHome from '../screens/auth/AuthHome'
+import Login from '../screens/auth/Login'
+import Signup from '../screens/auth/Signup'
 
 const Stack = createStackNavigator()
 
@@ -20,6 +22,8 @@ const AuthStack = () => {
         name={AUTH_HOME}
         component={AuthHome}
       />
+      <Stack.Screen name={SIGN_UP} component={Signup} />
+      <Stack.Screen name={LOGIN} component={Login} />
     </Stack.Navigator>
   )
 }

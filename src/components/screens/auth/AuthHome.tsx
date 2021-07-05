@@ -1,80 +1,52 @@
-import { BlurView } from '@react-native-community/blur'
+import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import { SafeAreaView, StyleSheet, Image, View } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
-import { themeContainer, theme } from '../../common/style'
+import { StyleSheet, Image, View, Text } from 'react-native'
+import { LOGIN, SIGN_UP } from '../../../constants/screens'
+import GlassyCard from '../../common/GlassyCard'
+import {
+  themeContainer,
+  theme,
+  linkText,
+  purplePallet,
+  skyBlue
+} from '../../common/style'
 const logo = require('../../../../assets/images/gec_logo.png')
 
 const AuthHome = () => {
+  const { navigate } = useNavigation()
   return (
-    <SafeAreaView style={{ display: 'flex', flex: 1 }}>
-      <LinearGradient
-        colors={[theme.inputBackgroundColor, theme.black]}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 1 }}
-        useAngle
-        angle={110}
-        style={styles.fixed}
-      />
-      {/* <Image style={styles.backgroundAbstractImage} source={logo} /> */}
-
-      <View style={styles.container}>
-        <BlurView blurType="light" blurAmount={20} style={styles.cardContainer}>
-          <LinearGradient
-            colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.2)']}
-            start={{ x: 0, y: 1 }}
-            end={{ x: 1, y: 1 }}
-            useAngle
-            angle={110}
-            style={styles.card}>
-            <Image style={styles.logo} source={logo} />
-          </LinearGradient>
-        </BlurView>
-      </View>
-    </SafeAreaView>
+    <GlassyCard
+      containerStyle={{ padding: 20 }}
+      colors={[
+        purplePallet.purpleDeep,
+        purplePallet.purpleDarker,
+        purplePallet.purpleLight
+      ]}>
+      <Image style={styles.logo} source={logo} />
+      <Text
+        style={{
+          alignSelf: 'flex-start',
+          color: purplePallet.textLight,
+          fontSize: 20,
+          fontWeight: 'bold'
+        }}>
+        Sign up or{' '}
+        <Text
+          style={[linkText, { color: skyBlue[90], fontWeight: 'bold' }]}
+          onPress={() => navigate(LOGIN)}>
+          Login
+        </Text>
+      </Text>
+    </GlassyCard>
   )
 }
 
 export default AuthHome
 
 const styles = StyleSheet.create({
-  fixed: {
-    ...themeContainer
-  },
-  backgroundAbstractImage: {
-    position: 'absolute',
-    height: undefined,
-    width: '30%',
-    aspectRatio: 1,
-    zIndex: 5,
-    transform: [{ translateY: 200 }, { rotateZ: '-55deg' }, { scale: 1.5 }]
-  },
-  container: {
-    display: 'flex',
-    height: '100%',
-    width: '100%',
-    position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  cardContainer: {
-    width: 350,
-    height: 500,
-    borderRadius: 20
-  },
-  card: {
-    height: '100%',
-    width: '100%',
-    borderColor: 'rgba(255,255,255,0.3)',
-    borderRadius: 20,
-    borderWidth: 2,
-    display: 'flex',
-    flexDirection: 'column',
-    // justifyContent: 'center',
-    alignItems: 'center'
-  },
   logo: {
     width: 180,
-    height: 100
+    height: 100,
+    marginBottom: 20
   }
 })
