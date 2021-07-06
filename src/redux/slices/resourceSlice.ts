@@ -31,6 +31,7 @@ export const fetchCountries = createAsyncThunk(
   'resources/countries',
   async () => {
     const { payload } = await getCountries()
+    console.log('countries: ', payload.length)
 
     if (Array.isArray(payload)) {
       return { ...initialState, countries: payload }
@@ -95,6 +96,17 @@ export const resourceSlice = createSlice({
       state.errorMessage = errorMessage
     },
     [fetchGenders.rejected.toString()]: state => {
+      state.errorMessage = GENERIC_SERVER_ERROR
+    },
+    [fetchCountries.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<ResourceSliceI>
+    ) => {
+      const { countries, errorMessage } = action.payload
+      state.countries = countries
+      state.errorMessage = errorMessage
+    },
+    [fetchCountries.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
     },
     [restoreResources.fulfilled.toString()]: (

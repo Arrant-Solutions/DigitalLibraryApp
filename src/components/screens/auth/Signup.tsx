@@ -2,8 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Button, Input } from 'react-native-elements'
-import Select from 'react-select'
+import { Button, Input, SearchBar } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Ionicon from 'react-native-vector-icons/Ionicons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
@@ -17,6 +16,7 @@ import {
   selectResources
 } from '../../../redux/slices/resourceSlice'
 import GlassyCard from '../../common/GlassyCard'
+import Picker from '../../common/Picker'
 import RadioGroup from '../../common/RadioGroup'
 import { flexColumn, flexRow, purplePallet } from '../../common/style'
 
@@ -31,6 +31,8 @@ type ThunkRespone = PayloadAction<
 const Signup: React.FC<SignupProps> = () => {
   const dispatch = useAppDispatch()
   const { countries, genders, errorMessage } = useAppSelector(selectResources)
+  console.log(countries)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     dispatch(restoreResources()).then(({ payload }) => {
@@ -160,6 +162,21 @@ const Signup: React.FC<SignupProps> = () => {
                 setFieldValue('isMember', value === 'Yes')
               }
             />
+
+            {/* <DropDownPicker /> */}
+            <Picker
+              setSelected={value => {
+                setFieldValue(
+                  'country',
+                  countries.find(({ countryName }) => value === countryName)
+                )
+              }}
+              options={countries.map(item => ({
+                label: item.countryName,
+                value: item.countryName
+              }))}
+            />
+
             <Button
               style={{ margin: 8 }}
               buttonStyle={{

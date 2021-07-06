@@ -12,6 +12,7 @@ export const getCountries = async () => {
   try {
     const { status, data } = await axios.get<any[]>(`${APP_COUNTRIES_API}`)
 
+    // console.log(status)
     if (status === 200) {
       return {
         success: true,

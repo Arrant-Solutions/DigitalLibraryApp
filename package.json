@@ -14,11 +14,13 @@
     "@react-navigation/native": "^5.9.4",
     "@react-navigation/stack": "^5.14.5",
     "@reduxjs/toolkit": "^1.6.0",
+    "add": "^2.0.6",
     "axios": "^0.21.1",
     "formik": "^2.2.9",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-dotenv": "^3.0.0",
+    "react-native-dropdown-picker": "^5.1.21",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-linear-gradient": "^2.5.6",
@@ -28,8 +30,8 @@
     "react-native-sensitive-info": "^5.5.8",
     "react-native-vector-icons": "^8.1.0",
     "react-redux": "^7.2.4",
-    "react-select": "^4.3.1",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
