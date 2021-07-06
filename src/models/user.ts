@@ -13,11 +13,13 @@ export interface GenericUserI {
   branch: BranchI
 }
 
+export type SignupUserI = Omit<GenericUserI, 'branch'>
+
 export type UserCredential = Pick<GenericUserI, 'password' | 'email'>
 
-export type RegularUserI = Exclude<GenericUserI, 'password' | 'branch'>
+export type RegularUserI = Omit<GenericUserI, 'password' | 'branch'>
 
-export type GEMemberI = Exclude<GenericUserI, 'password'>
+export type GEMemberI = Omit<GenericUserI, 'password' | 'country'>
 
 export class GenericUser implements GenericUserI {
   firstName: string

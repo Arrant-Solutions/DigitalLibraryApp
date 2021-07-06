@@ -1,2 +1,4 @@
 export const AUTH_TOKEN = 'AUTH_TOKEN'
 export const USER_STORE = 'USER_STORE'
+export const COUNTRIES_TOKEN = 'COUNTRIES_TOKEN'
+export const GENDERS_STORE = 'GENDERS_TOKEN'

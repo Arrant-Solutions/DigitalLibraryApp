@@ -60,7 +60,22 @@ const style = StyleSheet.create({
   },
   linkText: {
     color: skyBlue[90]
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+    // flex: 1
+  },
+  flexRow: {
+    display: 'flex',
+    flexDirection: 'row'
+    // flex: 1
   }
 })
 
-export const { container: themeContainer, linkText } = style
+export const {
+  container: themeContainer,
+  linkText,
+  flexColumn,
+  flexRow
+} = style
