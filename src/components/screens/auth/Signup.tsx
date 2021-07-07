@@ -31,8 +31,6 @@ type ThunkRespone = PayloadAction<
 const Signup: React.FC<SignupProps> = () => {
   const dispatch = useAppDispatch()
   const { countries, genders, errorMessage } = useAppSelector(selectResources)
-  console.log(countries)
-  const [search, setSearch] = useState('')
 
   useEffect(() => {
     dispatch(restoreResources()).then(({ payload }) => {
@@ -171,10 +169,7 @@ const Signup: React.FC<SignupProps> = () => {
                   countries.find(({ countryName }) => value === countryName)
                 )
               }}
-              options={countries.map(item => ({
-                label: item.countryName,
-                value: item.countryName
-              }))}
+              options={countries.map(item => item.countryName)}
             />
 
             <Button
