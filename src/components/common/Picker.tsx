@@ -14,7 +14,7 @@ import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { flexRow, purplePallet, themeContainer } from './style'
-import index from '../screens/home'
+import index from '../screens/main'
 
 interface ItemProps {
   item: string

@@ -70,6 +70,12 @@ const style = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row'
     // flex: 1
+  },
+  socialButton: {
+    borderRadius: 10,
+    paddingHorizontal: 30,
+    display: 'flex',
+    flex: 1
   }
 })
 
@@ -77,5 +83,6 @@ export const {
   container: themeContainer,
   linkText,
   flexColumn,
-  flexRow
+  flexRow,
+  socialButton
 } = style

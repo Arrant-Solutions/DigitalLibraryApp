@@ -4,7 +4,11 @@ import { GENERIC_SERVER_ERROR } from '../../constants/errors'
 import { AUTH_TOKEN, USER_STORE } from '../../constants/storage'
 import { GenericUser, GenericUserI, UserCredential } from '../../models/user'
 import { login as userLogin } from '../../services/auth'
-import { deleteAsyncData, getAsyncData } from '../../utils/storage'
+import {
+  deleteAsyncData,
+  getAsyncData,
+  storeAsyncData
+} from '../../utils/storage'
 import { RootState } from '../store'
 
 export interface AuthSliceI {
@@ -73,6 +77,10 @@ export const authSlice = createSlice({
       action: PayloadAction<AuthSliceI>
     ) => {
       const { user, token, errorMessage } = action.payload
+
+      storeAsyncData(AUTH_TOKEN, token)
+      storeAsyncData(USER_STORE, JSON.stringify(user))
+
       state.user = user
       state.token = token
       state.errorMessage = errorMessage

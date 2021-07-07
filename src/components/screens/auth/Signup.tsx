@@ -1,8 +1,8 @@
 import { PayloadAction } from '@reduxjs/toolkit'
 import { Formik } from 'formik'
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View } from 'react-native'
-import { Button, Input } from 'react-native-elements'
+import { StyleSheet, View, Text } from 'react-native'
+import { Button, Input, SocialIcon } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
@@ -19,7 +19,13 @@ import {
 import GlassyCard from '../../common/GlassyCard'
 import Picker from '../../common/Picker'
 import RadioGroup from '../../common/RadioGroup'
-import { purplePallet } from '../../common/style'
+import {
+  flexColumn,
+  flexRow,
+  googleBlue,
+  purplePallet,
+  socialButton
+} from '../../common/style'
 
 interface SignupProps {}
 
@@ -52,7 +58,7 @@ const Signup: React.FC<SignupProps> = () => {
       genderID: 0,
       genderName: 'male'
     },
-    dateOfBirth: new Date(),
+    dateOfBirth: '1990-10-31',
     country: { countryID: 0, countryName: '' },
     isMember: true
   }
@@ -83,7 +89,7 @@ const Signup: React.FC<SignupProps> = () => {
   })
   return (
     <GlassyCard
-      containerStyle={{ height: 650 }}
+      containerStyle={{ height: 750 }}
       cardContainerStyle={{ padding: 20, paddingVertical: 30 }}
       colors={[
         purplePallet.purpleDarker,
@@ -102,10 +108,36 @@ const Signup: React.FC<SignupProps> = () => {
           errors,
           setFieldValue
         }) => {
-          console.log(errors)
-
           return (
             <View style={styles.container}>
+              <Text style={{ paddingHorizontal: 10, fontSize: 15 }}>
+                Sign up with one of the following options.
+              </Text>
+              <View
+                style={[
+                  flexRow,
+                  { justifyContent: 'space-between', marginBottom: 10 }
+                ]}>
+                <SocialIcon
+                  style={socialButton}
+                  underlayColor={`${googleBlue}60`}
+                  button
+                  iconSize={20}
+                  type="facebook"
+                  onPress={() => console.log('pressed')}
+                />
+                <SocialIcon
+                  style={{
+                    ...socialButton,
+                    backgroundColor: googleBlue
+                  }}
+                  iconSize={20}
+                  underlayColor={`${googleBlue}60`}
+                  button
+                  type="google"
+                  onPress={() => console.log('pressed')}
+                />
+              </View>
               <Input
                 inputContainerStyle={styles.inputContainerStyle}
                 labelStyle={styles.textStyle}
@@ -202,7 +234,6 @@ const Signup: React.FC<SignupProps> = () => {
 
               {!values.isMember && (
                 <Picker
-                  errorMessage="le bugeses"
                   setSelected={value => {
                     setFieldValue(
                       'country',

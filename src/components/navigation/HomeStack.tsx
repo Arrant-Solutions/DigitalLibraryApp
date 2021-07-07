@@ -1,7 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import home from '../screens/home'
+import home from '../screens/main'
 
 const Stack = createStackNavigator()
 

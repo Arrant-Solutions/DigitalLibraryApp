@@ -15,6 +15,8 @@ export const storeAsyncData = async (key: string, value: any) => {
   }
 }
 
+export const setAsyncStore = storeAsyncData
+
 export const getAsyncData = async <T = any>(key: string) => {
   try {
     const value = await SecureStore.getItem(key, storeConfig)

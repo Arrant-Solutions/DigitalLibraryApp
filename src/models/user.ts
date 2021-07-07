@@ -6,7 +6,7 @@ export interface GenericUserI {
   firstName: string
   lastName: string
   email: string
-  dateOfBirth: Date
+  dateOfBirth: string
   country: CountryI
   gender: GenderI
   password: string
@@ -25,7 +25,7 @@ export class GenericUser implements GenericUserI {
   firstName: string
   lastName: string
   email: string
-  dateOfBirth: Date
+  dateOfBirth: string
   country: CountryI
   gender: GenderI
   password: string
