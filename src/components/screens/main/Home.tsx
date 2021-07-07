@@ -13,7 +13,35 @@ const Home = () => {
         imageSrc={require('../../../../assets/images/banner.png')}
       />
       <View style={styles.divider}></View>
-      <ScrollView horizontal style={styles.tileContainer}></ScrollView>
+      <ScrollView horizontal style={styles.tileContainer}>
+        <Tile
+          featured
+          title="Lorem ipsum dolor sit amet, consectetur"
+          width={175}
+          imageSrc={require('../../../../assets/images/master.jpeg')}
+        />
+        <Tile
+          featured
+          title="Lorem ipsum dolor sit amet, consectetur"
+          width={175}
+          // height={265}
+          imageSrc={require('../../../../assets/images/champions.jpeg')}
+        />
+        <Tile
+          featured
+          title="Lorem ipsum dolor sit amet, consectetur"
+          width={175}
+          // height={265}
+          imageSrc={require('../../../../assets/images/ideas.jpeg')}
+        />
+        <Tile
+          featured
+          title="Lorem ipsum dolor sit amet, consectetur"
+          width={175}
+          // height={265}
+          imageSrc={require('../../../../assets/images/intelligent.jpeg')}
+        />
+      </ScrollView>
       <View style={styles.divider}></View>
       <ScrollView horizontal style={styles.tileContainer}></ScrollView>
       <View style={styles.divider}></View>
