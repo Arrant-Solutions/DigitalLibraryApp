@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TextStyle, View } from 'react-native'
 import { CheckBox } from 'react-native-elements'
 import { flexColumn, flexRow } from './style'
 
@@ -8,13 +8,17 @@ interface RadioGroupProps {
   defaultValue: string
   options: string[]
   setSelectedValue: (value: string) => void
+  errorMessage?: string
+  errorStyle?: TextStyle
 }
 
 const RadioGroup: React.FC<RadioGroupProps> = ({
   label,
   options,
   defaultValue,
-  setSelectedValue
+  setSelectedValue,
+  errorMessage,
+  errorStyle
 }) => {
   const [selected, setSelected] = useState(defaultValue)
   return (
@@ -45,6 +49,21 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
           />
         ))}
       </View>
+      {Boolean(errorMessage?.length) && (
+        <Text
+          style={[
+            {
+              paddingHorizontal: 7,
+              marginTop: -10,
+              marginBottom: 10,
+              color: 'red',
+              marginHorizontal: 12
+            },
+            errorStyle
+          ]}>
+          {errorMessage}
+        </Text>
+      )}
     </View>
   )
 }

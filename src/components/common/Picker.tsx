@@ -1,5 +1,13 @@
 import React, { useCallback, useState } from 'react'
-import { SafeAreaView, StatusBar, StyleSheet, Text, View } from 'react-native'
+import {
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle
+} from 'react-native'
 import { Input, Overlay } from 'react-native-elements'
 import uuid from 'react-native-uuid'
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
@@ -36,13 +44,21 @@ class Item extends React.PureComponent<ItemProps> {
 interface PickerProps {
   options: string[]
   setSelected: (value: string) => void
+  errorMessage?: string
+  errorStyle?: TextStyle
 }
 
-const Picker: React.FC<PickerProps> = ({ setSelected, options }) => {
+const Picker: React.FC<PickerProps> = ({
+  setSelected,
+  options,
+  errorMessage,
+  errorStyle
+}) => {
   const [visible, setVisible] = useState(false)
   const [selectedItem, setSelectedItem] = useState<string>()
   const [searchTerm, setSearchTerm] = useState('')
   const [itemHeight] = useState(50)
+  const [hasError] = useState(Boolean(errorMessage?.length))
   const getItemLayout = useCallback(
     (data, index) => ({
       length: itemHeight,
@@ -78,7 +94,12 @@ const Picker: React.FC<PickerProps> = ({ setSelected, options }) => {
   if (!visible) {
     return (
       <TouchableOpacity onPress={() => setVisible(true)}>
-        <View style={styles.pickerContainer}>
+        <View
+          style={
+            hasError
+              ? [styles.pickerContainer, { borderColor: 'red' }]
+              : styles.pickerContainer
+          }>
           <Text style={styles.selected}>{selectedItem || 'Select'}</Text>
           <Icon name="chevron-down" size={20} color="white" />
         </View>

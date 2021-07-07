@@ -17,6 +17,7 @@
     "add": "^2.0.6",
     "axios": "^0.21.1",
     "formik": "^2.2.9",
+    "moment": "^2.29.1",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-dotenv": "^3.0.0",
@@ -32,7 +33,8 @@
     "react-native-vector-icons": "^8.1.0",
     "react-redux": "^7.2.4",
     "typescript": "^4.3.5",
-    "yarn": "^1.22.10"
+    "yarn": "^1.22.10",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
