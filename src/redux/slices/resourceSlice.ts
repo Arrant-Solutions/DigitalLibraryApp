@@ -1,18 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
+
 import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import {
-  AUTH_TOKEN,
-  COUNTRIES_TOKEN,
-  GENDERS_STORE,
-  USER_STORE
-} from '../../constants/storage'
+import { COUNTRIES_TOKEN, GENDERS_STORE } from '../../constants/storage'
 import { CountryI } from '../../models/country'
 import { GenderI } from '../../models/gender'
-import { GenericUser, GenericUserI, UserCredential } from '../../models/user'
-import { login as userLogin } from '../../services/auth'
 import { getCountries, getGenders } from '../../services/resources'
-import { deleteAsyncData, getAsyncData } from '../../utils/storage'
+import { getAsyncData } from '../../utils/storage'
 import { RootState } from '../store'
 
 export interface ResourceSliceI {
