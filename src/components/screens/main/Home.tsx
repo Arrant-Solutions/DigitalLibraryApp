@@ -8,22 +8,34 @@ import {
   SafeAreaView,
   useWindowDimensions
 } from 'react-native'
-import { Tile } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
 import { HomeMediaItem } from '../../../models/media'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
-import { selectHomeResources } from '../../../redux/slices/homeResourcesSlice'
+import {
+  fetchLatest,
+  restoreLatest,
+  selectHomeResources
+} from '../../../redux/slices/homeResourcesSlice'
 import { flexColumn } from '../../common/style'
+import Tile from '../../common/Tile'
 
 const Home = () => {
   const dispatch = useAppDispatch()
-  const {errorMessage, latest} = useAppSelector(selectHomeResources)
+  const { errorMessage, latest } = useAppSelector(selectHomeResources)
   // const [media, setMedia] = useState<HomeMediaItem[]>([])
 
   useEffect(() => {
-
+    dispatch(restoreLatest())
+      .then(({ payload }: any) => {
+        if (Array.isArray(payload.latest) && payload.latest.length === 0) {
+          dispatch(fetchLatest())
+        }
+      })
+      .catch(() => {
+        dispatch(fetchLatest())
+      })
   }, [])
-
+  console.log(latest)
   const { width, height } = useWindowDimensions()
   const [tileHeight] = useState(
     (height - 265 - 60 - useBottomTabBarHeight()) / 3
@@ -48,38 +60,48 @@ const Home = () => {
         <View style={styles.tileContainer}>
           <Text style={styles.tileHeader}>Latest Uplifting Releases</Text>
           <ScrollView horizontal style={styles.tileContentContainer}>
-            <View
-              style={{
-                // height: tileHeight,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 90
-              }}>
-              <Image
-                source={require('../../../../assets/images/champions.jpeg')}
-                resizeMode="cover"
-                height={undefined}
-                width={undefined}
-                style={{ height: 90, width: 90, borderRadius: 30 }}
+            {latest.slice(0, 8).map(({ thumbnail, title }) => (
+              <Tile
+                style={{ marginRight: 10 }}
+                imageSrc={{ uri: thumbnail }}
+                title={title}
               />
-              <Text
-                style={{ textAlign: 'center', paddingVertical: 3 }}
-                numberOfLines={1}>
-                Champions Diary
-              </Text>
-            </View>
+            ))}
           </ScrollView>
         </View>
         <View style={styles.divider}></View>
-        <ScrollView horizontal style={styles.tileContainer}>
-          <Text>More of what you like</Text>
-          <Text>Suggestions based on your previous views (square)</Text>
-        </ScrollView>
+        <View style={styles.tileContainer}>
+          <View style={{ ...flexColumn, paddingHorizontal: 30 }}>
+            <Text style={{ fontSize: 20 }}>More of what you like</Text>
+            <Text style={{ fontSize: 12, color: '#777' }}>
+              Suggestions based on your previous views
+            </Text>
+          </View>
+          <ScrollView horizontal style={styles.tileContentContainer}>
+            {latest.slice(9, 15).map(({ thumbnail, title }) => (
+              <Tile
+                style={{ marginRight: 10 }}
+                imageStyle={{ borderRadius: 0 }}
+                imageSrc={{ uri: thumbnail }}
+                title={title}
+              />
+            ))}
+          </ScrollView>
+        </View>
         <View style={styles.divider}></View>
-        <ScrollView horizontal style={styles.tileContainer}>
-          <Text>Most Played Titles (round)</Text>
-        </ScrollView>
+        <View style={styles.tileContainer}>
+          <Text style={styles.tileHeader}>Most Played titles</Text>
+          <ScrollView horizontal style={styles.tileContentContainer}>
+            {latest.slice(15, 20).map(({ thumbnail, title }) => (
+              <Tile
+                style={{ marginRight: 10 }}
+                imageStyle={{ borderRadius: 100 }}
+                imageSrc={{ uri: thumbnail }}
+                title={title}
+              />
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   )

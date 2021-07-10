@@ -13,7 +13,7 @@ import {
 interface TileProps {
   title?: string
   imageSrc: ImageSourcePropType
-  containerStyle?: ViewStyle
+  style?: ViewStyle
   imageStyle?: ImageStyle
   titleStyle?: TextStyle
 }
@@ -21,7 +21,7 @@ interface TileProps {
 const Tile: React.FC<TileProps> = ({
   title,
   imageSrc,
-  containerStyle,
+  style,
   imageStyle,
   titleStyle
 }) => {
@@ -29,7 +29,7 @@ const Tile: React.FC<TileProps> = ({
     <View
       style={{
         ...styles.container,
-        ...containerStyle
+        ...style
       }}>
       <Image
         source={imageSrc}
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-      paddingVertical: 3,
+    paddingVertical: 3,
     color: '#888'
   }
 })

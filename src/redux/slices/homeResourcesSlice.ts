@@ -38,6 +38,7 @@ const initialState: HomeResourceSliceI = {
 export const fetchLatest = createAsyncThunk(
   'homeResources/latest',
   async () => {
+    console.log('getting')
     const { payload } = await getLatestReleases()
 
     if (Array.isArray(payload)) {
@@ -48,6 +49,20 @@ export const fetchLatest = createAsyncThunk(
       ...initialState,
       errorMessage: payload
     }
+  }
+)
+
+export const restoreLatest = createAsyncThunk(
+  'homeResources/restore',
+  async () => {
+    // await deleteAsyncData('LATEST_RELEASE')
+    const latest = await getAsyncData<HomeMediaItem[]>('LATEST_RELEASE')
+
+    if (Array.isArray(latest)) {
+      return { ...initialState, latest }
+    }
+
+    return initialState
   }
 )
 
@@ -70,11 +85,22 @@ export const homeResourceSlice = createSlice({
       const { latest, errorMessage } = action.payload
       state.latest = latest
       state.errorMessage = errorMessage
+      console.log(latest)
 
       storeAsyncData('LATEST_RELEASE', latest)
     },
     [fetchLatest.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
+    },
+    [restoreLatest.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<HomeResourceSliceI>
+    ) => {
+      const { latest, errorMessage } = action.payload
+      state.latest = latest
+      state.errorMessage = errorMessage
+
+      storeAsyncData('LATEST_RELEASE', latest)
     }
   }
 })
