@@ -1,3 +1,5 @@
+import { CategoryI } from '../models/category'
+
 export const data = [
   {
     id: 'yNvVnPcurD8',
@@ -2327,4 +2329,27 @@ export const data = [
       for_hire: true
     }
   }
+]
+
+export const categories: CategoryI[] = [
+  { name: 'CELL LEADERS', numberOfItems: 3 },
+  { name: 'CAMPUS MINISTRY', numberOfItems: 3 },
+  { name: 'FOUNDATION SCHOOL', numberOfItems: 3 },
+  { name: 'TEENS', numberOfItems: 3 },
+  { name: 'CHILDREN', numberOfItems: 3 },
+  { name: 'THANKSGIVING', numberOfItems: 3 },
+  { name: 'PROSPERITY AND FINANCE', numberOfItems: 3 },
+  { name: 'HEALING AND HEALTH', numberOfItems: 3 },
+  { name: 'ANOINTING', numberOfItems: 3 },
+  { name: 'LIFESTYLE', numberOfItems: 3 },
+  { name: 'SOUL WINNING', numberOfItems: 3 },
+  { name: 'FAITH', numberOfItems: 3 },
+  { name: 'CHURCH GROWTH', numberOfItems: 3 },
+  { name: 'EVANGELISM', numberOfItems: 3 },
+  { name: 'HOLY SPIRIT', numberOfItems: 3 },
+  { name: 'CHRISTIAN LIVING', numberOfItems: 3 },
+  { name: 'CLASSICS', numberOfItems: 3 },
+  { name: 'FREEBIES', numberOfItems: 3 },
+  { name: 'QUESTIONS AND ANSWERS', numberOfItems: 3 },
+  { name: 'YOUR GOSPEL WORLD', numberOfItems: 3 }
 ]

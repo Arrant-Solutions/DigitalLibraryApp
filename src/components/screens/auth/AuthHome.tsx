@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import React from 'react'
-import { StyleSheet, Image, View, Text } from 'react-native'
+import { StyleSheet, Image, View, Text, StatusBar } from 'react-native'
 import { SocialIcon, Button } from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { LOGIN, SIGN_UP } from '../../../constants/screens'
@@ -19,6 +19,10 @@ const AuthHome = () => {
         purplePallet.purpleDarker,
         purplePallet.purpleLight
       ]}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor={purplePallet.purpleDeep}
+      />
       <Image style={styles.logo} source={logo} />
       <Text
         style={{

@@ -2,7 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import resourcesReducer from './slices/resourceSlice'
 import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
-// import alertReducer from './slices/alertSlice'
+import categoriesReducer from './slices/categoriesSlice'
 // import appResourceReducer from './slices/appResourceSlice'
 // import customerReducer from './slices/customerSlice'
 // import SIMCardReducer from './slices/SIMCardSlice'
@@ -12,8 +12,8 @@ export const store = configureStore({
   reducer: {
     resources: resourcesReducer,
     auth: authReducer,
-    homeResources: homeResourcesReducer
-    // agents: agentsReducer,
+    homeResources: homeResourcesReducer,
+    categories: categoriesReducer
     // alerts: alertReducer,
     // appResource: appResourceReducer,
     // customers: customerReducer,

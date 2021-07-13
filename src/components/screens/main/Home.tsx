@@ -94,6 +94,7 @@ const Home = () => {
           <ScrollView horizontal style={styles.tileContentContainer}>
             {latest.slice(15, 20).map(({ thumbnail, title }) => (
               <Tile
+                key={thumbnail}
                 style={{ marginRight: 10 }}
                 imageStyle={{ borderRadius: 100 }}
                 imageSrc={{ uri: thumbnail }}

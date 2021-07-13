@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
+  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -8,11 +9,26 @@ import {
   View
 } from 'react-native'
 import { Header, Icon } from 'react-native-elements'
+import { ScrollView } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import {
+  fetchCategories,
+  selectCategories
+} from '../../../redux/slices/categoriesSlice'
 import { flexRow, purplePallet, stretchedBox } from '../../common/style'
 
 const Categories = () => {
   const { width } = useWindowDimensions()
+  const [loading, setLoading] = useState(false)
+  const dispatch = useAppDispatch()
+  const { errorMessage, categories } = useAppSelector(selectCategories)
+
+  useEffect(() => {
+    setLoading(true)
+    dispatch(fetchCategories()).finally(() => setLoading(false))
+  })
+
   return (
     <SafeAreaView>
       <LinearGradient
@@ -43,6 +59,17 @@ const Categories = () => {
             type: 'ionicon'
           }}
         />
+        <ScrollView style={styles.container}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : (
+            <View style={styles.grid}>
+              {categories.map(({ name, numberOfItems }) => (
+                <Text>{name}</Text>
+              ))}
+            </View>
+          )}
+        </ScrollView>
       </LinearGradient>
     </SafeAreaView>
   )
@@ -50,4 +77,13 @@ const Categories = () => {
 
 export default Categories
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    display: 'flex',
+    flex: 1
+  },
+  grid: {
+    display: 'flex',
+    flexWrap: 'wrap'
+  }
+})
