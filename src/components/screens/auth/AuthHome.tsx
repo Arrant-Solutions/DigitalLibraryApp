@@ -58,11 +58,11 @@ const AuthHome = () => {
           onPress={() => console.log('pressed')}
         />
         <Button
-          style={{ margin: 8 }}
           buttonStyle={{
             borderRadius: 10,
             paddingVertical: 10,
-            backgroundColor: '#17171760'
+            backgroundColor: '#17171760',
+            margin: 8
           }}
           titleStyle={{ fontSize: 14, fontWeight: 'bold' }}
           icon={

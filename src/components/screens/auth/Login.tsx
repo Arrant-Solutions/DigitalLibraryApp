@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Platform } from 'react-native'
 import { Button, Input, SocialIcon } from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { UserCredential } from '../../../models/user'
@@ -47,7 +47,11 @@ const Login = () => {
         purplePallet.purpleDarker,
         purplePallet.purpleLight
       ]}>
-      <Text style={{ paddingHorizontal: 10, fontSize: 15 }}>
+      <Text
+        style={[
+          { paddingHorizontal: 10, fontSize: 15, marginBottom: 10 },
+          Platform.OS === 'android' ? { color: '#fff' } : {}
+        ]}>
         Sign in with one of the following options.
       </Text>
       <View

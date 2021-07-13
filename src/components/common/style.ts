@@ -76,6 +76,10 @@ const style = StyleSheet.create({
     paddingHorizontal: 30,
     display: 'flex',
     flex: 1
+  },
+  stretchedBox: {
+    height: '100%',
+    width: '100%'
   }
 })
 
@@ -84,5 +88,6 @@ export const {
   linkText,
   flexColumn,
   flexRow,
-  socialButton
+  socialButton,
+  stretchedBox
 } = style
