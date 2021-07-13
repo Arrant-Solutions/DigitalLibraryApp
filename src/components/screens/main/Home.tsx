@@ -9,7 +9,6 @@ import {
   useWindowDimensions
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import { HomeMediaItem } from '../../../models/media'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import {
   fetchLatest,

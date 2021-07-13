@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, PureComponent } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
@@ -8,15 +8,61 @@ import {
   useWindowDimensions,
   View
 } from 'react-native'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Header, Icon } from 'react-native-elements'
-import { ScrollView } from 'react-native-gesture-handler'
+import { FlatList, ScrollView } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
+import { CategoryI, CategoryIconI } from '../../../models/category'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import {
   fetchCategories,
   selectCategories
 } from '../../../redux/slices/categoriesSlice'
 import { flexRow, purplePallet, stretchedBox } from '../../common/style'
+
+class Item extends PureComponent<Omit<CategoryI, 'categoryID'>> {
+  getIcon({ name, size, type, color }: CategoryIconI) {
+    color = color || '#000'
+    switch (type) {
+      case 'material-community':
+        return <MaterialCommunityIcons color={color} name={name} size={size} />
+      // case 'simple-line-icon':
+      //   break
+      // case 'zocial':
+      //   break
+      // case 'font-awesome':
+      //   break
+      // case 'octicon':
+      //   break
+      case 'ionicon':
+        return <Ionicons color={color} name={name} size={size} />
+      // case 'foundation':
+      //   break
+      // case 'evilicon':
+      //   break
+      // case 'entypo':
+      //   break
+      // case 'antdesign':
+      //   break
+      // case 'font-awesome-5':
+      //   break
+      case 'material':
+      default:
+        return <MaterialIcons color={color} name={name} size={size} />
+    }
+  }
+  render() {
+    const { name, numberOfItems, icon } = this.props
+    return (
+      <View style={styles.itemContainer}>
+        {this.getIcon(icon)}
+        <Text>{`${name} (${numberOfItems})`}</Text>
+      </View>
+    )
+  }
+}
 
 const Categories = () => {
   const { width } = useWindowDimensions()
@@ -28,6 +74,17 @@ const Categories = () => {
     setLoading(true)
     dispatch(fetchCategories()).finally(() => setLoading(false))
   })
+
+  const keyExtractor = ({ categoryID }: CategoryI, index: number) =>
+    String(categoryID)
+
+  const renderItem = ({ item }: { item: CategoryI }) => (
+    <Item
+      name={item.name}
+      numberOfItems={item.numberOfItems}
+      icon={item.icon}
+    />
+  )
 
   return (
     <SafeAreaView>
@@ -63,11 +120,12 @@ const Categories = () => {
           {loading ? (
             <ActivityIndicator />
           ) : (
-            <View style={styles.grid}>
-              {categories.map(({ name, numberOfItems }) => (
-                <Text>{name}</Text>
-              ))}
-            </View>
+            <FlatList
+              data={categories}
+              renderItem={renderItem}
+              numColumns={2}
+              keyExtractor={keyExtractor}
+            />
           )}
         </ScrollView>
       </LinearGradient>
@@ -82,8 +140,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1
   },
-  grid: {
+  itemContainer: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 })
