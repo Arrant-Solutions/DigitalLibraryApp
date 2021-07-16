@@ -2333,121 +2333,121 @@ export const data = [
 
 export const categories: CategoryI[] = [
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 1,
     name: 'CELL LEADERS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 2,
     name: 'CAMPUS MINISTRY',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 3,
     name: 'FOUNDATION SCHOOL',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 4,
     name: 'TEENS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 5,
     name: 'CHILDREN',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 6,
     name: 'THANKSGIVING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 7,
-    name: 'PROSPERITY AND FINANCE',
+    name: 'PROSPERITY & FINANCE',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 8,
-    name: 'HEALING AND HEALTH',
+    name: 'HEALING & HEALTH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 9,
     name: 'ANOINTING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 10,
     name: 'LIFESTYLE',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 11,
     name: 'SOUL WINNING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 12,
     name: 'FAITH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 13,
     name: 'CHURCH GROWTH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 14,
     name: 'EVANGELISM',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 15,
     name: 'HOLY SPIRIT',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 16,
     name: 'CHRISTIAN LIVING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 17,
     name: 'CLASSICS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 18,
     name: 'FREEBIES',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 19,
-    name: 'QUESTIONS AND ANSWERS',
+    name: 'QUESTIONS & ANSWERS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'groups', type: 'material', size: 30 },
+    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
     categoryID: 20,
     name: 'YOUR GOSPEL WORLD',
     numberOfItems: 3

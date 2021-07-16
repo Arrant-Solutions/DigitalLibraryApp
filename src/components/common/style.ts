@@ -12,6 +12,40 @@ export const skyBlue = {
   10: '#e6f9ff'
 }
 
+export const gold = {
+  100: '#a67c00',
+  80: '#bf9b30',
+  60: '#ffbf00',
+  40: '#ffcf40',
+  20: '#ffdc73'
+}
+
+export const copper = {
+  100: '#db6923',
+  90: '#de7838',
+  80: '#e2874e',
+  70: '#e59665',
+  60: '#e9a57b',
+  50: '#edb491',
+  40: '#f0c3a7',
+  30: '#f4d2bd',
+  20: '#f7e1d3',
+  10: '#fbf0e9'
+}
+
+export const greys = {
+  100: '#888888',
+  90: '#939393',
+  80: '#9f9f9f',
+  70: '#ababab',
+  60: '#b7b7b7',
+  50: '#c3c3c3',
+  40: '#cfcfcf',
+  30: '#dbdbdb',
+  20: '#e7e7e7',
+  10: '#f3f3f3'
+}
+
 export const purplePallet = {
   textLight: '#fff',
   text: '#ffe245',
@@ -20,7 +54,8 @@ export const purplePallet = {
   purpleDarker: '#6c30cc',
   purpleDeep: '#400d88',
   purpleDeeper: '#380b78',
-  brown: '#403034'
+  brown: '#403034',
+  copper: '#db6923'
 }
 
 export const themeBlack = '#111111'

@@ -6,13 +6,13 @@ import {
   StyleSheet,
   Text,
   useWindowDimensions,
-  View
+  View,
+  ViewStyle
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { Header, Icon } from 'react-native-elements'
-import { FlatList, ScrollView } from 'react-native-gesture-handler'
+import { FlatList } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { CategoryI, CategoryIconI } from '../../../models/category'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
@@ -20,11 +20,17 @@ import {
   fetchCategories,
   selectCategories
 } from '../../../redux/slices/categoriesSlice'
-import { flexRow, purplePallet, stretchedBox } from '../../common/style'
+import { flexRow, greys, purplePallet, stretchedBox } from '../../common/style'
 
-class Item extends PureComponent<Omit<CategoryI, 'categoryID'>> {
+interface ItemProps {
+  style?: ViewStyle
+  divider?: boolean
+  dividerColor?: string
+}
+
+class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
   getIcon({ name, size, type, color }: CategoryIconI) {
-    color = color || '#000'
+    color = color || greys[40]
     switch (type) {
       case 'material-community':
         return <MaterialCommunityIcons color={color} name={name} size={size} />
@@ -48,23 +54,23 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'>> {
       //   break
       // case 'font-awesome-5':
       //   break
-      case 'material':
+      case 'material-community':
       default:
-        return <MaterialIcons color={color} name={name} size={size} />
+        return <MaterialCommunityIcons color={color} name={name} size={size} />
     }
   }
   render() {
-    const { name, numberOfItems, icon } = this.props
+    const { name, numberOfItems, icon, style } = this.props
     return (
-      <View style={styles.itemContainer}>
+      <View style={[styles.itemContainer, style]}>
         {this.getIcon(icon)}
-        <Text>{`${name} (${numberOfItems})`}</Text>
+        <Text style={styles.itemText}>{`${name} (${numberOfItems})`}</Text>
       </View>
     )
   }
 }
 
-const Categories = () => {
+const Library = () => {
   const { width } = useWindowDimensions()
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
@@ -73,18 +79,36 @@ const Categories = () => {
   useEffect(() => {
     setLoading(true)
     dispatch(fetchCategories()).finally(() => setLoading(false))
-  })
+  }, [])
 
   const keyExtractor = ({ categoryID }: CategoryI, index: number) =>
     String(categoryID)
 
-  const renderItem = ({ item }: { item: CategoryI }) => (
-    <Item
-      name={item.name}
-      numberOfItems={item.numberOfItems}
-      icon={item.icon}
+  const renderItem = ({ item, index }: { item: CategoryI; index: number }) => {
+    return (
+      <Item
+        style={
+          (index + 1) % 2 === 1
+            ? { borderRightWidth: 1 / 3, borderRightColor: '#fff' }
+            : undefined
+        }
+        name={item.name}
+        numberOfItems={item.numberOfItems}
+        icon={item.icon}
+      />
+    )
+  }
+
+  const renderSeparator = () => (
+    <View
+      style={{
+        backgroundColor: '#fff',
+        height: 1 / 3
+      }}
     />
   )
+
+  console.log(categories)
 
   return (
     <SafeAreaView>
@@ -106,7 +130,7 @@ const Categories = () => {
             <View style={[flexRow, { width, alignItems: 'center' }]}>
               <Icon name="logo-android" color="#fff" type="ionicon" size={20} />
               <Text style={{ marginLeft: 10, color: '#fff', fontSize: 20 }}>
-                Categories
+                Library
               </Text>
             </View>
           }
@@ -116,24 +140,23 @@ const Categories = () => {
             type: 'ionicon'
           }}
         />
-        <ScrollView style={styles.container}>
-          {loading ? (
-            <ActivityIndicator />
-          ) : (
-            <FlatList
-              data={categories}
-              renderItem={renderItem}
-              numColumns={2}
-              keyExtractor={keyExtractor}
-            />
-          )}
-        </ScrollView>
+        {loading ? (
+          <ActivityIndicator />
+        ) : (
+          <FlatList
+            data={categories}
+            ItemSeparatorComponent={renderSeparator}
+            renderItem={renderItem}
+            numColumns={2}
+            keyExtractor={keyExtractor}
+          />
+        )}
       </LinearGradient>
     </SafeAreaView>
   )
 }
 
-export default Categories
+export default Library
 
 const styles = StyleSheet.create({
   container: {
@@ -142,8 +165,18 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     display: 'flex',
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    padding: 15,
+    paddingBottom: 20,
+    paddingTop: 10
+  },
+  itemText: {
+    textAlign: 'center',
+    color: greys[30],
+    fontSize: 15,
+    fontWeight: 'bold'
   }
 })

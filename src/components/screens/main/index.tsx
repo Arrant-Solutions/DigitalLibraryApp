@@ -6,7 +6,7 @@ import { purplePallet } from '../../common/style'
 import Home from './Home'
 import Settings from './Settings'
 import Search from './Search'
-import Categories from './Categories'
+import Categories from './Library'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 
 const Tab = createBottomTabNavigator()
@@ -50,7 +50,7 @@ const index = () => {
                 <Ionicons name="grid-outline" color={color} size={size} />
               )
             }}
-            name="Categories"
+            name="Library"
             component={Categories}
           />
           <Tab.Screen
