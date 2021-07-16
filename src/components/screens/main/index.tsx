@@ -8,6 +8,7 @@ import Settings from './Settings'
 import Search from './Search'
 import Categories from './Library'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import Favorites from './Favorites'
 
 const Tab = createBottomTabNavigator()
 
@@ -55,12 +56,16 @@ const index = () => {
           />
           <Tab.Screen
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="search" color={color} size={size} />
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? 'heart' : 'heart-outline'}
+                  color={focused ? 'red' : color}
+                  size={size}
+                />
               )
             }}
-            name="Search"
-            component={Search}
+            name="Favourites"
+            component={Favorites}
           />
           <Tab.Screen
             options={{
