@@ -3,6 +3,7 @@ import { CountryI } from './country'
 import { GenderI } from './gender'
 
 export interface GenericUserI {
+  avatar?: string
   firstName: string
   lastName: string
   email: string
@@ -22,6 +23,7 @@ export type RegularUserI = Omit<GenericUserI, 'password' | 'branch'>
 export type GEMemberI = Omit<GenericUserI, 'password' | 'country'>
 
 export class GenericUser implements GenericUserI {
+  avatar?: string
   firstName: string
   lastName: string
   email: string
@@ -32,6 +34,7 @@ export class GenericUser implements GenericUserI {
   branch: BranchI
 
   constructor({
+    avatar,
     firstName,
     lastName,
     email,
@@ -41,6 +44,7 @@ export class GenericUser implements GenericUserI {
     password,
     branch
   }: GenericUserI) {
+    this.avatar = avatar
     this.firstName = firstName
     this.lastName = lastName
     this.email = email
@@ -53,6 +57,7 @@ export class GenericUser implements GenericUserI {
 
   static createReduxInstance(): GenericUserI {
     return {
+      avatar: '',
       firstName: '',
       lastName: '',
       email: '',

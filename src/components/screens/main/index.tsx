@@ -4,11 +4,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import LinearGradient from 'react-native-linear-gradient'
 import { purplePallet } from '../../common/style'
 import Home from './Home'
-import Settings from './Settings'
-import Search from './Search'
 import Categories from './Library'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Favorites from './Favorites'
+import HeaderOptionsMenu from '../../common/HeaderOptionsMenu'
+import More from './More'
 
 const Tab = createBottomTabNavigator()
 
@@ -38,8 +38,12 @@ const index = () => {
           }}>
           <Tab.Screen
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="home" color={color} size={size} />
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? 'home' : 'home-outline'}
+                  color={color}
+                  size={size}
+                />
               )
             }}
             name="Home"
@@ -47,8 +51,12 @@ const index = () => {
           />
           <Tab.Screen
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="grid-outline" color={color} size={size} />
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={focused ? 'grid' : 'grid-outline'}
+                  color={color}
+                  size={size}
+                />
               )
             }}
             name="Library"
@@ -69,15 +77,24 @@ const index = () => {
           />
           <Tab.Screen
             options={{
-              tabBarIcon: ({ color, size }) => (
-                <Ionicons name="settings-outline" color={color} size={size} />
+              tabBarIcon: ({ focused, color, size }) => (
+                <Ionicons
+                  name={
+                    focused
+                      ? 'ios-ellipsis-vertical-sharp'
+                      : 'ellipsis-vertical-outline'
+                  }
+                  color={color}
+                  size={size}
+                />
               )
             }}
-            name="Settings"
-            component={Settings}
+            name="More"
+            component={More}
           />
         </Tab.Navigator>
       </LinearGradient>
+      <HeaderOptionsMenu />
     </View>
   )
 }

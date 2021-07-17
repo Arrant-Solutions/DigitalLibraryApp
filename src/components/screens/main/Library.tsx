@@ -11,7 +11,6 @@ import {
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { Header, Icon } from 'react-native-elements'
 import { FlatList } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { CategoryI, CategoryIconI } from '../../../models/category'
@@ -20,7 +19,8 @@ import {
   fetchCategories,
   selectCategories
 } from '../../../redux/slices/categoriesSlice'
-import { flexRow, greys, purplePallet, stretchedBox } from '../../common/style'
+import { greys, purplePallet, stretchedBox } from '../../common/style'
+import Header from '../../common/Header'
 
 interface ItemProps {
   style?: ViewStyle
@@ -108,8 +108,6 @@ const Library = () => {
     />
   )
 
-  console.log(categories)
-
   return (
     <SafeAreaView>
       <LinearGradient
@@ -123,23 +121,7 @@ const Library = () => {
         useAngle
         angle={110}
         style={stretchedBox}>
-        <StatusBar backgroundColor={purplePallet.purpleDeep} />
-        <Header
-          backgroundColor={purplePallet.purpleDeep}
-          leftComponent={
-            <View style={[flexRow, { width, alignItems: 'center' }]}>
-              <Icon name="logo-android" color="#fff" type="ionicon" size={20} />
-              <Text style={{ marginLeft: 10, color: '#fff', fontSize: 20 }}>
-                Library
-              </Text>
-            </View>
-          }
-          rightComponent={{
-            icon: 'ios-ellipsis-vertical-sharp',
-            color: '#fff',
-            type: 'ionicon'
-          }}
-        />
+        <Header title="Library" />
         {loading ? (
           <ActivityIndicator />
         ) : (

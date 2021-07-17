@@ -3,7 +3,7 @@ import resourcesReducer from './slices/resourceSlice'
 import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
-// import appResourceReducer from './slices/appResourceSlice'
+import modalReducer from './slices/modalSlice'
 // import customerReducer from './slices/customerSlice'
 // import SIMCardReducer from './slices/SIMCardSlice'
 // import backOfficeReducer from './slices/backOfficeSlice'
@@ -13,7 +13,8 @@ export const store = configureStore({
     resources: resourcesReducer,
     auth: authReducer,
     homeResources: homeResourcesReducer,
-    categories: categoriesReducer
+    categories: categoriesReducer,
+    modal: modalReducer
     // alerts: alertReducer,
     // appResource: appResourceReducer,
     // customers: customerReducer,
