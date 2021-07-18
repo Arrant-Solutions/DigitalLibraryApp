@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PureComponent } from 'react'
 import { TextStyle } from 'react-native'
 import {
   StyleSheet,
@@ -11,40 +11,59 @@ import {
 } from 'react-native'
 
 interface TileProps {
+  size?: number
   title?: string
+  subHeader?: string
   imageSrc: ImageSourcePropType
   style?: ViewStyle
   imageStyle?: ImageStyle
   titleStyle?: TextStyle
+  subHeaderStyle?: TextStyle
+  rounded?: boolean
 }
 
-const Tile: React.FC<TileProps> = ({
-  title,
-  imageSrc,
-  style,
-  imageStyle,
-  titleStyle
-}) => {
-  return (
-    <View
-      style={{
-        ...styles.container,
-        ...style
-      }}>
-      <Image
-        source={imageSrc}
-        resizeMode="cover"
-        height={undefined}
-        width={undefined}
-        style={{ ...styles.image, ...imageStyle }}
-      />
-      {Boolean(title && title.length) && (
-        <Text style={{ ...styles.text, ...titleStyle }} numberOfLines={1}>
-          {title}
-        </Text>
-      )}
-    </View>
-  )
+export class Tile extends PureComponent<TileProps> {
+  render() {
+    const {
+      size = 90,
+      title,
+      subHeader,
+      imageSrc,
+      style,
+      imageStyle,
+      titleStyle,
+      subHeaderStyle,
+      rounded = true
+    } = this.props
+    return (
+      <View style={[styles.container, { width: size }, style]}>
+        <Image
+          source={imageSrc}
+          resizeMode="cover"
+          height={undefined}
+          width={undefined}
+          style={[
+            styles.image,
+            { width: size, height: size },
+            imageStyle,
+            !rounded && { borderRadius: 0 }
+          ]}
+        />
+        {Boolean(title && title.length) && (
+          <Text style={[styles.text, titleStyle]} numberOfLines={1}>
+            {title}
+          </Text>
+        )}
+        {Boolean(subHeader && subHeader.length) && (
+          <Text
+            style={[styles.subHeaderText, subHeaderStyle]}
+            numberOfLines={1}>
+            {subHeader}
+          </Text>
+        )}
+      </View>
+    )
+  }
 }
 
 export default Tile
@@ -53,15 +72,17 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    width: 90
+    alignItems: 'center'
   },
   image: {
-    height: 90,
-    width: 90,
     borderRadius: 30
   },
   text: {
+    textAlign: 'center',
+    paddingVertical: 3,
+    color: '#888'
+  },
+  subHeaderText: {
     textAlign: 'center',
     paddingVertical: 3,
     color: '#888'

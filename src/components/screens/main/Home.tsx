@@ -34,13 +34,13 @@ const Home = () => {
         dispatch(fetchLatest())
       })
   }, [])
-  console.log(latest)
-  const { width, height } = useWindowDimensions()
-  const [tileHeight] = useState(
-    (height - 265 - 60 - useBottomTabBarHeight()) / 3
-  )
-  console.log('tileHeight', tileHeight)
-  console.log('tb height', useBottomTabBarHeight())
+  // console.log(latest)
+  // const { height } = useWindowDimensions()
+  // const [tileHeight] = useState(
+  //   (height - 265 - 60 - useBottomTabBarHeight()) / 3
+  // )
+  // console.log('tileHeight', tileHeight)
+  // console.log('tb height', useBottomTabBarHeight())
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView}>

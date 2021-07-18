@@ -1,3 +1,6 @@
 export const LOGIN = 'LOGIN'
 export const SIGN_UP = 'SIGN UP'
 export const AUTH_HOME = 'AUTH_HOME'
+export const LIBRARY_STACK = 'LIBRARY_STACK'
+export const CATEGORY = 'CATEGORY'
+export const LIBRARY = 'LIBRARY'
