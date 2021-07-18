@@ -2429,25 +2429,25 @@ export const categories: CategoryI[] = [
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'classics',
     categoryID: 17,
     name: 'CLASSICS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'freebies',
     categoryID: 18,
     name: 'FREEBIES',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'question_and_answer',
     categoryID: 19,
     name: 'QUESTIONS & ANSWERS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'gospel_world',
     categoryID: 20,
     name: 'YOUR GOSPEL WORLD',
     numberOfItems: 3

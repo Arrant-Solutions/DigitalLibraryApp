@@ -29,14 +29,18 @@ import Anointing from '../../../../assets/images/anointing.svg'
 import CampusMinistries from '../../../../assets/images/campus_ministries.svg'
 import Children from '../../../../assets/images/children.svg'
 import ChristianLiving from '../../../../assets/images/christian_living.svg'
+import Classics from '../../../../assets/images/classics.svg'
 import Evangelism from '../../../../assets/images/evangelism.svg'
 import Faith from '../../../../assets/images/faith.svg'
 import Finance from '../../../../assets/images/finance.svg'
 import FoundationSchool from '../../../../assets/images/foundation.svg'
+import Freebies from '../../../../assets/images/freebies.svg'
+import GospelWorld from '../../../../assets/images/gospel_world.svg'
 import Health from '../../../../assets/images/health.svg'
 import HolySpirit from '../../../../assets/images/holy_spirit.svg'
 import Leader from '../../../../assets/images/leader.svg'
 import Lifestyle from '../../../../assets/images/lifestyle.svg'
+import QuestionAndAnswer from '../../../../assets/images/question_and_answer.svg'
 import SoulWinning from '../../../../assets/images/soul_winning.svg'
 import Teens from '../../../../assets/images/teens.svg'
 import Thanksgiving from '../../../../assets/images/thanksgiving.svg'
@@ -60,6 +64,8 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
           return <Children width={70} height={70} color={iconColor} />
         case 'christian_living':
           return <ChristianLiving width={70} height={70} color={iconColor} />
+        case 'classics':
+          return <Classics width={70} height={70} color={iconColor} />
         case 'evangelism':
           return <Evangelism width={70} height={70} color={iconColor} />
         case 'faith':
@@ -68,14 +74,20 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
           return <Finance width={70} height={70} color={iconColor} />
         case 'foundation':
           return <FoundationSchool width={70} height={70} color={iconColor} />
+        case 'freebies':
+          return <Freebies width={70} height={70} color={iconColor} />
         case 'health':
           return <Health width={70} height={70} color={iconColor} />
         case 'holy_spirit':
           return <HolySpirit width={70} height={70} color={iconColor} />
+        case 'gospel_world':
+          return <GospelWorld width={70} height={70} color={iconColor} />
         case 'leader':
           return <Leader width={70} height={70} color={iconColor} />
         case 'lifestyle':
           return <Lifestyle width={70} height={70} color={iconColor} />
+        case 'question_and_answer':
+          return <QuestionAndAnswer width={70} height={70} color={iconColor} />
         case 'soul_winning':
           return <SoulWinning width={70} height={70} color={iconColor} />
         case 'teens':
