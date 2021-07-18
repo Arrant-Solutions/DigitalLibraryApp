@@ -2,7 +2,6 @@ import React, { useEffect, useState, PureComponent } from 'react'
 import {
   ActivityIndicator,
   SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -13,14 +12,34 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FlatList } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
-import { CategoryI, CategoryIconI } from '../../../models/category'
+import { CategoryI, CategoryIconI, IconName } from '../../../models/category'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import {
   fetchCategories,
   selectCategories
 } from '../../../redux/slices/categoriesSlice'
-import { greys, purplePallet, stretchedBox } from '../../common/style'
+import {
+  greys,
+  purplePallet,
+  stretchedBox,
+  themeBlack
+} from '../../common/style'
 import Header from '../../common/Header'
+import Anointing from '../../../../assets/images/anointing.svg'
+import CampusMinistries from '../../../../assets/images/campus_ministries.svg'
+import Children from '../../../../assets/images/children.svg'
+import ChristianLiving from '../../../../assets/images/christian_living.svg'
+import Evangelism from '../../../../assets/images/evangelism.svg'
+import Faith from '../../../../assets/images/faith.svg'
+import Finance from '../../../../assets/images/finance.svg'
+import FoundationSchool from '../../../../assets/images/foundation.svg'
+import Health from '../../../../assets/images/health.svg'
+import HolySpirit from '../../../../assets/images/holy_spirit.svg'
+import Leader from '../../../../assets/images/leader.svg'
+import Lifestyle from '../../../../assets/images/lifestyle.svg'
+import SoulWinning from '../../../../assets/images/soul_winning.svg'
+import Teens from '../../../../assets/images/teens.svg'
+import Thanksgiving from '../../../../assets/images/thanksgiving.svg'
 
 interface ItemProps {
   style?: ViewStyle
@@ -29,7 +48,45 @@ interface ItemProps {
 }
 
 class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
-  getIcon({ name, size, type, color }: CategoryIconI) {
+  getIcon(icon: CategoryIconI | IconName) {
+    if (typeof icon === 'string') {
+      let iconColor = `${themeBlack}cc`
+      switch (icon) {
+        case 'anointing':
+          return <Anointing width={70} height={70} color={iconColor} />
+        case 'campus_ministry':
+          return <CampusMinistries width={70} height={70} color={iconColor} />
+        case 'children':
+          return <Children width={70} height={70} color={iconColor} />
+        case 'christian_living':
+          return <ChristianLiving width={70} height={70} color={iconColor} />
+        case 'evangelism':
+          return <Evangelism width={70} height={70} color={iconColor} />
+        case 'faith':
+          return <Faith width={70} height={70} color={iconColor} />
+        case 'finance':
+          return <Finance width={70} height={70} color={iconColor} />
+        case 'foundation':
+          return <FoundationSchool width={70} height={70} color={iconColor} />
+        case 'health':
+          return <Health width={70} height={70} color={iconColor} />
+        case 'holy_spirit':
+          return <HolySpirit width={70} height={70} color={iconColor} />
+        case 'leader':
+          return <Leader width={70} height={70} color={iconColor} />
+        case 'lifestyle':
+          return <Lifestyle width={70} height={70} color={iconColor} />
+        case 'soul_winning':
+          return <SoulWinning width={70} height={70} color={iconColor} />
+        case 'teens':
+          return <Teens width={70} height={70} color={iconColor} />
+        case 'thanksgiving':
+        default:
+          return <Thanksgiving width={70} height={70} color={iconColor} />
+      }
+    }
+
+    let { name, size, type, color } = icon
     color = color || greys[40]
     switch (type) {
       case 'material-community':
@@ -59,6 +116,7 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
         return <MaterialCommunityIcons color={color} name={name} size={size} />
     }
   }
+
   render() {
     const { name, numberOfItems, icon, style } = this.props
     return (
@@ -110,6 +168,7 @@ const Library = () => {
 
   return (
     <SafeAreaView>
+      {/* <Leader height={90} width={90} style={{ color: 'red' }} /> */}
       <LinearGradient
         colors={[
           purplePallet.purpleDarker,

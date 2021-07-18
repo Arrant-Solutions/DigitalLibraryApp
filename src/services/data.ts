@@ -2333,97 +2333,97 @@ export const data = [
 
 export const categories: CategoryI[] = [
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'leader',
     categoryID: 1,
     name: 'CELL LEADERS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'campus_ministry',
     categoryID: 2,
     name: 'CAMPUS MINISTRY',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'foundation',
     categoryID: 3,
     name: 'FOUNDATION SCHOOL',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'teens',
     categoryID: 4,
     name: 'TEENS',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'children',
     categoryID: 5,
     name: 'CHILDREN',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'thanksgiving',
     categoryID: 6,
     name: 'THANKSGIVING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'finance',
     categoryID: 7,
     name: 'PROSPERITY & FINANCE',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'health',
     categoryID: 8,
     name: 'HEALING & HEALTH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'anointing',
     categoryID: 9,
     name: 'ANOINTING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'lifestyle',
     categoryID: 10,
     name: 'LIFESTYLE',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'soul_winning',
     categoryID: 11,
     name: 'SOUL WINNING',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'faith',
     categoryID: 12,
     name: 'FAITH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'church_growth',
     categoryID: 13,
     name: 'CHURCH GROWTH',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'evangelism',
     categoryID: 14,
     name: 'EVANGELISM',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'holy_spirit',
     categoryID: 15,
     name: 'HOLY SPIRIT',
     numberOfItems: 3
   },
   {
-    icon: { name: 'ios-cart-outline', type: 'ionicon', size: 70 },
+    icon: 'christian_living',
     categoryID: 16,
     name: 'CHRISTIAN LIVING',
     numberOfItems: 3

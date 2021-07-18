@@ -21,7 +21,7 @@ const HeaderOptionsMenu = () => {
           style={{
             flex: 1,
             display: 'flex',
-            backgroundColor: '#9cf4',
+            backgroundColor: 'transparent',
             alignItems: 'flex-end'
           }}
           onPress={() => {
