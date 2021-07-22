@@ -1,5 +1,8 @@
+import { useNavigation } from '@react-navigation/native'
+import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import {
+  GestureResponderEvent,
   StatusBar,
   StyleSheet,
   Text,
@@ -13,11 +16,16 @@ import { flexRow, purplePallet } from './style'
 
 interface HeaderProps {
   title: string
+  back?: boolean
+  handleBackButton?: ((event: GestureResponderEvent) => void) | undefined
 }
 
-const Header: React.FC<HeaderProps> = ({ title }) => {
+const Header: React.FC<HeaderProps> = ({ title, back, handleBackButton }) => {
   const dispatch = useAppDispatch()
   const { width } = useWindowDimensions()
+  const { goBack } = useNavigation()
+  const handlePress = (e: GestureResponderEvent) =>
+    handleBackButton ? handleBackButton(e) : goBack()
 
   return (
     <View>
@@ -30,7 +38,13 @@ const Header: React.FC<HeaderProps> = ({ title }) => {
         backgroundColor={purplePallet.purpleDeep}
         leftComponent={
           <View style={[flexRow, { width, alignItems: 'center' }]}>
-            <Icon name="logo-android" color="#fff" type="ionicon" size={20} />
+            <Icon
+              name={back ? 'ios-chevron-back' : 'logo-android'}
+              color="#fff"
+              onPress={back ? handlePress : undefined}
+              type="ionicon"
+              size={30}
+            />
             <Text style={{ marginLeft: 10, color: '#fff', fontSize: 20 }}>
               {title}
             </Text>

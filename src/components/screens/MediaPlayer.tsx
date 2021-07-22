@@ -1,7 +1,8 @@
-// import { Video } from 'expo-av'
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import Video from 'react-native-video'
 import { Media } from '../../models/media'
+import Header from '../common/Header'
 
 interface MediaPlayerPropsI {
   file?: string
@@ -9,18 +10,20 @@ interface MediaPlayerPropsI {
 
 const MediaPlayer: React.FC<MediaPlayerPropsI & Media> = props => {
   console.log(props)
-  // let player: Video | null = null
+  let player: Video | null = null
 
-  // const onBuffer = () => {
-  //   console.log('buffering')
-  // }
+  const onBuffer = () => {
+    console.log('buffering')
+  }
 
-  // const videoError = () => {
-  //   console.log('failed to load video')
-  // }
+  const videoError = (e: any) => {
+    console.log(e)
+    console.log('failed to load video')
+  }
 
   return (
     <View style={styles.container}>
+      <Header back title="Playing" />
       {/* <Video
         source={{
           uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
@@ -29,7 +32,7 @@ const MediaPlayer: React.FC<MediaPlayerPropsI & Media> = props => {
         useNativeControls
         style={{ width: '100%', height: '50%' }}
       /> */}
-      {/* <Video
+      <Video
         source={{
           uri:
             'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' ||
@@ -40,7 +43,7 @@ const MediaPlayer: React.FC<MediaPlayerPropsI & Media> = props => {
         }}
         onBuffer={onBuffer}
         onError={videoError}
-      /> */}
+      />
     </View>
   )
 }

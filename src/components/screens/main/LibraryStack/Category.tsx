@@ -145,7 +145,7 @@ const Category = () => {
         useAngle
         angle={110}
         style={stretchedBox}>
-        <Header title={params.name || ''} />
+        <Header back title={params.name || ''} />
         {loading ? (
           <ActivityIndicator />
         ) : (
