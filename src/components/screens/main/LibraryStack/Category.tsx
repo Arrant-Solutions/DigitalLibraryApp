@@ -1,8 +1,9 @@
-import { RouteProp, useRoute } from '@react-navigation/native'
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native'
 import React, { PureComponent, useEffect, useState } from 'react'
 import {
   ActivityIndicator,
   Dimensions,
+  Pressable,
   StyleSheet,
   View,
   ViewStyle
@@ -11,6 +12,7 @@ import { FlatList } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { GENERIC_SERVER_ERROR } from '../../../../constants/errors'
+import { MEDIA_PLAYER } from '../../../../constants/screens'
 import { Media } from '../../../../models/media'
 import { getCategoryItems } from '../../../../services/media'
 import Header from '../../../common/Header'
@@ -22,6 +24,7 @@ interface ItemProps {
   style?: ViewStyle
   divider?: boolean
   dividerColor?: string
+  onPress: () => void
 }
 
 const seperatorWidth = 8
@@ -31,9 +34,10 @@ class Item extends PureComponent<
 > {
   render() {
     const width = (Dimensions.get('window').width - seperatorWidth) / 2
-    const { title, author, thumbnail, style, playing } = this.props
+    const { title, author, thumbnail, style, playing, onPress } = this.props
     return (
-      <View
+      <Pressable
+        onPress={onPress}
         style={[
           styles.itemContainer,
           {
@@ -64,7 +68,7 @@ class Item extends PureComponent<
             width: playing ? width - 4 : width
           }}
         />
-      </View>
+      </Pressable>
     )
   }
 }
@@ -81,6 +85,7 @@ const Category = () => {
   const [media, setMedia] = useState<Media[]>([])
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const { navigate } = useNavigation()
 
   useEffect(() => {
     if (typeof params === 'object' && !isNaN(params.id)) {
@@ -111,6 +116,7 @@ const Category = () => {
         title={item.title}
         author={item.author}
         thumbnail={item.thumbnail}
+        onPress={() => navigate(MEDIA_PLAYER, item)}
       />
     )
   }
