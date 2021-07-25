@@ -9,6 +9,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Favorites from './Favorites'
 import HeaderOptionsMenu from '../../common/HeaderOptionsMenu'
 import More from './More'
+import MediaPlayer from './MediaPlayer'
 
 const Tab = createBottomTabNavigator()
 
@@ -47,7 +48,7 @@ const index = () => {
               )
             }}
             name="Home"
-            component={Home}
+            component={MediaPlayer}
           />
           <Tab.Screen
             options={{

@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import Video from 'react-native-video'
 import { Media } from '../../models/media'
 import Header from '../common/Header'
+const video = require('../../../assets/audio/audio.mp3')
 
 interface MediaPlayerPropsI {
   file?: string
@@ -33,11 +34,13 @@ const MediaPlayer: React.FC<MediaPlayerPropsI & Media> = props => {
         style={{ width: '100%', height: '50%' }}
       /> */}
       <Video
-        source={{
-          uri:
-            'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' ||
-            props.url
+        selectedTextTrack={{
+          type: 'title',
+          value: 'English Subtitles'
         }}
+        controls
+        style={styles.player}
+        source={video}
         ref={ref => {
           player = ref
         }}
@@ -53,6 +56,12 @@ export default MediaPlayer
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    flex: 1
+    flex: 1,
+    backgroundColor: 'red'
+  },
+  player: {
+    display: 'flex',
+    flex: 1,
+    backgroundColor: 'yellow'
   }
 })
