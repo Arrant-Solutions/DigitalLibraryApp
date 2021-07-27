@@ -15,6 +15,7 @@ import Video, {
   VideoProperties
 } from 'react-native-video'
 import { Bar as ProgressBar } from 'react-native-progress'
+import Header from '../../common/Header'
 // import video from '../../../../assets/audio/audio.mp3'
 const video = require('../../../../assets/videos/video.mp4')
 
@@ -192,6 +193,7 @@ export default class MediaPlayer extends Component<
           }) => {
             this.setState({ boxSize: { width, height } })
           }}>
+          <Header back title="Playing" />
           <Video
             // repeat
             source={
