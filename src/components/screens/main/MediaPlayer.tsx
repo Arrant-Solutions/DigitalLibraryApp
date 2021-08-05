@@ -1,5 +1,9 @@
 import React, { Component } from 'react'
-import { TouchableWithoutFeedback } from 'react-native'
+import {
+  GestureResponderEvent,
+  Pressable,
+  TouchableWithoutFeedback
+} from 'react-native'
 import {
   Text,
   View,
@@ -12,6 +16,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import Video, {
   OnBufferData,
   OnLoadData,
+  OnProgressData,
   VideoProperties
 } from 'react-native-video'
 import { Bar as ProgressBar } from 'react-native-progress'
@@ -75,6 +80,7 @@ export default class MediaPlayer extends Component<
 > {
   loopingAnimation: Animated.CompositeAnimation | undefined
   player: Video | null
+  animated = new Animated.Value(0)
 
   constructor(props: MediaPlayerProps) {
     super(props)
@@ -123,6 +129,7 @@ export default class MediaPlayer extends Component<
       error
     })
   }
+
   triggerBufferAnimation = () => {
     this.loopingAnimation = Animated.loop(
       Animated.timing(this.state.animated, {
@@ -133,9 +140,11 @@ export default class MediaPlayer extends Component<
     )
     this.loopingAnimation.start()
   }
+
   handleLoadStart = () => {
     this.triggerBufferAnimation()
   }
+
   handleBuffer = ({ isBuffering }: OnBufferData) => {
     isBuffering && this.triggerBufferAnimation()
     if (this.loopingAnimation && !isBuffering) {
@@ -143,27 +152,67 @@ export default class MediaPlayer extends Component<
     }
     this.setState({ buffering: isBuffering })
   }
-  handleOnLoad = (data: OnLoadData) => {
+
+  handleLoad = (data: OnLoadData) => {
     const {
       naturalSize: { width, height }
     } = data
-    this.setState({ videoSize: { width, height } })
+    this.setState(state => ({
+      ...state,
+      duration: data.duration,
+      videoSize: { width, height }
+    }))
   }
-  handleProgress = () => {}
-  handleEnd = () => {}
-  handleMainTouch = () => {}
+
+  handleProgress = (data: OnProgressData) => {
+    this.setState(state => ({
+      ...state,
+      progress: data.currentTime / state.duration
+    }))
+  }
+
+  handleEnd = () => {
+    if (Math.round(this.state.progress) >= 1) {
+      this.player?.seek(0)
+    }
+    this.setState(state => ({ ...state, paused: true }))
+  }
+
+  handleMainTouch = () => {
+    this.setState(state => ({ ...state, paused: !state.paused }))
+  }
+
+  handleProgressBarPress = (event: GestureResponderEvent, barWidth: number) => {
+    const position = event.nativeEvent.locationX
+    const progress = (position / barWidth) * this.state.duration
+    this.player?.seek(progress)
+  }
+
+  handleVideoPress = () => {
+    this.triggerShowAndHide()
+  }
+
+  hideTimeout = setTimeout(() => {
+    Animated.timing(this.animated, {
+      toValue: 0,
+      duration: 300,
+      useNativeDriver: true
+    }).start()
+  }, 1500)
+
+  triggerShowAndHide = () => {
+    clearTimeout(this.hideTimeout)
+
+    Animated.timing(this.animated, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true
+    }).start()
+  }
 
   render() {
-    const {
-      error,
-      buffering,
-      paused,
-      progress,
-      duration,
-      boxSize,
-      videoSize,
-      orientation
-    } = this.state
+    const { error, buffering, paused, progress, duration, boxSize, videoSize } =
+      this.state
     const time = secondsToTime(Math.floor(progress * duration))
     const timeWidth = time.length > 5 ? 62 : 40
     const progressWidth = boxSize.width - 20 - timeWidth - 90
@@ -171,7 +220,20 @@ export default class MediaPlayer extends Component<
       width: ~~boxSize.width,
       height: ~~(videoSize.height * (boxSize.width / videoSize.width))
     }
-    console.log('videoDimensions =====>', boxSize, videoSize, videoDimensions)
+
+    const interpolatedControls = this.animated.interpolate({
+      inputRange: [0, 1],
+      outputRange: [48, 0]
+    })
+
+    const controlHideStyle = {
+      transform: [
+        {
+          translateY: interpolatedControls
+        }
+      ]
+    }
+
     const hasError = Boolean(error)
     const interpolatedAnimation = this.state.animated.interpolate({
       inputRange: [0, 1],
@@ -194,25 +256,28 @@ export default class MediaPlayer extends Component<
             this.setState({ boxSize: { width, height } })
           }}>
           <Header back title="Playing" />
-          <Video
-            // repeat
-            source={
-              //   {
-              //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-              //   }
-              video
-            }
-            volume={0}
-            resizeMode="contain"
-            style={[videoDimensions]}
-            onError={this.handleError}
-            onLoad={this.handleOnLoad}
-            onProgress={this.handleProgress}
-            onLoadStart={this.handleLoadStart}
-            onEnd={this.handleEnd}
-            onBuffer={this.handleBuffer}
-            ref={ref => (this.player = ref)}
-          />
+          <Pressable onPress={this.handleVideoPress}>
+            <Video
+              // repeat
+              source={
+                //   {
+                //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                //   }
+                video
+              }
+              paused={this.state.paused}
+              volume={0}
+              resizeMode="contain"
+              style={[videoDimensions]}
+              onError={this.handleError}
+              onLoad={this.handleLoad}
+              onProgress={this.handleProgress}
+              onLoadStart={this.handleLoadStart}
+              onEnd={this.handleEnd}
+              onBuffer={this.handleBuffer}
+              ref={ref => (this.player = ref)}
+            />
+          </Pressable>
           <View style={{ flex: 1, height: 100 }}>
             <Text>Here</Text>
           </View>
@@ -227,11 +292,12 @@ export default class MediaPlayer extends Component<
               </Animated.View>
             )}
           </View>
-          <View style={styles.controls}>
+          <Animated.View style={[styles.controls, controlHideStyle]}>
             <TouchableWithoutFeedback onPress={this.handleMainTouch}>
               <Icon name={!paused ? 'pause' : 'play'} size={30} color="#fff" />
             </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback>
+            <TouchableWithoutFeedback
+              onPress={e => this.handleProgressBarPress(e, progressWidth)}>
               <View>
                 <ProgressBar
                   progress={progress}
@@ -248,7 +314,7 @@ export default class MediaPlayer extends Component<
               style={[styles.duration, { width: timeWidth }]}>
               {time}
             </Text>
-          </View>
+          </Animated.View>
         </View>
       </View>
     )
