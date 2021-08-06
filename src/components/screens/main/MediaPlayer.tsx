@@ -1,9 +1,5 @@
 import React, { Component } from 'react'
-import {
-  GestureResponderEvent,
-  Pressable,
-  TouchableWithoutFeedback
-} from 'react-native'
+import { GestureResponderEvent, Pressable } from 'react-native'
 import {
   Text,
   View,
@@ -21,6 +17,7 @@ import Video, {
 } from 'react-native-video'
 import { Bar as ProgressBar } from 'react-native-progress'
 import Header from '../../common/Header'
+import { purplePallet } from '../../common/style'
 // import video from '../../../../assets/audio/audio.mp3'
 const video = require('../../../../assets/videos/video.mp4')
 
@@ -81,6 +78,7 @@ export default class MediaPlayer extends Component<
   loopingAnimation: Animated.CompositeAnimation | undefined
   player: Video | null
   animated = new Animated.Value(0)
+  hideTimeout: NodeJS.Timeout | undefined = undefined
 
   constructor(props: MediaPlayerProps) {
     super(props)
@@ -192,22 +190,22 @@ export default class MediaPlayer extends Component<
     this.triggerShowAndHide()
   }
 
-  hideTimeout = setTimeout(() => {
-    Animated.timing(this.animated, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true
-    }).start()
-  }, 1500)
-
   triggerShowAndHide = () => {
-    clearTimeout(this.hideTimeout)
+    this.hideTimeout && clearTimeout(this.hideTimeout)
 
     Animated.timing(this.animated, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true
     }).start()
+
+    this.hideTimeout = setTimeout(() => {
+      Animated.timing(this.animated, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true
+      }).start()
+    }, 1500)
   }
 
   render() {
@@ -244,7 +242,8 @@ export default class MediaPlayer extends Component<
       <View style={styles.container}>
         <View
           style={{
-            backgroundColor: 'red'
+            // backgroundColor: 'red',
+            flex: 1
             // position: 'relative',
             // height: 100
           }}
@@ -256,65 +255,68 @@ export default class MediaPlayer extends Component<
             this.setState({ boxSize: { width, height } })
           }}>
           <Header back title="Playing" />
-          <Pressable onPress={this.handleVideoPress}>
-            <Video
-              // repeat
-              source={
-                //   {
-                //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                //   }
-                video
-              }
-              paused={this.state.paused}
-              volume={0}
-              resizeMode="contain"
-              style={[videoDimensions]}
-              onError={this.handleError}
-              onLoad={this.handleLoad}
-              onProgress={this.handleProgress}
-              onLoadStart={this.handleLoadStart}
-              onEnd={this.handleEnd}
-              onBuffer={this.handleBuffer}
-              ref={ref => (this.player = ref)}
-            />
-          </Pressable>
-          <View style={{ flex: 1, height: 100 }}>
-            <Text>Here</Text>
-          </View>
-          <View style={styles.videoCover}>
-            {hasError && (
-              <Icon name="exclamation-triangle" size={30} color="red" />
-            )}
-            {hasError && <Text>{error}</Text>}
-            {buffering && (
-              <Animated.View style={rotateStyle}>
-                <Icon name="circle-o-notch" size={30} color="#fff" />
-              </Animated.View>
-            )}
-          </View>
-          <Animated.View style={[styles.controls, controlHideStyle]}>
-            <TouchableWithoutFeedback onPress={this.handleMainTouch}>
-              <Icon name={!paused ? 'pause' : 'play'} size={30} color="#fff" />
-            </TouchableWithoutFeedback>
-            <TouchableWithoutFeedback
-              onPress={e => this.handleProgressBarPress(e, progressWidth)}>
-              <View>
-                <ProgressBar
-                  progress={progress}
-                  color="#fff"
-                  unfilledColor="rgba(255, 255, 255, .5)"
-                  borderColor="#fff"
-                  width={progressWidth}
-                  height={20}
-                />
+          <View style={{ overflow: 'hidden' }}>
+            <Pressable onPress={this.handleVideoPress}>
+              <Video
+                // repeat
+                source={
+                  //   {
+                  //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                  //   }
+                  video
+                }
+                paused={this.state.paused}
+                volume={0}
+                resizeMode="contain"
+                style={[videoDimensions]}
+                onError={this.handleError}
+                onLoad={this.handleLoad}
+                onProgress={this.handleProgress}
+                onLoadStart={this.handleLoadStart}
+                onEnd={this.handleEnd}
+                onBuffer={this.handleBuffer}
+                ref={ref => (this.player = ref)}
+              />
+              <View style={styles.videoCover}>
+                {!hasError && (
+                  <Icon name="exclamation-triangle" size={30} color="red" />
+                )}
+                {!hasError && <Text>{error}</Text>}
+                {!buffering && (
+                  <Animated.View style={rotateStyle}>
+                    <Icon name="circle-o-notch" size={30} color="#fff" />
+                  </Animated.View>
+                )}
               </View>
-            </TouchableWithoutFeedback>
-            <Text
-              numberOfLines={1}
-              style={[styles.duration, { width: timeWidth }]}>
-              {time}
-            </Text>
-          </Animated.View>
+            </Pressable>
+            <Animated.View style={[styles.controls, controlHideStyle]}>
+              <Pressable onPress={this.handleMainTouch}>
+                <Icon
+                  name={!paused ? 'pause' : 'play'}
+                  size={30}
+                  color="#fff"
+                />
+              </Pressable>
+              <Pressable
+                onPress={e => this.handleProgressBarPress(e, progressWidth)}>
+                <View>
+                  <ProgressBar
+                    progress={progress}
+                    color="#fff"
+                    unfilledColor="rgba(255, 255, 255, .5)"
+                    borderColor="#fff"
+                    width={progressWidth}
+                    height={20}
+                  />
+                </View>
+              </Pressable>
+              <Text
+                numberOfLines={1}
+                style={[styles.duration, { width: timeWidth }]}>
+                {time}
+              </Text>
+            </Animated.View>
+          </View>
         </View>
       </View>
     )
@@ -323,7 +325,8 @@ export default class MediaPlayer extends Component<
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    backgroundColor: purplePallet.purpleDeep
   },
   video: {
     // display: 'flex',
@@ -331,12 +334,14 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 500
   },
+  controlsContainer: {},
   controls: {
-    backgroundColor: 'rgba(0, 0, 0, .5)',
+    backgroundColor: 'rgba(0, 0, 0,1)',
     height: 48,
     left: 0,
     right: 0,
     bottom: 0,
+    // top: 0,
     position: 'absolute',
     flexDirection: 'row',
     alignItems: 'center',

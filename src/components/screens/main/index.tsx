@@ -10,10 +10,17 @@ import Favorites from './Favorites'
 import HeaderOptionsMenu from '../../common/HeaderOptionsMenu'
 import More from './More'
 import MediaPlayer from './MediaPlayer'
+import { RouteProp } from '@react-navigation/native'
 
 const Tab = createBottomTabNavigator()
 
-const index = () => {
+const Index = () => {
+  const getTabBarVisibility = ({
+    name
+  }: RouteProp<Record<string, object | undefined>, 'Home'>) => {
+    return name !== 'Home'
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -38,7 +45,8 @@ const index = () => {
             }
           }}>
           <Tab.Screen
-            options={{
+            options={({ route }) => ({
+              tabBarVisible: getTabBarVisibility(route),
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? 'home' : 'home-outline'}
@@ -46,7 +54,7 @@ const index = () => {
                   size={size}
                 />
               )
-            }}
+            })}
             name="Home"
             component={MediaPlayer}
           />
@@ -100,7 +108,7 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
 
 const styles = StyleSheet.create({
   container: {
