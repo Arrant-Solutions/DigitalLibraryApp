@@ -71,7 +71,100 @@ interface MediaPlayerState {
   orientation: 'landscape' | 'portrait'
 }
 
-export default class MediaPlayer extends Component<
+export const MediaPlayer: React.FC<MediaPlayerProps> = ({ }) => {
+  const [state, setState] = useState<MediaPlayerState>({
+    error: '',
+    boxSize: { height: 0, width: 0 },
+    videoSize: { height: 0, width: 0 },
+    buffering: true,
+    animated: new Animated.Value(0),
+    paused: false,
+    progress: 0,
+    duration: 0,
+    orientation: this.getOrientation()
+  })
+  
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          // backgroundColor: 'red',
+          flex: 1
+          // position: 'relative',
+          // height: 100
+        }}
+        onLayout={({
+          nativeEvent: {
+            layout: { width, height }
+          }
+        }) => {
+          setState({ boxSize: { width, height } })
+        }}>
+        <Header back title="Playing" />
+        <View style={{ overflow: 'hidden' }}>
+          <Pressable onPress={handleVideoPress}>
+            <Video
+              // repeat
+              source={
+                //   {
+                //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                //   }
+                video
+              }
+              paused={state.paused}
+              volume={0}
+              resizeMode="contain"
+              style={[videoDimensions]}
+              onError={handleError}
+              onLoad={handleLoad}
+              onProgress={handleProgress}
+              onLoadStart={handleLoadStart}
+              onEnd={handleEnd}
+              onBuffer={handleBuffer}
+              ref={ref => (player = ref)}
+            />
+            <View style={styles.videoCover}>
+              {!hasError && (
+                <Icon name="exclamation-triangle" size={30} color="red" />
+              )}
+              {!hasError && <Text>{error}</Text>}
+              {!buffering && (
+                <Animated.View style={rotateStyle}>
+                  <Icon name="circle-o-notch" size={30} color="#fff" />
+                </Animated.View>
+              )}
+            </View>
+          </Pressable>
+          <Animated.View style={[styles.controls, controlHideStyle]}>
+            <Pressable onPress={handleMainTouch}>
+              <Icon name={!paused ? 'pause' : 'play'} size={30} color="#fff" />
+            </Pressable>
+            <Pressable
+              onPress={e => handleProgressBarPress(e, progressWidth)}>
+              <View>
+                <ProgressBar
+                  progress={progress}
+                  color="#fff"
+                  unfilledColor="rgba(255, 255, 255, .5)"
+                  borderColor="#fff"
+                  width={progressWidth}
+                  height={20}
+                />
+              </View>
+            </Pressable>
+            <Text
+              numberOfLines={1}
+              style={[styles.duration, { width: timeWidth }]}>
+              {time}
+            </Text>
+          </Animated.View>
+        </View>
+      </View>
+    </View>
+  )
+}
+
+export default class MediaPlayer2 extends Component<
   MediaPlayerProps,
   MediaPlayerState
 > {
