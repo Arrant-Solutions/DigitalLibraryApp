@@ -1,10 +1,9 @@
 import React from 'react'
+import { GestureResponderEvent, StyleSheet, ViewStyle } from 'react-native'
 import {
-  GestureResponderEvent,
-  Pressable,
-  StyleSheet,
-  ViewStyle
-} from 'react-native'
+  TouchableOpacity,
+  TouchableWithoutFeedback
+} from 'react-native-gesture-handler'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Entypo from 'react-native-vector-icons/Entypo'
 // import EvilIcons from 'react-native-vector-icons/EvilIcons'
@@ -41,7 +40,7 @@ interface IconButtonProps {
   containerStyle?: ViewStyle
   iconStyle?: ViewStyle
   raised?: boolean
-  color: string
+  color?: string
   name: string
   type: IconType
   size?: number
@@ -91,12 +90,18 @@ const IconButton: React.FC<IconButtonProps> = ({
     }
   })(type)
 
+  const Element = raised ? TouchableOpacity : TouchableWithoutFeedback
+
   return (
-    <Pressable
+    <Element
       onPress={onPress}
-      style={[styles.containerStyle, raised && shadow, containerStyle]}>
+      style={[
+        styles.containerStyle,
+        raised && { ...shadow, backgroundColor: purple[100] },
+        containerStyle
+      ]}>
       <Icon name={name} color={color} size={size || 23} style={iconStyle} />
-    </Pressable>
+    </Element>
   )
 }
 
@@ -104,7 +109,6 @@ export default React.memo(IconButton)
 
 const styles = StyleSheet.create({
   containerStyle: {
-    backgroundColor: purple[100],
     padding: 10,
     borderRadius: 100,
     margin: 5

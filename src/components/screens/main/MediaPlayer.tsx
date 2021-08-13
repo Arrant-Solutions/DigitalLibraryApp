@@ -1,23 +1,15 @@
-import React, { Component, useRef, useState } from 'react'
-import { GestureResponderEvent, Pressable } from 'react-native'
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  useWindowDimensions,
-  Animated
-} from 'react-native'
+import React, { useRef, useState } from 'react'
+import { GestureResponderEvent, PanResponder, Pressable } from 'react-native'
+import { Text, View, StyleSheet, Dimensions, Animated } from 'react-native'
 import Video, {
   OnBufferData,
   OnLoadData,
-  OnProgressData,
-  VideoProperties
+  OnProgressData
 } from 'react-native-video'
 import { Bar as ProgressBar } from 'react-native-progress'
 import Header from '../../common/Header'
-import { copper, gold, purplePallet } from '../../common/style'
-import { Icon } from 'react-native-elements'
+import { copper, gold, purple, purplePallet } from '../../common/style'
+import { Divider, Icon } from 'react-native-elements'
 import { Platform } from 'react-native'
 import IconButton from '../../common/IconButton'
 // import video from '../../../../assets/audio/audio.mp3'
@@ -57,16 +49,22 @@ interface Dims {
 }
 
 interface MediaPlayerState {
+  fullScreen: boolean
   error: string
   boxSize: Dims
   videoSize: Dims
   buffering: boolean
   animated: Animated.Value
+  animatedOptions: Animated.Value
+  animatedControl: Animated.Value
+  optionsVisible: boolean
+  muted: boolean
   paused: boolean
   progress: number
   duration: number
   currentTime: number
   orientation: 'landscape' | 'portrait'
+  playInBackground: boolean
 }
 
 const MediaPlayer: React.FC<MediaPlayerProps> = ({
@@ -76,21 +74,36 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
   type
 }) => {
   let loopingAnimation: Animated.CompositeAnimation | undefined
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponderCapture: () => {
+        console.log('pan response')
+        triggerShowAndHide()
+        return false
+      }
+    })
+  ).current
   const player = useRef<Video>(null)
   let animated = new Animated.Value(0)
   let hideTimeout: NodeJS.Timeout | undefined = undefined
 
   const [state, setState] = useState<MediaPlayerState>({
+    fullScreen: false,
     error: '',
     boxSize: { height: 0, width: 0 },
     videoSize: { height: 0, width: 0 },
     buffering: true,
+    muted: false,
+    animatedControl: new Animated.Value(0),
     animated: new Animated.Value(0),
+    animatedOptions: new Animated.Value(0),
+    optionsVisible: false,
     paused: false,
     currentTime: 0,
     progress: 0,
     duration: 0,
-    orientation: getOrientation()
+    orientation: getOrientation(),
+    playInBackground: false
   })
 
   function getOrientation() {
@@ -176,30 +189,24 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     setState(state => ({ ...state, paused: !state.paused }))
   }
 
-  const handleProgressBarPress = (
-    event: GestureResponderEvent,
-    barWidth: number
-  ) => {
-    const position = event.nativeEvent.locationX
-    const progress = (position / barWidth) * state.duration
+  const handleProgressBarPress = ({ nativeEvent }: GestureResponderEvent) => {
+    const position = nativeEvent.pageX
+    const progress = (position / state.boxSize.width) * state.duration
     player?.current?.seek(progress)
   }
 
-  const handleVideoPress = () => {
-    triggerShowAndHide()
-  }
-
   const triggerShowAndHide = () => {
+    console.log('showing')
     hideTimeout && clearTimeout(hideTimeout)
 
-    Animated.timing(animated, {
+    Animated.timing(state.animatedControl, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true
     }).start()
 
     hideTimeout = setTimeout(() => {
-      Animated.timing(animated, {
+      Animated.timing(state.animatedControl, {
         toValue: 0,
         duration: 300,
         useNativeDriver: true
@@ -207,19 +214,41 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     }, 1500)
   }
 
-  const { error, buffering, paused, progress, duration, boxSize, videoSize } =
-    state
-  const time = secondsToTime(Math.floor(progress * duration))
-  const timeWidth = time.length > 5 ? 62 : 40
-  const progressWidth = boxSize.width - 20 - timeWidth - 90
+  const showOptionMenu = () => {
+    const visible = state.optionsVisible
+    setState({ ...state, optionsVisible: !visible })
+    Animated.timing(state.animatedOptions, {
+      toValue: visible ? 0 : 1,
+      duration: 150,
+      useNativeDriver: true
+    }).start()
+  }
+
+  const handleMute = () => {
+    setState({ ...state, muted: !state.muted })
+  }
+
+  const {
+    error,
+    buffering,
+    paused,
+    progress,
+    duration,
+    boxSize,
+    videoSize,
+    fullScreen,
+    muted,
+    playInBackground
+  } = state
+
   const videoDimensions = {
     width: ~~boxSize.width,
     height: ~~(videoSize.height * (boxSize.width / videoSize.width))
   }
 
-  const interpolatedControls = animated.interpolate({
+  const interpolatedControls = state.animatedControl.interpolate({
     inputRange: [0, 1],
-    outputRange: [48, 0]
+    outputRange: [0, 43]
   })
 
   const controlHideStyle = {
@@ -228,6 +257,14 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
         translateY: interpolatedControls
       }
     ]
+  }
+
+  const interpolateOptionsMenu = state.animatedOptions.interpolate({
+    inputRange: [0, 1],
+    outputRange: [200, 0]
+  })
+  const optionsMenuStyle = {
+    transform: [{ translateX: interpolateOptionsMenu }]
   }
 
   const hasError = Boolean(error)
@@ -240,12 +277,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
   return (
     <View style={styles.container}>
       <View
-        style={{
-          // backgroundColor: 'red',
-          flex: 1
-          // position: 'relative',
-          // height: 100
-        }}
+        style={{ flex: 1 }}
         onLayout={({
           nativeEvent: {
             layout: { width, height }
@@ -255,16 +287,22 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
         }}>
         <Header back title="Playing" />
         <View style={{}}>
-          <Pressable onPress={handleVideoPress}>
+          <View {...panResponder.panHandlers} style={{ overflow: 'hidden' }}>
             <Video
-              // repeat
               source={
                 //   {
                 //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
                 //   }
                 video
               }
-              paused={state.paused}
+              onFullscreenPlayerDidDismiss={() =>
+                setState({ ...state, fullScreen: false })
+              }
+              playInBackground={playInBackground}
+              fullscreen={fullScreen}
+              fullscreenOrientation="landscape"
+              muted={muted}
+              paused={paused}
               volume={0}
               resizeMode="contain"
               style={[videoDimensions]}
@@ -276,8 +314,26 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               onBuffer={handleBuffer}
               ref={player}
             />
+            <Animated.View style={[styles.controls, controlHideStyle]}>
+              <IconButton
+                containerStyle={styles.contorlIcon}
+                color="#fff"
+                onPress={handleMute}
+                type="octicons"
+                name={state.muted ? 'unmute' : 'mute'}
+              />
+              <IconButton
+                onPress={() =>
+                  setState({ ...state, fullScreen: !state.fullScreen })
+                }
+                containerStyle={styles.contorlIcon}
+                color="#fff"
+                type="feather"
+                name="maximize"
+              />
+            </Animated.View>
             <View style={styles.videoCover}>
-              {!hasError && (
+              {hasError && (
                 <Icon
                   type="font-awesome"
                   name="exclamation-triangle"
@@ -285,8 +341,8 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                   color="red"
                 />
               )}
-              {!hasError && <Text>{error}</Text>}
-              {!buffering && (
+              {hasError && <Text>{error}</Text>}
+              {buffering && (
                 <Animated.View style={rotateStyle}>
                   <Icon
                     type="font-awesome"
@@ -297,9 +353,11 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                 </Animated.View>
               )}
             </View>
-          </Pressable>
+          </View>
           <View style={[styles.controlsContainer]}>
-            <View style={styles.progressContainer}>
+            <Pressable
+              onPress={handleProgressBarPress}
+              style={styles.progressContainer}>
               <ProgressBar
                 progress={progress}
                 color="#fff"
@@ -311,7 +369,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                 height={10}
                 useNativeDriver
               />
-            </View>
+            </Pressable>
             <View style={styles.timersBox}>
               <Text style={styles.timeText}>
                 {secondsToTime(state.currentTime)}
@@ -321,28 +379,6 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               </Text>
             </View>
           </View>
-          {/* <Animated.View style={[styles.controls, controlHideStyle]}>
-            <Pressable onPress={handleMainTouch}>
-              <Icon name={!paused ? 'pause' : 'play'} size={30} color="#fff" />
-            </Pressable>
-            <Pressable onPress={e => handleProgressBarPress(e, progressWidth)}>
-              <View>
-                <ProgressBar
-                  progress={progress}
-                  color="#fff"
-                  unfilledColor="rgba(255, 255, 255, .5)"
-                  borderColor="#fff"
-                  width={progressWidth}
-                  height={20}
-                />
-              </View>
-            </Pressable>
-            <Text
-              numberOfLines={1}
-              style={[styles.duration, { width: timeWidth }]}>
-              {time}
-            </Text>
-          </Animated.View> */}
         </View>
 
         <View
@@ -354,7 +390,83 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
             <Text style={styles.artist}>Pastor Choolwe</Text>
             <Text style={styles.title}>The Finality of Destiny</Text>
           </View>
-          <View style={styles.optionsMenu}></View>
+          <Animated.View style={[styles.optionsMenu, optionsMenuStyle]}>
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                setState({
+                  ...state,
+                  animatedOptions: new Animated.Value(0),
+                  optionsVisible: false
+                })
+              }}>
+              <IconButton
+                type="material"
+                name="playlist-add"
+                size={25}
+                color="white"
+                containerStyle={styles.menuItemIcon}
+              />
+              <Text style={styles.menuItemText}>Add to playlist</Text>
+            </Pressable>
+            <Divider />
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                setState({
+                  ...state,
+                  animatedOptions: new Animated.Value(0),
+                  optionsVisible: false
+                })
+              }}>
+              <IconButton
+                type="entypo"
+                name="edit"
+                size={20}
+                color="white"
+                containerStyle={styles.menuItemIcon}
+              />
+              <Text style={styles.menuItemText}>Properties</Text>
+            </Pressable>
+            <Divider />
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                setState({
+                  ...state,
+                  animatedOptions: new Animated.Value(0),
+                  optionsVisible: false
+                })
+              }}>
+              <IconButton
+                type="material"
+                name="delete-forever"
+                size={20}
+                color="white"
+                containerStyle={styles.menuItemIcon}
+              />
+              <Text style={styles.menuItemText}>Delete</Text>
+            </Pressable>
+            <Divider />
+            <Pressable
+              style={styles.menuItem}
+              onPress={() => {
+                setState({
+                  ...state,
+                  animatedOptions: new Animated.Value(0),
+                  optionsVisible: false
+                })
+              }}>
+              <IconButton
+                type="ionicon"
+                name="play"
+                size={20}
+                color="white"
+                containerStyle={styles.menuItemIcon}
+              />
+              <Text style={styles.menuItemText}>Play in Background</Text>
+            </Pressable>
+          </Animated.View>
           <View style={styles.control}>
             <IconButton
               containerStyle={{ backgroundColor: 'transparent' }}
@@ -375,10 +487,10 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               />
               <IconButton
                 raised
-                name="play"
+                name={paused ? 'play' : 'pause'}
                 type="ionicon"
                 color={copper[70]}
-                onPress={() => console.log('hello')}
+                onPress={handleMainTouch}
               />
               <IconButton
                 raised
@@ -397,7 +509,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               }
               type="ionicon"
               color="white"
-              onPress={() => console.log('hello')}
+              onPress={showOptionMenu}
             />
           </View>
         </View>
@@ -419,7 +531,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column'
   },
-  //############
   progressContainer: {
     backgroundColor: gold[60],
     paddingVertical: 4
@@ -463,29 +574,44 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   optionsMenu: {
-    height: 200,
-    backgroundColor: 'red',
-    width: 150,
+    // height: 130,
+    backgroundColor: purple[60],
+    width: 200,
     alignSelf: 'flex-end',
     position: 'absolute',
     right: 0,
-    bottom: 0
+    bottom: 80,
+    borderColor: gold[60],
+    borderWidth: 2,
+    borderBottomWidth: 0
   },
-  //##########
-
+  menuItem: {
+    flexDirection: 'row',
+    padding: 5,
+    alignItems: 'center'
+  },
+  menuItemText: {
+    color: 'white',
+    fontFamily: 'Roboto-Regular',
+    fontSize: 16
+  },
+  menuItemIcon: {
+    backgroundColor: 'transparent',
+    padding: 0,
+    width: 30
+  },
   controls: {
-    backgroundColor: 'rgba(0, 0, 0,1)',
-    height: 48,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    // top: 0,
-    position: 'absolute',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
-    paddingHorizontal: 10
+    justifyContent: 'space-between',
+    position: 'absolute',
+    width: '100%',
+    right: 0,
+    top: -43,
+    zIndex: 999,
+    backgroundColor: 'rgba(0,0,0,.7)'
   },
+  contorlIcon: { padding: 5 },
   duration: {
     color: '#fff'
   },
@@ -506,4 +632,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default React.memo(MediaPlayer)
+export default MediaPlayer
