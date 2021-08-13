@@ -8,7 +8,6 @@ import {
   useWindowDimensions,
   Animated
 } from 'react-native'
-import Icon from 'react-native-vector-icons/FontAwesome'
 import Video, {
   OnBufferData,
   OnLoadData,
@@ -17,7 +16,10 @@ import Video, {
 } from 'react-native-video'
 import { Bar as ProgressBar } from 'react-native-progress'
 import Header from '../../common/Header'
-import { purplePallet } from '../../common/style'
+import { copper, gold, purplePallet } from '../../common/style'
+import { Icon } from 'react-native-elements'
+import { Platform } from 'react-native'
+import IconButton from '../../common/IconButton'
 // import video from '../../../../assets/audio/audio.mp3'
 const video = require('../../../../assets/videos/video.mp4')
 
@@ -42,7 +44,11 @@ function secondsToTime(seconds: number) {
 }
 
 interface MediaPlayerProps {
-  item: string
+  artist: string
+  album: string
+  duration?: string
+  title: string
+  type: 'audio' | 'video'
 }
 
 interface Dims {
@@ -63,7 +69,12 @@ interface MediaPlayerState {
   orientation: 'landscape' | 'portrait'
 }
 
-const MediaPlayer: React.FC<MediaPlayerProps> = ({}) => {
+const MediaPlayer: React.FC<MediaPlayerProps> = ({
+  artist,
+  album,
+  title,
+  type
+}) => {
   let loopingAnimation: Animated.CompositeAnimation | undefined
   const player = useRef<Video>(null)
   let animated = new Animated.Value(0)
@@ -243,7 +254,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({}) => {
           setState({ ...state, boxSize: { width, height } })
         }}>
         <Header back title="Playing" />
-        <View style={{ overflow: 'hidden' }}>
+        <View style={{}}>
           <Pressable onPress={handleVideoPress}>
             <Video
               // repeat
@@ -267,27 +278,37 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({}) => {
             />
             <View style={styles.videoCover}>
               {!hasError && (
-                <Icon name="exclamation-triangle" size={30} color="red" />
+                <Icon
+                  type="font-awesome"
+                  name="exclamation-triangle"
+                  size={30}
+                  color="red"
+                />
               )}
               {!hasError && <Text>{error}</Text>}
               {!buffering && (
                 <Animated.View style={rotateStyle}>
-                  <Icon name="circle-o-notch" size={30} color="#fff" />
+                  <Icon
+                    type="font-awesome"
+                    name="circle-o-notch"
+                    size={30}
+                    color="#fff"
+                  />
                 </Animated.View>
               )}
             </View>
           </Pressable>
-          <View style={[styles.controlsContainer, { backgroundColor: 'pink' }]}>
+          <View style={[styles.controlsContainer]}>
             <View style={styles.progressContainer}>
               <ProgressBar
                 progress={progress}
-                color="red"
-                unfilledColor="#fff"
+                color="#fff"
+                unfilledColor={gold[60]}
                 borderColor="#fff"
                 borderWidth={0}
-                borderRadius={10}
+                borderRadius={0}
                 width={boxSize.width}
-                height={5}
+                height={10}
                 useNativeDriver
               />
             </View>
@@ -300,7 +321,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({}) => {
               </Text>
             </View>
           </View>
-          <Animated.View style={[styles.controls, controlHideStyle]}>
+          {/* <Animated.View style={[styles.controls, controlHideStyle]}>
             <Pressable onPress={handleMainTouch}>
               <Icon name={!paused ? 'pause' : 'play'} size={30} color="#fff" />
             </Pressable>
@@ -321,7 +342,64 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({}) => {
               style={[styles.duration, { width: timeWidth }]}>
               {time}
             </Text>
-          </Animated.View>
+          </Animated.View> */}
+        </View>
+
+        <View
+          style={{
+            flex: 1,
+            display: 'flex'
+          }}>
+          <View style={styles.track}>
+            <Text style={styles.artist}>Pastor Choolwe</Text>
+            <Text style={styles.title}>The Finality of Destiny</Text>
+          </View>
+          <View style={styles.optionsMenu}></View>
+          <View style={styles.control}>
+            <IconButton
+              containerStyle={{ backgroundColor: 'transparent' }}
+              raised
+              name="playlist-play"
+              type="material"
+              color="white"
+              size={40}
+              onPress={() => console.log('hello')}
+            />
+            <View style={styles.actions}>
+              <IconButton
+                raised
+                name={(Platform.OS === 'ios' ? 'ios' : 'md') + '-play-back'}
+                type="ionicon"
+                color={copper[70]}
+                onPress={() => console.log('hello')}
+              />
+              <IconButton
+                raised
+                name="play"
+                type="ionicon"
+                color={copper[70]}
+                onPress={() => console.log('hello')}
+              />
+              <IconButton
+                raised
+                name={(Platform.OS === 'ios' ? 'ios' : 'md') + '-play-forward'}
+                type="ionicon"
+                color={copper[70]}
+                onPress={() => console.log('hello')}
+              />
+            </View>
+            <IconButton
+              containerStyle={{ backgroundColor: 'transparent' }}
+              raised
+              name={
+                (Platform.OS === 'ios' ? 'ios' : 'md') +
+                '-ellipsis-vertical-sharp'
+              }
+              type="ionicon"
+              color="white"
+              onPress={() => console.log('hello')}
+            />
+          </View>
         </View>
       </View>
     </View>
@@ -341,20 +419,60 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column'
   },
+  //############
   progressContainer: {
-    backgroundColor: '#fff',
+    backgroundColor: gold[60],
     paddingVertical: 4
   },
   timersBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   timeText: {
-    fontFamily: 'RobotoMono-Regular',
-    color: 'blue',
+    fontFamily: 'Roboto-Regular',
+    color: '#fff'
   },
+  control: {
+    borderTopColor: gold[60],
+    borderTopWidth: 3,
+    flexDirection: 'row',
+    paddingVertical: 5
+  },
+  actions: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  track: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  artist: {
+    color: gold[40],
+    fontFamily: 'Roboto-Regular',
+    fontSize: 30
+  },
+  title: {
+    fontFamily: 'Roboto-Regular',
+    color: '#fff',
+    fontSize: 17,
+    marginTop: 10
+  },
+  optionsMenu: {
+    height: 200,
+    backgroundColor: 'red',
+    width: 150,
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    right: 0,
+    bottom: 0
+  },
+  //##########
+
   controls: {
     backgroundColor: 'rgba(0, 0, 0,1)',
     height: 48,

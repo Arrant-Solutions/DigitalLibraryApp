@@ -3,9 +3,11 @@ module.exports = {
   extends: [
     '@react-native-community',
     'plugin:react/recommended',
+    'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
     'airbnb',
-    'plugin:react-hooks/recommended'
+    'plugin:react-hooks/recommended',
+    'prettier'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -22,7 +24,7 @@ module.exports = {
     }
   },
   rules: {
-    'no-use-before-define': 'on',
+    'no-use-before-define': 'error',
     '@typescript-eslint/no-use-before-define': ['error'],
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
     'react/jsx-props-no-spreading': 'off',
@@ -34,9 +36,9 @@ module.exports = {
         tsx: 'never'
       }
     ],
-    'no-shadow': 'off',
+    'no-shadow': 'error',
     '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'error',
     'no-param-reassign': [
       'error',
       {
@@ -58,6 +60,27 @@ module.exports = {
     'no-console': 'warn',
     'react/require-default-props': 'off',
     semi: 'off',
-    'comma-dangle': 'off'
+    'comma-dangle': 'off',
+    'no-compare-neg-zero': 'on',
+    'no-empty': 'on',
+    'no-unreachable': 'on',
+    'array-callback-return': 'on',
+    'dot-location': 'on',
+    'dot-notation': 'on',
+    eqeqeq: 'on',
+    'grouped-accessor-pairs': 'on',
+    'guard-for-in': 'on',
+    'no-caller': 'on',
+    'no-case-declarations': 'on',
+    'no-constructor-return': 'on',
+    'no-else-return': 'on',
+    'no-empty-function': 'on',
+    'no-empty-pattern': 'on',
+    'no-eq-null': 'on',
+    'no-eval': 'on',
+    'no-floating-decimal': 'on',
+    'no-loop-func': 'on',
+    'no-useless-concat': 'on',
+    'vars-on-top': 'on'
   }
 }

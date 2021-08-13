@@ -58,6 +58,17 @@ export const purplePallet = {
   copper: '#db6923'
 }
 
+export const purple = {
+  100: '#1f004c',
+  90: '#26005d',
+  80: '#2f036f',
+  70: '#380b78',
+  60: '#400d88',
+  50: '#6c30cc',
+  40: '#bb4ed9',
+  30: '#cf4ab7'
+}
+
 export const themeBlack = '#111111'
 
 export const themePurple1 = '#bb4ed9'
@@ -115,6 +126,17 @@ const style = StyleSheet.create({
   stretchedBox: {
     height: '100%',
     width: '100%'
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5
   }
 })
 
@@ -124,5 +146,6 @@ export const {
   flexColumn,
   flexRow,
   socialButton,
-  stretchedBox
+  stretchedBox,
+  shadow
 } = style
