@@ -76,15 +76,13 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
   let loopingAnimation: Animated.CompositeAnimation | undefined
   const panResponder = React.useRef(
     PanResponder.create({
-      onMoveShouldSetPanResponderCapture: () => {
-        console.log('pan response')
+      onStartShouldSetPanResponderCapture: () => {
         triggerShowAndHide()
         return false
       }
     })
   ).current
   const player = useRef<Video>(null)
-  let animated = new Animated.Value(0)
   let hideTimeout: NodeJS.Timeout | undefined = undefined
 
   const [state, setState] = useState<MediaPlayerState>({
@@ -109,10 +107,6 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
   function getOrientation() {
     const { width, height } = Dimensions.get('window')
     return width > height ? 'landscape' : 'portrait'
-  }
-
-  const onLayout = () => {
-    setState({ ...state, orientation: getOrientation() })
   }
 
   // because of wrong type in react-native-video correct type is as in LoadError above
@@ -273,6 +267,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     outputRange: [0, 360]
   })
   const rotateStyle = { transform: [{ rotate: interpolatedAnimation }] }
+  // console.log('height: ' + videoSize.height)
 
   return (
     <View style={styles.container}>
@@ -283,16 +278,19 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
             layout: { width, height }
           }
         }) => {
+          console.log(width)
           setState({ ...state, boxSize: { width, height } })
         }}>
         <Header back title="Playing" />
         <View style={{}}>
-          <View {...panResponder.panHandlers} style={{ overflow: 'hidden' }}>
+          <View
+            {...panResponder.panHandlers}
+            style={{ overflow: 'hidden', height: 220 }}>
             <Video
               source={
-                //   {
-                //     uri: 'https://commondatastorages.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                //   }
+                // {
+                //   uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+                // }
                 video
               }
               onFullscreenPlayerDidDismiss={() =>
@@ -332,17 +330,24 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                 name="maximize"
               />
             </Animated.View>
-            <View style={styles.videoCover}>
+            <View
+              style={[
+                styles.videoCover,
+                !hasError && { backgroundColor: 'transparent' }
+              ]}>
               {hasError && (
-                <Icon
-                  type="font-awesome"
-                  name="exclamation-triangle"
-                  size={30}
-                  color="red"
-                />
+                <>
+                  <Icon
+                    type="font-awesome"
+                    name="exclamation-triangle"
+                    size={30}
+                    color="red"
+                  />
+                  <Text style={{ color: '#fff' }}>{error}</Text>
+                </>
               )}
-              {hasError && <Text>{error}</Text>}
-              {buffering && (
+
+              {!hasError && buffering && (
                 <Animated.View style={rotateStyle}>
                   <Icon
                     type="font-awesome"
@@ -354,31 +359,33 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               )}
             </View>
           </View>
-          <View style={[styles.controlsContainer]}>
-            <Pressable
-              onPress={handleProgressBarPress}
-              style={styles.progressContainer}>
-              <ProgressBar
-                progress={progress}
-                color="#fff"
-                unfilledColor={gold[60]}
-                borderColor="#fff"
-                borderWidth={0}
-                borderRadius={0}
-                width={boxSize.width}
-                height={10}
-                useNativeDriver
-              />
-            </Pressable>
-            <View style={styles.timersBox}>
-              <Text style={styles.timeText}>
-                {secondsToTime(state.currentTime)}
-              </Text>
-              <Text style={styles.timeText}>
-                {secondsToTime(state.currentTime - state.duration)}
-              </Text>
+          {!hasError && (
+            <View style={[styles.controlsContainer]}>
+              <Pressable
+                onPress={handleProgressBarPress}
+                style={styles.progressContainer}>
+                <ProgressBar
+                  progress={progress}
+                  color="#fff"
+                  unfilledColor={gold[60]}
+                  borderColor="#fff"
+                  borderWidth={0}
+                  borderRadius={0}
+                  width={boxSize.width}
+                  height={10}
+                  useNativeDriver
+                />
+              </Pressable>
+              <View style={styles.timersBox}>
+                <Text style={styles.timeText}>
+                  {secondsToTime(state.currentTime)}
+                </Text>
+                <Text style={styles.timeText}>
+                  {secondsToTime(state.currentTime - state.duration)}
+                </Text>
+              </View>
             </View>
-          </View>
+          )}
         </View>
 
         <View
@@ -607,7 +614,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     right: 0,
-    top: -43,
+    top: -44,
     zIndex: 999,
     backgroundColor: 'rgba(0,0,0,.7)'
   },
@@ -623,7 +630,7 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255,255,255,.0)'
+    backgroundColor: 'rgba(0,0,0,.5)'
   },
   error: {
     // display: 'flex',
