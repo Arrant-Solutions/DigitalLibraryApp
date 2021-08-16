@@ -1,5 +1,6 @@
 import { BlurView } from '@react-native-community/blur'
 import React from 'react'
+import { KeyboardAvoidingView } from 'react-native'
 import {
   SafeAreaView,
   StyleSheet,
@@ -40,37 +41,39 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
         angle={angle || 110}
         style={gradientStyle || styles.fixed}
       />
-      <ScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          flex: 1,
-          display: 'flex',
-          backgroundColor: 'transparent'
-        }}
-        style={styles.scrollViewStyle}>
-        <View
-          style={{
-            backgroundColor: 'transparent',
-            justifyContent: 'center',
-            alignItems: 'center',
-            height: '100%'
-          }}>
-          <BlurView
-            blurType="light"
-            blurAmount={20}
-            style={[styles.cardContainer, containerStyle]}>
-            <LinearGradient
-              colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.2)']}
-              start={{ x: 0, y: 1 }}
-              end={{ x: 1, y: 1 }}
-              useAngle
-              angle={110}
-              style={[styles.card, cardContainerStyle]}>
-              {children}
-            </LinearGradient>
-          </BlurView>
-        </View>
-      </ScrollView>
+      <KeyboardAvoidingView>
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            flex: 1,
+            display: 'flex',
+            backgroundColor: 'transparent'
+          }}
+          style={styles.scrollViewStyle}>
+          <View
+            style={{
+              backgroundColor: 'transparent',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '100%'
+            }}>
+            <BlurView
+              blurType="light"
+              blurAmount={20}
+              style={[styles.cardContainer, containerStyle]}>
+              <LinearGradient
+                colors={['rgba(0,0,0,0.1)', 'rgba(0,0,0,0.2)']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 1 }}
+                useAngle
+                angle={110}
+                style={[styles.card, cardContainerStyle]}>
+                {children}
+              </LinearGradient>
+            </BlurView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   )
 }

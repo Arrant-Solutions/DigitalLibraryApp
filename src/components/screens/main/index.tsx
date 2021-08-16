@@ -3,14 +3,14 @@ import { StyleSheet, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import LinearGradient from 'react-native-linear-gradient'
 import { purplePallet } from '../../common/style'
-import Home from './Home'
 import LibraryStack from './LibraryStack/'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Favorites from './Favorites'
 import HeaderOptionsMenu from '../../common/HeaderOptionsMenu'
 import More from './More'
-import MediaPlayer from './MediaPlayer'
 import { RouteProp } from '@react-navigation/native'
+import HomeStack from '../../navigation/HomeStack'
+import Home from './Home'
 
 const Tab = createBottomTabNavigator()
 
@@ -46,7 +46,7 @@ const Index = () => {
           }}>
           <Tab.Screen
             options={({ route }) => ({
-              tabBarVisible: getTabBarVisibility(route),
+              // tabBarVisible: getTabBarVisibility(route),
               tabBarIcon: ({ focused, color, size }) => (
                 <Ionicons
                   name={focused ? 'home' : 'home-outline'}
@@ -56,7 +56,7 @@ const Index = () => {
               )
             })}
             name="Home"
-            component={MediaPlayer}
+            component={Home}
           />
           <Tab.Screen
             options={{

@@ -19,6 +19,8 @@ import {
   selectCategories
 } from '../../../../redux/slices/categoriesSlice'
 import {
+  copper,
+  gold,
   greys,
   purplePallet,
   stretchedBox,
@@ -56,10 +58,10 @@ interface ItemProps {
 class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
   getIcon(icon: CategoryIconI | IconName) {
     if (typeof icon === 'string') {
-      let iconColor = `${themeBlack}cc`
+      let iconColor = gold[40]
       switch (icon) {
         case 'anointing':
-          return <Anointing width={70} height={70} color={iconColor} />
+          return <Anointing width={70} height={70} color={copper[70]} />
         case 'campus_ministry':
           return <CampusMinistries width={70} height={70} color={iconColor} />
         case 'children':
@@ -67,7 +69,7 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
         case 'christian_living':
           return <ChristianLiving width={70} height={70} color={iconColor} />
         case 'classics':
-          return <Classics width={70} height={70} color={iconColor} />
+          return <Classics width={70} height={70} color={gold[40]} />
         case 'evangelism':
           return <Evangelism width={70} height={70} color={iconColor} />
         case 'faith':
@@ -75,7 +77,7 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
         case 'finance':
           return <Finance width={70} height={70} color={iconColor} />
         case 'foundation':
-          return <FoundationSchool width={70} height={70} color={iconColor} />
+          return <FoundationSchool width={60} height={60} color={iconColor} />
         case 'freebies':
           return <Freebies width={70} height={70} color={iconColor} />
         case 'health':
@@ -83,13 +85,13 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
         case 'holy_spirit':
           return <HolySpirit width={70} height={70} color={iconColor} />
         case 'gospel_world':
-          return <GospelWorld width={70} height={70} color={iconColor} />
+          return <GospelWorld width={50} height={50} color={iconColor} />
         case 'leader':
           return <Leader width={70} height={70} color={iconColor} />
         case 'lifestyle':
           return <Lifestyle width={70} height={70} color={iconColor} />
         case 'question_and_answer':
-          return <QuestionAndAnswer width={70} height={70} color={iconColor} />
+          return <QuestionAndAnswer width={50} height={50} color={iconColor} />
         case 'soul_winning':
           return <SoulWinning width={70} height={70} color={iconColor} />
         case 'teens':
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
   itemText: {
     marginTop: 10,
     textAlign: 'center',
-    color: greys[50],
+    color: copper[20],
     fontSize: 15,
     fontWeight: 'bold'
   }

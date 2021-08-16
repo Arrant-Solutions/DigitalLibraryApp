@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { LIBRARY, CATEGORY, MEDIA_PLAYER } from '../../../../constants/screens'
 import Library from './Library'
 import Category from './Category'
-import MediaPlayer from '../../MediaPlayer'
+import MediaPlayer from '../MediaPlayer'
 
 const Stack = createStackNavigator()
 

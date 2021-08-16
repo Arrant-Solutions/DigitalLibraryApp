@@ -14,7 +14,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { GENERIC_SERVER_ERROR } from '../../../../constants/errors'
 import { MEDIA_PLAYER } from '../../../../constants/screens'
 import { Media } from '../../../../models/media'
-import { getCategoryItems } from '../../../../services/media'
+import { useAppDispatch } from '../../../../redux/hooks'
+import { fetchCategoryItems } from '../../../../redux/slices/categoriesSlice'
 import Header from '../../../common/Header'
 import { greys, purplePallet, stretchedBox } from '../../../common/style'
 import Tile from '../../../common/Tile'
@@ -82,6 +83,7 @@ type ParamList = {
 
 const Category = () => {
   const { params } = useRoute<RouteProp<ParamList, 'Category'>>()
+  const dispatch = useAppDispatch()
   const [media, setMedia] = useState<Media[]>([])
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -90,12 +92,12 @@ const Category = () => {
   useEffect(() => {
     if (typeof params === 'object' && !isNaN(params.id)) {
       setLoading(true)
-      getCategoryItems(params.id)
+      dispatch(fetchCategoryItems(9))
         .then(({ payload }) => {
           if (Array.isArray(payload)) {
             setMedia(payload)
           } else {
-            setErrorMessage(payload)
+            setErrorMessage(GENERIC_SERVER_ERROR) // TODO: change to thunk response error
           }
         })
         .catch(() => setErrorMessage(GENERIC_SERVER_ERROR))

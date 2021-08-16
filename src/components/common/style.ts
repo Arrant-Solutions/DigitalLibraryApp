@@ -58,6 +58,8 @@ export const purplePallet = {
   copper: '#db6923'
 }
 
+//purplePallet.purpleDeep
+
 export const purple = {
   100: '#1f004c',
   90: '#26005d',

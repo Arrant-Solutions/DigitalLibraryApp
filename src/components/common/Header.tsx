@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native'
-import { StackNavigationProp } from '@react-navigation/stack'
 import React from 'react'
 import {
   GestureResponderEvent,
@@ -7,7 +6,8 @@ import {
   StyleSheet,
   Text,
   useWindowDimensions,
-  View
+  View,
+  ViewStyle
 } from 'react-native'
 import { Header as ElementsHeader, Icon } from 'react-native-elements'
 import { useAppDispatch } from '../../redux/hooks'
@@ -15,12 +15,24 @@ import { setVisible } from '../../redux/slices/modalSlice'
 import { flexRow, purplePallet } from './style'
 
 interface HeaderProps {
+  containerStyle?: ViewStyle
+  barStyle?: 'light-content' | 'light-content'
+  backgroundColor?: string
+  color?: string
   title: string
   back?: boolean
   handleBackButton?: ((event: GestureResponderEvent) => void) | undefined
 }
 
-const Header: React.FC<HeaderProps> = ({ title, back, handleBackButton }) => {
+const Header: React.FC<HeaderProps> = ({
+  containerStyle,
+  barStyle,
+  backgroundColor,
+  color,
+  title,
+  back,
+  handleBackButton
+}) => {
   const dispatch = useAppDispatch()
   const { width } = useWindowDimensions()
   const { goBack } = useNavigation()
@@ -29,23 +41,26 @@ const Header: React.FC<HeaderProps> = ({ title, back, handleBackButton }) => {
 
   return (
     <View>
-      <StatusBar
+      {/* <StatusBar
         barStyle="light-content"
         translucent={true}
-        backgroundColor={purplePallet.purpleDeep}
-      />
+        backgroundColor={statusBarBackgroundColor || purplePallet.purpleDeep}
+      /> */}
       <ElementsHeader
-        backgroundColor={purplePallet.purpleDeep}
+        containerStyle={containerStyle}
+        statusBarProps={{ barStyle: barStyle || 'light-content' }}
+        backgroundColor={backgroundColor || purplePallet.purpleDeep}
         leftComponent={
           <View style={[flexRow, { width, alignItems: 'center' }]}>
             <Icon
               name={back ? 'ios-chevron-back' : 'logo-android'}
-              color="#fff"
+              color={color || '#fff'}
               onPress={back ? handlePress : undefined}
               type="ionicon"
               size={30}
             />
-            <Text style={{ marginLeft: 10, color: '#fff', fontSize: 20 }}>
+            <Text
+              style={{ marginLeft: 10, color: color || '#fff', fontSize: 20 }}>
               {title}
             </Text>
           </View>
@@ -55,13 +70,13 @@ const Header: React.FC<HeaderProps> = ({ title, back, handleBackButton }) => {
             <Icon
               containerStyle={{ marginRight: 10 }}
               name="search"
-              color="#fff"
+              color={color || '#fff'}
               type="ionicon"
               // onPress={() => dispatch(setVisible(true))}
             />
             <Icon
               name="ios-ellipsis-vertical-sharp"
-              color="#fff"
+              color={color || '#fff'}
               type="ionicon"
               onPress={() => dispatch(setVisible(true))}
             />

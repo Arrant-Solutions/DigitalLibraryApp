@@ -1,24 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import axios from 'axios'
 import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import {
-  AUTH_TOKEN,
-  COUNTRIES_TOKEN,
-  GENDERS_STORE,
-  USER_STORE
-} from '../../constants/storage'
-import { CountryI } from '../../models/country'
-import { GenderI } from '../../models/gender'
 import { HomeMediaItem } from '../../models/media'
-import { GenericUser, GenericUserI, UserCredential } from '../../models/user'
-import { login as userLogin } from '../../services/auth'
-import { getLatestReleases } from '../../services/homeResources'
-import { getCountries, getGenders } from '../../services/resources'
-import {
-  deleteAsyncData,
-  getAsyncData,
-  storeAsyncData
-} from '../../utils/storage'
+import { getAsyncData, storeAsyncData } from '../../utils/storage'
+import { data } from '../services/data'
 import { RootState } from '../store'
 
 export interface HomeResourceSliceI {
@@ -39,16 +23,24 @@ export const fetchLatest = createAsyncThunk(
   'homeResources/latest',
   async () => {
     console.log('getting')
-    const { payload } = await getLatestReleases()
+    const latest = data.map(
+      ({ description, alt_description, urls, user: { name } }) => ({
+        title: description || alt_description || name,
+        thumbnail: urls.thumb
+      })
+    )
 
-    if (Array.isArray(payload)) {
-      return { ...initialState, latest: payload }
-    }
+    return { latest, errorMessage: '' }
+    // const { payload } = await getLatestReleases()
 
-    return {
-      ...initialState,
-      errorMessage: payload
-    }
+    // if (Array.isArray(payload)) {
+    //   return { ...initialState, latest: payload }
+    // }
+
+    // return {
+    //   ...initialState,
+    //   errorMessage: payload
+    // }
   }
 )
 

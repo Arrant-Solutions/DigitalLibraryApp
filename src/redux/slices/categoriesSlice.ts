@@ -1,13 +1,12 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { GENERIC_SERVER_ERROR } from '../../constants/errors'
 import { CategoryI } from '../../models/category'
-import { fetchCategories as getCategories } from '../../services/categories'
-import { categories } from '../../services/data'
 import {
   deleteAsyncData,
   getAsyncData,
   storeAsyncData
 } from '../../utils/storage'
+import { categories, data } from '../services/data'
 import { RootState } from '../store'
 
 export interface CategoriesSliceI {
@@ -21,17 +20,40 @@ const initialState: CategoriesSliceI = {
 }
 
 export const fetchCategories = createAsyncThunk('categories/all', async () => {
-  const { payload } = await getCategories()
-
-  if (Array.isArray(payload)) {
-    return { ...initialState, categories: payload }
-  }
-
   return {
-    ...initialState,
-    errorMessage: payload
+    categories: categories,
+    errorMessage: ''
   }
+  // const { payload } = await getCategories()
+
+  // if (Array.isArray(payload)) {
+  //   return { ...initialState, categories: payload }
+  // }
+
+  // return {
+  //   ...initialState,
+  //   errorMessage: payload
+  // }
 })
+
+export const fetchCategoryItems = createAsyncThunk(
+  'categories/perItem',
+  async (categoryID: number) => {
+    return data.map(
+      ({ description, alt_description, urls, user: { name } }) => ({
+        title: description || alt_description || name,
+        description: description || alt_description || name,
+        thumbnail: urls.thumb,
+        id: Math.floor(Math.random() * 1000),
+        type: 'video',
+        duration: Math.floor(Math.random() * 200),
+        genre: 'string',
+        url: 'local',
+        author: 'Pastor Choolwe'
+      })
+    )
+  }
+)
 
 export const categoriesSlice = createSlice({
   name: 'categories',

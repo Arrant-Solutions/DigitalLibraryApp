@@ -1,4 +1,4 @@
-export interface ResponseI<T = never> {
-  success: false
-  payload: T
+export interface ResponseI<T = unknown> {
+  statusCode: number
+  data: T
 }

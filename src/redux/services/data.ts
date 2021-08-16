@@ -1,4 +1,5 @@
-import { CategoryI } from '../models/category'
+import { CategoryI } from '../../models/category'
+import { GenderI } from '../../models/gender'
 
 export const data = [
   {
@@ -2452,4 +2453,9 @@ export const categories: CategoryI[] = [
     name: 'YOUR GOSPEL WORLD',
     numberOfItems: 3
   }
+]
+
+export const genders: GenderI[] = [
+  { genderName: 'Male', genderID: 1 },
+  { genderName: 'Female', genderID: 2 }
 ]
