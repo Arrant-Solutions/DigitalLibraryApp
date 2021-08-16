@@ -133,6 +133,9 @@ export const authSlice = createSlice({
 
 export const { logout, setUser, setToken } = authSlice.actions
 
-export const selectAuth = (state: RootState): AuthSliceI => state.auth
+export const selectAuth = ({ auth }: RootState): AuthSliceI => ({
+  ...auth,
+  user: new GenericUser(auth.user)
+})
 
 export default authSlice.reducer

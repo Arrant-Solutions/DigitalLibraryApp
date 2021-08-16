@@ -1,6 +1,6 @@
 import React from 'react'
 import { StatusBar, StyleSheet, Text, View } from 'react-native'
-import { Avatar, Icon, ListItem } from 'react-native-elements'
+import { Avatar, Button, Icon, ListItem } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import TouchableScale from 'react-native-touchable-scale'
@@ -10,7 +10,6 @@ import { selectAuth } from '../../../redux/slices/authSlice'
 import Header from '../../common/Header'
 import {
   copper,
-  flexColumn,
   gold,
   greys,
   purple,
@@ -18,10 +17,12 @@ import {
   stretchedBox
 } from '../../common/style'
 import { Dimensions } from 'react-native'
+import { TouchableHighlight } from 'react-native'
+
+const { height, width } = Dimensions.get('window')
 
 const More = () => {
   const { user } = useAppSelector(selectAuth)
-  console.log(user)
   return (
     <SafeAreaView>
       <LinearGradient
@@ -38,7 +39,7 @@ const More = () => {
         <Header title="More" containerStyle={{ borderBottomWidth: 0 }} />
         <View
           style={{
-            height: 90,
+            height: 30,
             backgroundColor: purple[60]
           }}></View>
         <View
@@ -54,10 +55,11 @@ const More = () => {
         <Avatar
           containerStyle={{
             position: 'absolute',
+            zIndex: 999,
             backgroundColor: 'white',
             padding: 5,
             alignSelf: 'center',
-            top: 100,
+            top: 50,
             shadowColor: '#000',
             shadowOffset: {
               width: 0,
@@ -67,7 +69,7 @@ const More = () => {
             shadowRadius: 3.84,
             elevation: 5
           }}
-          size={150}
+          size={130}
           rounded
           source={
             user.avatar
@@ -77,41 +79,99 @@ const More = () => {
               : require('../../../../assets/images/girly.jpg')
           }
         />
-        <View style={{ marginTop: 40, backgroundColor: 'red' }}>
-          <Text style={{ fontSize: 30 }}>{user.email}</Text>
-        </View>
-        {/* <ScrollView style={[flexColumn, { paddingVertical: 0 }]}>
-          <ListItem
-            containerStyle={{ borderRadius: 0, marginBottom: 10 }}
-            Component={TouchableScale}
-            // friction={90} //
-            // tension={100} //
-            // activeScale={0.95} //
-            linearGradientProps={{
-              colors: [gold[60], gold[20], copper[70]],
-              start: { x: 0, y: 0.7 },
-              end: { x: 1, y: 0.5 }
-            }}
-            ViewComponent={LinearGradient}
-            onPress={() => {
-              console.log('pressed')
+        <View style={styles.shadowed}>
+          <View
+            style={{
+              marginTop: 45,
+              flex: 1
             }}>
-            <Avatar
-              rounded
-              source={
-                user.avatar
-                  ? {
-                      uri: user.avatar
-                    }
-                  : require('../../../../assets/images/avatar.png')
-              }
-            />
-            <ListItem.Content>
-              <ListItem.Title>My Profile</ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Chevron color={purplePallet.purpleDeeper} />
-          </ListItem>
-        </ScrollView> */}
+            <Text
+              style={{ fontSize: 30, textAlign: 'center', color: gold[40] }}>
+              {user.fullname}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                marginTop: 8,
+                textAlign: 'center',
+                color: copper[40]
+              }}>
+              {user.email}
+            </Text>
+            <View
+              style={{
+                width,
+                height,
+                alignSelf: 'center'
+              }}>
+              <View style={styles.box}>
+                <Button
+                  type="clear"
+                  style={{ alignItems: 'flex-start' }}
+                  icon={
+                    <Icon
+                      type="material-community"
+                      name="account-edit-outline"
+                      size={25}
+                      color="blue"
+                    />
+                  }
+                  title="Edit Profile"
+                />
+                <Button
+                  type="clear"
+                  style={{ alignItems: 'flex-start' }}
+                  icon={<Icon name="credit-card" size={20} color="blue" />}
+                  title="Payment Details"
+                />
+                <Button
+                  type="clear"
+                  style={{ alignItems: 'flex-start' }}
+                  icon={
+                    <Icon
+                      type="fontisto"
+                      name="bar-chart"
+                      size={15}
+                      color="blue"
+                    />
+                  }
+                  title="Activity Reports"
+                />
+                <Button
+                  type="clear"
+                  style={{ alignItems: 'flex-start' }}
+                  icon={
+                    <Icon
+                      type="ionicon"
+                      name="key-sharp"
+                      size={20}
+                      color="blue"
+                    />
+                  }
+                  title="Reset Password"
+                />
+              </View>
+
+              <View style={styles.box}>
+                <Text>We would like to hear from you</Text>
+                <Text>Give us your feedback</Text>
+              </View>
+              <View style={styles.box}>
+                <Text>Terms and Conditions</Text>
+              </View>
+              <View style={styles.box}>
+                <Text>Logout</Text>
+              </View>
+
+              <Text
+                style={{
+                  alignSelf: 'flex-end'
+                }}>
+                App version 1.001 (Paul of Tarsus)
+              </Text>
+            </View>
+          </View>
+        </View>
       </LinearGradient>
     </SafeAreaView>
   )
@@ -147,5 +207,21 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  shadowed: {
+    flex: 1,
+    backgroundColor: `${purple[60]}60`,
+    borderTopLeftRadius: 1000,
+    borderTopRightRadius: 1000,
+    marginTop: 10,
+    position: 'absolute',
+    width: width * 1.5,
+    height: height,
+    top: 130,
+    alignSelf: 'center'
+  },
+  box: {
+    backgroundColor: '#fff',
+    marginTop: 10
   }
 })

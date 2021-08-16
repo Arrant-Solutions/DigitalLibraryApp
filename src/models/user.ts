@@ -6,6 +6,7 @@ export interface GenericUserI {
   avatar?: string
   firstName: string
   lastName: string
+  fullname: string
   email: string
   dateOfBirth: string
   country: CountryI
@@ -60,6 +61,7 @@ export class GenericUser implements GenericUserI {
       avatar: '',
       firstName: '',
       lastName: '',
+      fullname: '',
       email: '',
       dateOfBirth: '' as any,
       country: { countryID: 0, countryName: '' },
@@ -67,5 +69,9 @@ export class GenericUser implements GenericUserI {
       password: '',
       branch: { branchID: 0, branchName: '' }
     }
+  }
+
+  get fullname() {
+    return `${this.firstName} ${this.lastName}`
   }
 }
