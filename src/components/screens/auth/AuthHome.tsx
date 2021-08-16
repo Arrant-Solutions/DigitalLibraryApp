@@ -62,18 +62,18 @@ const AuthHome = () => {
           onPress={() => console.log('pressed')}
         />
         <Button
+          containerStyle={{ margin: 8, borderRadius: 10 }}
           buttonStyle={{
             borderRadius: 10,
             paddingVertical: 10,
-            backgroundColor: '#17171760',
-            margin: 8
+            backgroundColor: '#17171722'
           }}
-          titleStyle={{ fontSize: 14, fontWeight: 'bold' }}
+          titleStyle={{ fontSize: 16, fontWeight: 'bold', color: '#000b' }}
           icon={
             <Icon
               style={{ marginRight: 15 }}
               name="mail"
-              color="#fff"
+              color="#000a"
               size={28}
             />
           }

@@ -72,7 +72,7 @@ export const restoreSession = createAsyncThunk('user/restore', async () => {
   const token = await getAsyncData<string>(AUTH_TOKEN)
   const user = await getAsyncData<GenericUserI>(USER_STORE)
 
-  console.log(typeof user, user)
+  console.log('typeof user ==> ', typeof user)
 
   return {
     token,
@@ -107,7 +107,7 @@ export const authSlice = createSlice({
       const { user, token, errorMessage } = action.payload
 
       storeAsyncData(AUTH_TOKEN, token)
-      storeAsyncData(USER_STORE, JSON.stringify(user))
+      storeAsyncData(USER_STORE, user)
 
       state.user = user
       state.token = token

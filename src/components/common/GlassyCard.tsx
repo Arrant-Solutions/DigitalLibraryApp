@@ -33,15 +33,17 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
 }) => {
   return (
     <SafeAreaView style={{ display: 'flex', flex: 1 }}>
-      <LinearGradient
-        colors={colors || [theme.inputBackgroundColor, '#2b1b3b', theme.black]}
-        start={{ x: 0, y: 1 }}
-        end={{ x: 1, y: 1 }}
-        useAngle
-        angle={angle || 110}
-        style={gradientStyle || styles.fixed}
-      />
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView style={{ flex: 1 }}>
+        <LinearGradient
+          colors={
+            colors || [theme.inputBackgroundColor, '#2b1b3b', theme.black]
+          }
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 1 }}
+          useAngle
+          angle={angle || 110}
+          style={gradientStyle || styles.fixed}
+        />
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,

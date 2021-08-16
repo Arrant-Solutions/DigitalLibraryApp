@@ -23,6 +23,7 @@ const AppEntry = () => {
     return <HomeStack />
   }
 
+  console.log('here thus far')
   return <AuthStack />
 }
 

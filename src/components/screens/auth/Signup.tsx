@@ -245,21 +245,17 @@ const Signup: React.FC<SignupProps> = () => {
               )}
 
               <Button
-                style={{ margin: 8 }}
+                containerStyle={{ margin: 8, borderRadius: 10 }}
                 buttonStyle={{
                   borderRadius: 10,
                   paddingVertical: 10,
-                  backgroundColor: '#17171760'
+                  backgroundColor: '#17171722'
                 }}
-                titleStyle={{ fontSize: 14, fontWeight: 'bold' }}
-                // icon={
-                //   <Ionicon
-                //     style={{ marginRight: 15 }}
-                //     name="mail"
-                //     color="#fff"
-                //     size={28}
-                //   />
-                // }
+                titleStyle={{
+                  fontSize: 16,
+                  fontWeight: 'bold',
+                  color: '#000b'
+                }}
                 title="Register"
                 onPress={() => handleSubmit()}
               />

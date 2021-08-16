@@ -112,14 +112,14 @@ const Login = () => {
       />
       <View style={[flexColumn, { width: '100%' }]}>
         <Button
-          style={{ margin: 8 }}
+          containerStyle={{ margin: 8, borderRadius: 10 }}
           buttonStyle={{
             borderRadius: 10,
             paddingVertical: 10,
-            backgroundColor: '#17171760'
+            backgroundColor: '#17171722'
           }}
+          titleStyle={{ fontSize: 16, fontWeight: 'bold', color: '#000b' }}
           loading={loading}
-          titleStyle={{ fontSize: 14, fontWeight: 'bold' }}
           title="Login"
           onPress={handleLogin}
         />
