@@ -12,7 +12,7 @@ import {
 import { Header as ElementsHeader, Icon } from 'react-native-elements'
 import { useAppDispatch } from '../../redux/hooks'
 import { setVisible } from '../../redux/slices/modalSlice'
-import { flexRow, purplePallet } from './style'
+import { flexRow, purple, purplePallet } from './style'
 
 interface HeaderProps {
   containerStyle?: ViewStyle
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({
       <ElementsHeader
         containerStyle={containerStyle}
         statusBarProps={{ barStyle: barStyle || 'light-content' }}
-        backgroundColor={backgroundColor || purplePallet.purpleDeep}
+        backgroundColor={backgroundColor || purple[60]}
         leftComponent={
           <View style={[flexRow, { width, alignItems: 'center' }]}>
             <Icon
