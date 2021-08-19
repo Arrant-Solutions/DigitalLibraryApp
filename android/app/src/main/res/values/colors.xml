@@ -1,4 +1,5 @@
 <resources>
-    <string name="geTheme">#000000</string>
-    <color name="primary_dark">#000000</color>
+    <string name="geTheme">#400d88</string>
+    <color name="primary_dark">#400d88</color>
+    <color name="primary_gold">#ffe245</color>
 </resources>
