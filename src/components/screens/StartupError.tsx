@@ -5,7 +5,7 @@ const Splash = () => {
   const { container } = styles
   return (
     <View style={container}>
-      <Text>Splash Screen</Text>
+      <Text>Unable to retrieve required assets</Text>
     </View>
   )
 }

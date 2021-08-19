@@ -9,6 +9,7 @@ import { useAppSelector } from '../../../redux/hooks'
 import { selectAuth } from '../../../redux/slices/authSlice'
 import Header from '../../common/Header'
 import {
+  black,
   copper,
   gold,
   greys,
@@ -113,7 +114,8 @@ const More = () => {
                       type="material-community"
                       name="account-edit-outline"
                       size={25}
-                      color="blue"
+                      color={black[60]}
+                      containerStyle={{ marginRight: 10 }}
                     />
                   }
                   title="Edit Profile"
@@ -121,7 +123,14 @@ const More = () => {
                 <Button
                   type="clear"
                   style={{ alignItems: 'flex-start' }}
-                  icon={<Icon name="credit-card" size={20} color="blue" />}
+                  icon={
+                    <Icon
+                      name="credit-card"
+                      size={20}
+                      color={black[60]}
+                      containerStyle={{ marginRight: 10 }}
+                    />
+                  }
                   title="Payment Details"
                 />
                 <Button
@@ -132,7 +141,8 @@ const More = () => {
                       type="fontisto"
                       name="bar-chart"
                       size={15}
-                      color="blue"
+                      color={black[60]}
+                      containerStyle={{ marginRight: 10 }}
                     />
                   }
                   title="Activity Reports"
@@ -145,7 +155,8 @@ const More = () => {
                       type="ionicon"
                       name="key-sharp"
                       size={20}
-                      color="blue"
+                      color={black[60]}
+                      containerStyle={{ marginRight: 10 }}
                     />
                   }
                   title="Reset Password"
@@ -222,6 +233,9 @@ const styles = StyleSheet.create({
   },
   box: {
     backgroundColor: '#fff',
-    marginTop: 10
+    marginTop: 10,
+    margin: 10,
+    borderRadius: 8,
+    padding: 8
   }
 })
