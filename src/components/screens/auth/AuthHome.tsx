@@ -9,6 +9,7 @@ import { linkText, purplePallet, skyBlue, googleBlue } from '../../common/style'
 const logo = require('../../../../assets/images/gec_logo.png')
 
 const AuthHome = () => {
+  console.log('========>', 'AuthHome')
   const { navigate } = useNavigation()
 
   return (

@@ -1,13 +1,5 @@
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import React, { useEffect, useState } from 'react'
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  SafeAreaView,
-  useWindowDimensions
-} from 'react-native'
+import { StyleSheet, Text, View, Image, SafeAreaView } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
 import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import {

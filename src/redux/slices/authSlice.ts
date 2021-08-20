@@ -15,6 +15,8 @@ export interface AuthSliceI {
   errorMessage: string
 }
 
+console.log(GenericUser.createReduxInstance())
+
 const initialState: AuthSliceI = {
   user: GenericUser.createReduxInstance(),
   token: '',
