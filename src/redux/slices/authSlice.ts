@@ -15,8 +15,6 @@ export interface AuthSliceI {
   errorMessage: string
 }
 
-console.log(GenericUser.createReduxInstance())
-
 const initialState: AuthSliceI = {
   user: GenericUser.createReduxInstance(),
   token: '',
@@ -74,8 +72,6 @@ export const restoreSession = createAsyncThunk('user/restore', async () => {
   const token = await getAsyncData<string>(AUTH_TOKEN)
   const user = await getAsyncData<GenericUserI>(USER_STORE)
 
-  console.log('typeof user ==> ', typeof user)
-
   return {
     token,
     user,
@@ -123,7 +119,7 @@ export const authSlice = createSlice({
       action: PayloadAction<AuthSliceI>
     ) => {
       const { user, token, errorMessage } = action.payload
-      state.user = user
+      state.user = user ? user : initialState.user
       state.token = token
       state.errorMessage = errorMessage
     },

@@ -11,6 +11,7 @@ const AppEntry = () => {
   const [error, setError] = useState(false)
   const { token } = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
+  console.log('token =======> ', token)
 
   useEffect(() => {
     dispatch(restoreSession())
