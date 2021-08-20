@@ -25,6 +25,6 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:text="@string/powered_by"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:textColor="@color/primary_gold" />
 </RelativeLayout>
