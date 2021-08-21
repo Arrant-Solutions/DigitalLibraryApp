@@ -85,6 +85,13 @@ export const black = {
   10: '#11111122'
 }
 
+export const pink = {
+  100: '#E05297',
+  80: '#EA86B6',
+  60: '#F3BAD6',
+  10: '#FCEEF5'
+}
+
 export const themeBlack = '#111111'
 
 export const themePurple1 = '#bb4ed9'

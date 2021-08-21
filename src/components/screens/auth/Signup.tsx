@@ -30,6 +30,7 @@ import {
   flexRow,
   gold,
   googleBlue,
+  pink,
   purplePallet,
   socialButton,
   stretchedBox
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
   inputErrorStyle: {
     padding: 5,
     borderRadius: 5,
-    color: 'white',
-    backgroundColor: `${purplePallet.purpleDeeper}90`
+    color: pink[80],
+    // backgroundColor: `${purplePallet.purpleDeeper}90`
   }
 })
