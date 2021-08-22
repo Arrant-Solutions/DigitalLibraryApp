@@ -44,64 +44,31 @@ const Index = () => {
             labelStyle: {
               fontSize: 14
             }
-          }}>
-          <Tab.Screen
-            options={({ route }) => ({
-              // tabBarVisible: getTabBarVisibility(route),
-              tabBarIcon: ({ focused, color, size }) => (
-                <Ionicons
-                  name={focused ? 'home' : 'home-outline'}
-                  color={color}
-                  size={size}
-                />
-              )
-            })}
-            name="Home"
-            component={MediaPlayer}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({ focused, color, size }) => (
-                <Ionicons
-                  name={focused ? 'grid' : 'grid-outline'}
-                  color={color}
-                  size={size}
-                />
-              )
-            }}
-            name="Library"
-            component={LibraryStack}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({ focused, color, size }) => (
-                <Ionicons
-                  name={focused ? 'heart' : 'heart-outline'}
-                  color={focused ? 'red' : color}
-                  size={size}
-                />
-              )
-            }}
-            name="Favourites"
-            component={Favorites}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({ focused, color, size }) => (
-                <Ionicons
-                  name={
-                    focused
-                      ? 'ios-ellipsis-vertical-sharp'
-                      : 'ellipsis-vertical-outline'
-                  }
-                  color={color}
-                  size={size}
-                />
-              )
-            }}
-            name="More"
-            component={More}
-          />
+          }}
+          screenOptions={({ route, navigation }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName = focused ? 'home' : 'home-outline'
+              let itemColor = color
+
+              if (route.name === 'Library') {
+                iconName = focused ? 'grid' : 'grid-outline'
+              } else if (route.name === 'Favourites') {
+                iconName = focused ? 'heart' : 'heart-outline'
+                if (focused) {
+                  itemColor = 'red'
+                }
+              } else if (route.name === 'More') {
+                iconName = focused
+                  ? 'ios-ellipsis-vertical-sharp'
+                  : 'ellipsis-vertical-outline'
+              }
+              return <Ionicons name={iconName} color={itemColor} size={20} />
+            }
+          })}>
+          <Tab.Screen name="Home" component={MediaPlayer} />
+          <Tab.Screen name="Library" component={LibraryStack} />
+          <Tab.Screen name="Favourites" component={Favorites} />
+          <Tab.Screen name="More" component={More} />
         </Tab.Navigator>
       </LinearGradient>
       <HeaderOptionsMenu />

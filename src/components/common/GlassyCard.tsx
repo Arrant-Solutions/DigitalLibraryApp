@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center'
   },
   cardContainer: {
-    width: 350,
+    width: '90%',
     height: 500,
     borderRadius: 20
   },
