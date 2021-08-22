@@ -1,13 +1,11 @@
-import { APP_COUNTRIES_API } from '@env'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-
 import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import { COUNTRIES_TOKEN, GENDERS_STORE } from '../../constants/storage'
+import { GENDERS_STORE } from '../../constants/storage'
 import { CountryI } from '../../models/country'
 import { GenderI } from '../../models/gender'
 import { getAsyncData } from '../../utils/storage'
-import { fetchData } from '../services'
 import { genders } from '../services/data'
+import { getCountries } from '../services/resource'
 import { RootState } from '../store'
 
 export interface ResourceSliceI {
@@ -25,27 +23,24 @@ const initialState: ResourceSliceI = {
 export const fetchCountries = createAsyncThunk(
   'resources/countries',
   async () => {
-    const { data } = await fetchData<{ name: string }[]>(APP_COUNTRIES_API)
+    const countries = await getCountries()
 
-    if (Array.isArray(data)) {
+    if (Array.isArray(countries) && countries.length) {
       return {
         ...initialState,
-        countries: data.map(({ name }, index) => ({
-          countryID: index,
-          countryName: name
-        }))
+        countries
       }
     }
 
     return {
       ...initialState,
-      errorMessage: data
+      errorMessage: 'Failed to retrieve countriess'
     }
   }
 )
 
 export const fetchGenders = createAsyncThunk('resources/genders', async () => {
-  return { errorMessage: '', genders: genders }
+  return { errorMessage: '', genders }
   // const { payload } = await getGenders()
 
   // if (Array.isArray(payload)) {
@@ -61,7 +56,7 @@ export const fetchGenders = createAsyncThunk('resources/genders', async () => {
 export const restoreResources = createAsyncThunk(
   'resource/restore',
   async (): Promise<ResourceSliceI> => {
-    const countries = await getAsyncData<CountryI[]>(COUNTRIES_TOKEN)
+    const countries = await getCountries()
     const genders = await getAsyncData<GenderI[]>(GENDERS_STORE)
 
     if (Array.isArray(countries) && Array.isArray(genders)) {

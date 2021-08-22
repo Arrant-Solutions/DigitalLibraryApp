@@ -82,9 +82,9 @@ export const fetchData = async <T = unknown, P = unknown>(
   params?: P
 ) => {
   try {
-    const { data } = await axios.get<ResponseI<T>>(url, params)
+    const { status, data } = await axios.get<ResponseI<T>>(url, params)
 
-    return data
+    return { statusCode: status, data }
   } catch (error) {
     // console.log(error.response instanceof AxiosResponse)
     if (typeof error.response === 'object') {

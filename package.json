@@ -25,6 +25,7 @@
     "react-native-dotenv": "^3.0.0",
     "react-native-dropdown-picker": "^5.1.21",
     "react-native-element": "^1.2.1",
+    "react-native-element-dropdown": "^1.2.1",
     "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-linear-gradient": "^2.5.6",

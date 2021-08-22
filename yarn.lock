@@ -6152,6 +6152,11 @@ react-native-dropdown-picker@^5.1.21:
   dependencies:
     react-native-gesture-handler "*"
 
+react-native-element-dropdown@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-native-element-dropdown/-/react-native-element-dropdown-1.2.1.tgz#3d7431a67e1e49131f283bceb8694fc200b6f042"
+  integrity sha512-f/8mz3rnk+mLkrwKiCuu+6mvxobWoLmfbxsQjJQ/ff0nkNeYcSCUvyLQc1WAQf8nt2VgH92W+DTnbx5nE3lRVA==
+
 react-native-element@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-element/-/react-native-element-1.2.1.tgz#02165505422e2521a58e5c1d6845af67fcf3b04b"
