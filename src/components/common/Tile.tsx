@@ -9,6 +9,9 @@ import {
   ViewStyle,
   ImageStyle
 } from 'react-native'
+import Fontisto from 'react-native-vector-icons/Fontisto'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import { greys, warning } from './style'
 
 interface TileProps {
   size?: number
@@ -22,8 +25,23 @@ interface TileProps {
   rounded?: boolean
 }
 
-export class Tile extends PureComponent<TileProps> {
+interface TileState {
+  loading: boolean
+  error: boolean
+}
+
+export class Tile extends PureComponent<TileProps, TileState> {
+  constructor(props: TileProps) {
+    super(props)
+
+    this.state = {
+      loading: false,
+      error: false
+    }
+  }
+
   render() {
+    const { loading, error } = this.state
     const {
       size = 90,
       title,
@@ -35,9 +53,17 @@ export class Tile extends PureComponent<TileProps> {
       subHeaderStyle,
       rounded = true
     } = this.props
+
     return (
       <View style={[styles.container, { width: size }, style]}>
+        {loading && <Fontisto name="picture" size={50} color={greys[40]} />}
+        {error && (
+          <Ionicons name="warning-outline" size={50} color={warning[100]} />
+        )}
         <Image
+          onLoadStart={() => this.setState({ ...this.state, loading: true })}
+          onLoadEnd={() => this.setState({ ...this.state, loading: false })}
+          onError={() => this.setState({ ...this.state, error: true })}
           source={imageSrc}
           resizeMode="cover"
           height={undefined}
@@ -46,15 +72,16 @@ export class Tile extends PureComponent<TileProps> {
             styles.image,
             { width: size, height: size },
             imageStyle,
-            !rounded && { borderRadius: 0 }
+            !rounded && { borderRadius: 0 },
+            (error || loading) && { height: 0 }
           ]}
         />
-        {Boolean(title && title.length) && (
+        {Boolean(!loading && !error && title && title.length) && (
           <Text style={[styles.text, titleStyle]} numberOfLines={1}>
             {title}
           </Text>
         )}
-        {Boolean(subHeader && subHeader.length) && (
+        {Boolean(!loading && !error && subHeader && subHeader.length) && (
           <Text
             style={[styles.subHeaderText, subHeaderStyle]}
             numberOfLines={1}>

@@ -12,6 +12,10 @@ export const skyBlue = {
   10: '#e6f9ff'
 }
 
+export const warning = {
+  100: '#B33A3A'
+}
+
 export const blue = {
   100: '#0A81AB',
   90: '#0779E4',

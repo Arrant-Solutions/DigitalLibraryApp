@@ -5,13 +5,10 @@ import LinearGradient from 'react-native-linear-gradient'
 import { purplePallet } from '../../common/style'
 import LibraryStack from './LibraryStack/'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Favorites from './Favorites'
 import HeaderOptionsMenu from '../../common/HeaderOptionsMenu'
 import More from './More'
 import { RouteProp } from '@react-navigation/native'
-import HomeStack from '../../navigation/HomeStack'
 import Home from './Home'
-import MediaPlayer from './MediaPlayer'
 
 const Tab = createBottomTabNavigator()
 
@@ -65,7 +62,7 @@ const Index = () => {
               return <Ionicons name={iconName} color={itemColor} size={20} />
             }
           })}>
-          <Tab.Screen name="Home" component={MediaPlayer} />
+          <Tab.Screen name="Home" component={Home} />
           <Tab.Screen name="Library" component={LibraryStack} />
           {/* <Tab.Screen name="Favourites" component={Favorites} /> */}
           <Tab.Screen name="More" component={More} />
