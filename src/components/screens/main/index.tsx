@@ -11,6 +11,7 @@ import More from './More'
 import { RouteProp } from '@react-navigation/native'
 import HomeStack from '../../navigation/HomeStack'
 import Home from './Home'
+import MediaPlayer from './MediaPlayer'
 
 const Tab = createBottomTabNavigator()
 
@@ -56,7 +57,7 @@ const Index = () => {
               )
             })}
             name="Home"
-            component={Home}
+            component={MediaPlayer}
           />
           <Tab.Screen
             options={{

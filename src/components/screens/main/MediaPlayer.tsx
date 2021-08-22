@@ -14,6 +14,7 @@ import { Platform } from 'react-native'
 import IconButton from '../../common/IconButton'
 // import video from '../../../../assets/audio/audio.mp3'
 const video = require('../../../../assets/videos/video.mp4')
+import VideoPlayers from 'react-native-video-players'
 
 function trailZero(dividend: number, divisor: number): string {
   const result = ~~(dividend / divisor)
@@ -282,243 +283,20 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
           setState({ ...state, boxSize: { width, height } })
         }}>
         <Header back title="Playing" />
-        <View style={{}}>
-          <View
-            {...panResponder.panHandlers}
-            style={{ overflow: 'hidden', height: 220 }}>
-            <Video
-              source={
-                // {
-                //   uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-                // }
-                video
-              }
-              onFullscreenPlayerDidDismiss={() =>
-                setState({ ...state, fullScreen: false })
-              }
-              playInBackground={playInBackground}
-              fullscreen={fullScreen}
-              fullscreenOrientation="landscape"
-              muted={muted}
-              paused={paused}
-              volume={0}
-              resizeMode="contain"
-              style={[videoDimensions]}
-              onError={handleError}
-              onLoad={handleLoad}
-              onProgress={handleProgress}
-              onLoadStart={handleLoadStart}
-              onEnd={handleEnd}
-              onBuffer={handleBuffer}
-              ref={player}
-            />
-            <Animated.View style={[styles.controls, controlHideStyle]}>
-              <IconButton
-                containerStyle={styles.contorlIcon}
-                color="#fff"
-                onPress={handleMute}
-                type="octicons"
-                name={state.muted ? 'unmute' : 'mute'}
-              />
-              <IconButton
-                onPress={() =>
-                  setState({ ...state, fullScreen: !state.fullScreen })
-                }
-                containerStyle={styles.contorlIcon}
-                color="#fff"
-                type="feather"
-                name="maximize"
-              />
-            </Animated.View>
-            <View
-              style={[
-                styles.videoCover,
-                !hasError && { backgroundColor: 'transparent' }
-              ]}>
-              {hasError && (
-                <>
-                  <Icon
-                    type="font-awesome"
-                    name="exclamation-triangle"
-                    size={30}
-                    color="red"
-                  />
-                  <Text style={{ color: '#fff' }}>{error}</Text>
-                </>
-              )}
-
-              {!hasError && buffering && (
-                <Animated.View style={rotateStyle}>
-                  <Icon
-                    type="font-awesome"
-                    name="circle-o-notch"
-                    size={30}
-                    color="#fff"
-                  />
-                </Animated.View>
-              )}
-            </View>
-          </View>
-          {!hasError && (
-            <View style={[styles.controlsContainer]}>
-              <Pressable
-                onPress={handleProgressBarPress}
-                style={styles.progressContainer}>
-                <ProgressBar
-                  progress={progress}
-                  color="#fff"
-                  unfilledColor={gold[60]}
-                  borderColor="#fff"
-                  borderWidth={0}
-                  borderRadius={0}
-                  width={boxSize.width}
-                  height={10}
-                  useNativeDriver
-                />
-              </Pressable>
-              <View style={styles.timersBox}>
-                <Text style={styles.timeText}>
-                  {secondsToTime(state.currentTime)}
-                </Text>
-                <Text style={styles.timeText}>
-                  {secondsToTime(state.currentTime - state.duration)}
-                </Text>
-              </View>
-            </View>
-          )}
-        </View>
-
-        <View
-          style={{
-            flex: 1,
-            display: 'flex'
-          }}>
-          <View style={styles.track}>
-            <Text style={styles.artist}>Pastor Choolwe</Text>
-            <Text style={styles.title}>The Finality of Destiny</Text>
-          </View>
-          <Animated.View style={[styles.optionsMenu, optionsMenuStyle]}>
-            <Pressable
-              style={styles.menuItem}
-              onPress={() => {
-                setState({
-                  ...state,
-                  animatedOptions: new Animated.Value(0),
-                  optionsVisible: false
-                })
-              }}>
-              <IconButton
-                type="material"
-                name="playlist-add"
-                size={25}
-                color="white"
-                containerStyle={styles.menuItemIcon}
-              />
-              <Text style={styles.menuItemText}>Add to playlist</Text>
-            </Pressable>
-            <Divider />
-            <Pressable
-              style={styles.menuItem}
-              onPress={() => {
-                setState({
-                  ...state,
-                  animatedOptions: new Animated.Value(0),
-                  optionsVisible: false
-                })
-              }}>
-              <IconButton
-                type="entypo"
-                name="edit"
-                size={20}
-                color="white"
-                containerStyle={styles.menuItemIcon}
-              />
-              <Text style={styles.menuItemText}>Properties</Text>
-            </Pressable>
-            <Divider />
-            <Pressable
-              style={styles.menuItem}
-              onPress={() => {
-                setState({
-                  ...state,
-                  animatedOptions: new Animated.Value(0),
-                  optionsVisible: false
-                })
-              }}>
-              <IconButton
-                type="material"
-                name="delete-forever"
-                size={20}
-                color="white"
-                containerStyle={styles.menuItemIcon}
-              />
-              <Text style={styles.menuItemText}>Delete</Text>
-            </Pressable>
-            <Divider />
-            <Pressable
-              style={styles.menuItem}
-              onPress={() => {
-                setState({
-                  ...state,
-                  animatedOptions: new Animated.Value(0),
-                  optionsVisible: false
-                })
-              }}>
-              <IconButton
-                type="ionicon"
-                name="play"
-                size={20}
-                color="white"
-                containerStyle={styles.menuItemIcon}
-              />
-              <Text style={styles.menuItemText}>Play in Background</Text>
-            </Pressable>
-          </Animated.View>
-          <View style={styles.control}>
-            <IconButton
-              containerStyle={{ backgroundColor: 'transparent' }}
-              raised
-              name="playlist-play"
-              type="material"
-              color="white"
-              size={40}
-              onPress={() => console.log('hello')}
-            />
-            <View style={styles.actions}>
-              <IconButton
-                raised
-                name={(Platform.OS === 'ios' ? 'ios' : 'md') + '-play-back'}
-                type="ionicon"
-                color={copper[70]}
-                onPress={() => console.log('hello')}
-              />
-              <IconButton
-                raised
-                name={paused ? 'play' : 'pause'}
-                type="ionicon"
-                color={copper[70]}
-                onPress={handleMainTouch}
-              />
-              <IconButton
-                raised
-                name={(Platform.OS === 'ios' ? 'ios' : 'md') + '-play-forward'}
-                type="ionicon"
-                color={copper[70]}
-                onPress={() => console.log('hello')}
-              />
-            </View>
-            <IconButton
-              containerStyle={{ backgroundColor: 'transparent' }}
-              raised
-              name={
-                (Platform.OS === 'ios' ? 'ios' : 'md') +
-                '-ellipsis-vertical-sharp'
-              }
-              type="ionicon"
-              color="white"
-              onPress={showOptionMenu}
-            />
-          </View>
+        <View style={{ display: 'flex', flex: 1 }}>
+          <VideoPlayers
+            source={{
+              uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+            }}
+            isSettingShow={true}
+            onMorePress={true}
+            title={'Video title'}
+            paused={paused}
+            resizeMode={'contain'}
+            playInBackground={true}
+            playWhenInactive={true}
+            controlTimeout={2000}
+          />
         </View>
       </View>
     </View>
