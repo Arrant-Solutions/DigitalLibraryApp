@@ -90,7 +90,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     error: '',
     boxSize: { height: 0, width: 0 },
     videoSize: { height: 0, width: 0 },
-    buffering: true,
+    buffering: false,
     muted: false,
     animatedControl: new Animated.Value(0),
     animated: new Animated.Value(0),
@@ -145,8 +145,11 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     triggerBufferAnimation()
   }
 
-  const handleBuffer = ({ isBuffering }: OnBufferData) => {
+  const handleBuffer = (data: OnBufferData) => {
+    console.log('handling this guy')
+    const { isBuffering } = data
     isBuffering && triggerBufferAnimation()
+    console.log('isBuffering ===> ', isBuffering)
     if (loopingAnimation && !isBuffering) {
       loopingAnimation.stop()
     }
@@ -269,8 +272,6 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
   const rotateStyle = { transform: [{ rotate: interpolatedAnimation }] }
   // console.log('height: ' + videoSize.height)
 
-  console.log('hasError na munzake: ', !hasError, buffering)
-
   return (
     <View style={styles.container}>
       <View
@@ -280,7 +281,6 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
             layout: { width, height }
           }
         }) => {
-          console.log(width)
           setState({ ...state, boxSize: { width, height } })
         }}>
         <Header back title="Playing" />

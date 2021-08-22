@@ -67,7 +67,7 @@ const Index = () => {
           })}>
           <Tab.Screen name="Home" component={MediaPlayer} />
           <Tab.Screen name="Library" component={LibraryStack} />
-          <Tab.Screen name="Favourites" component={Favorites} />
+          {/* <Tab.Screen name="Favourites" component={Favorites} /> */}
           <Tab.Screen name="More" component={More} />
         </Tab.Navigator>
       </LinearGradient>
