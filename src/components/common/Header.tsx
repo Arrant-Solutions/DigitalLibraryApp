@@ -66,7 +66,7 @@ const Header: React.FC<HeaderProps> = ({
           </View>
         }
         rightComponent={
-          <View style={flexRow}>
+          <View style={[flexRow, { alignItems: 'center', flex: 1 }]}>
             <Icon
               containerStyle={{ marginRight: 10 }}
               name="search"
