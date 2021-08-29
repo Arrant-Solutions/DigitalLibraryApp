@@ -13,7 +13,6 @@ const logo = require('../../../../assets/icon.jpg')
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
 
 const AuthHome = () => {
-  console.log('========>', 'AuthHome')
   const {navigate} = useNavigation<AuthHomeProp>()
 
   return (
