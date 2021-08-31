@@ -70,7 +70,6 @@ export const purple = {
   40: '#bb4ed9',
   30: '#cf4ab7',
 }
-// 0 1 2 3 4 5 6 7 8 9 a b c d e f
 
 export const black = {
   100: '#11111',
@@ -85,6 +84,13 @@ export const black = {
   10: '#11111122',
 }
 
+export const pink = {
+  100: '#E05297',
+  80: '#EA86B6',
+  60: '#F3BAD6',
+  10: '#FCEEF5',
+}
+
 export const pcl = {
   background: '#f7f7f7',
   deep: '#151043',
@@ -93,6 +99,8 @@ export const pcl = {
   blue: '#023fba',
   lightBlue: '#3997d9',
   gold: '#e1ac2d',
+  black: '#000b',
+  textPlaceholder: '#0008',
 }
 
 export const themeBlack = '#111111'

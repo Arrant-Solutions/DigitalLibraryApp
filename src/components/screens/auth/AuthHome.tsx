@@ -1,13 +1,13 @@
 import {useNavigation} from '@react-navigation/native'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {AuthStackParamList} from 'components/MainNavigation'
-import {Screens} from 'constants/screens'
 import React from 'react'
 import {StyleSheet, Image, View, Text, StatusBar} from 'react-native'
 import {SocialIcon, Button} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import GlassyCard from '../common/GlassyCard'
-import {purplePallet, linkText, skyBlue, googleBlue, pcl} from '../common/style'
+import PCLButton from '../common/PCLButton'
+import {purplePallet, linkText, googleBlue, pcl} from '../common/style'
 const logo = require('../../../../assets/icon.jpg')
 
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
@@ -17,6 +17,8 @@ const AuthHome = () => {
 
   return (
     <GlassyCard
+      blurAmount={0}
+      solidContainerStyle={{backgroundColor: pcl.background, padding: 20}}
       cardContainerStyle={{padding: 20, paddingVertical: 30}}
       colors={[pcl.background, pcl.background]}>
       <StatusBar
@@ -60,14 +62,7 @@ const AuthHome = () => {
           type="google"
           onPress={() => console.log('pressed')}
         />
-        <Button
-          containerStyle={{margin: 8, borderRadius: 10}}
-          buttonStyle={{
-            borderRadius: 10,
-            paddingVertical: 10,
-            backgroundColor: '#17171722',
-          }}
-          titleStyle={{fontSize: 16, fontWeight: 'bold', color: '#000b'}}
+        <PCLButton
           icon={
             <Icon
               style={{marginRight: 15}}
@@ -94,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   text: {
-    color: purplePallet.textLight,
+    color: '#000b',
     fontSize: 20,
     fontWeight: 'bold',
   },

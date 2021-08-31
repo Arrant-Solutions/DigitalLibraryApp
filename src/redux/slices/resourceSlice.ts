@@ -1,14 +1,14 @@
-import { APP_COUNTRIES_API } from '@env'
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {APP_COUNTRIES_API} from '@env'
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {Storage} from 'constants/storage'
 
-import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import { COUNTRIES_TOKEN, GENDERS_STORE } from '../../constants/storage'
-import { CountryI } from '../../models/country'
-import { GenderI } from '../../models/gender'
-import { getAsyncData } from '../../utils/storage'
-import { fetchData } from '../services'
-import { genders } from '../services/data'
-import { RootState } from '../store'
+import {GENERIC_SERVER_ERROR} from '../../constants/errors'
+import {CountryI} from '../../models/country'
+import {GenderI} from '../../models/gender'
+import {getAsyncData} from '../../utils/storage'
+import {fetchData} from '../services'
+import {genders} from '../services/data'
+import {RootState} from '../store'
 
 export interface ResourceSliceI {
   genders: GenderI[]
@@ -19,33 +19,36 @@ export interface ResourceSliceI {
 const initialState: ResourceSliceI = {
   genders: [],
   countries: [],
-  errorMessage: ''
+  errorMessage: '',
 }
 
 export const fetchCountries = createAsyncThunk(
   'resources/countries',
   async () => {
-    const { data } = await fetchData<{ name: string }[]>(APP_COUNTRIES_API)
+    const {data} = await fetchData<{name: string; flag: string}[]>(
+      APP_COUNTRIES_API,
+    )
 
     if (Array.isArray(data)) {
       return {
         ...initialState,
-        countries: data.map(({ name }, index) => ({
+        countries: data.map(({name, flag}, index) => ({
           countryID: index,
-          countryName: name
-        }))
+          countryName: name,
+          flag,
+        })),
       }
     }
 
     return {
       ...initialState,
-      errorMessage: data
+      errorMessage: data,
     }
-  }
+  },
 )
 
 export const fetchGenders = createAsyncThunk('resources/genders', async () => {
-  return { errorMessage: '', genders: genders }
+  return {errorMessage: '', genders: genders}
   // const { payload } = await getGenders()
 
   // if (Array.isArray(payload)) {
@@ -61,19 +64,19 @@ export const fetchGenders = createAsyncThunk('resources/genders', async () => {
 export const restoreResources = createAsyncThunk(
   'resource/restore',
   async (): Promise<ResourceSliceI> => {
-    const countries = await getAsyncData<CountryI[]>(COUNTRIES_TOKEN)
-    const genders = await getAsyncData<GenderI[]>(GENDERS_STORE)
+    const countries = await getAsyncData<CountryI[]>(Storage.COUNTRIES_TOKEN)
+    const genders = await getAsyncData<GenderI[]>(Storage.GENDERS_STORE)
 
     if (Array.isArray(countries) && Array.isArray(genders)) {
       return {
         countries,
         genders,
-        errorMessage: ''
+        errorMessage: '',
       }
     }
 
     return initialState
-  }
+  },
 )
 
 export const resourceSlice = createSlice({
@@ -85,14 +88,14 @@ export const resourceSlice = createSlice({
     },
     setCountries: (state, action: PayloadAction<CountryI[]>) => {
       state.countries = action.payload
-    }
+    },
   },
   extraReducers: {
     [fetchGenders.fulfilled.toString()]: (
       state,
-      action: PayloadAction<ResourceSliceI>
+      action: PayloadAction<ResourceSliceI>,
     ) => {
-      const { genders, errorMessage } = action.payload
+      const {genders, errorMessage} = action.payload
       state.genders = genders
       state.errorMessage = errorMessage
     },
@@ -101,9 +104,9 @@ export const resourceSlice = createSlice({
     },
     [fetchCountries.fulfilled.toString()]: (
       state,
-      action: PayloadAction<ResourceSliceI>
+      action: PayloadAction<ResourceSliceI>,
     ) => {
-      const { countries, errorMessage } = action.payload
+      const {countries, errorMessage} = action.payload
       state.countries = countries
       state.errorMessage = errorMessage
     },
@@ -112,20 +115,20 @@ export const resourceSlice = createSlice({
     },
     [restoreResources.fulfilled.toString()]: (
       state,
-      action: PayloadAction<ResourceSliceI>
+      action: PayloadAction<ResourceSliceI>,
     ) => {
-      const { genders, countries, errorMessage } = action.payload
+      const {genders, countries, errorMessage} = action.payload
       state.genders = genders
       state.countries = countries
       state.errorMessage = errorMessage
     },
     [restoreResources.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
-    }
-  }
+    },
+  },
 })
 
-export const { setCountries, setGenders } = resourceSlice.actions
+export const {setCountries, setGenders} = resourceSlice.actions
 
 export const selectResources = (state: RootState): ResourceSliceI =>
   state.resources

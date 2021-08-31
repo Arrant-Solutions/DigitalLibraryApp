@@ -2,7 +2,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import {AuthStackParamList} from 'components/MainNavigation'
 import React from 'react'
 import {StyleSheet} from 'react-native'
-import {purplePallet} from '../common/style'
+import {pcl} from '../common/style'
 import AuthHome from './AuthHome'
 import Login from './Login'
 import Signup from './Signup'
@@ -17,9 +17,9 @@ const AuthStack = () => {
         headerShown: true,
         headerBackTitleVisible: false,
         headerStyle: {
-          backgroundColor: purplePallet.purpleDeep,
+          backgroundColor: pcl.background,
         },
-        headerTintColor: purplePallet.textLight,
+        headerTintColor: pcl.blue,
         // headerLeft: () => <></>
       }}>
       <Stack.Screen
