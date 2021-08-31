@@ -24,7 +24,8 @@ module.exports = {
     },
   },
   rules: {
-    'no-use-before-define': 'error',
+    'no-unneeded-ternary': 'off',
+    'no-use-before-define': 'off',
     '@typescript-eslint/no-use-before-define': ['error'],
     'react/jsx-filename-extension': ['warn', {extensions: ['.tsx']}],
     'react/jsx-props-no-spreading': 'off',
@@ -36,9 +37,9 @@ module.exports = {
         tsx: 'never',
       },
     ],
-    'no-shadow': 'error',
+    'no-shadow': 'off',
     '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
     'no-param-reassign': [
       'error',
       {
@@ -83,4 +84,4 @@ module.exports = {
     'no-useless-concat': 'on',
     'vars-on-top': 'on',
   },
-};
+}

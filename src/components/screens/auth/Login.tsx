@@ -33,11 +33,9 @@ const Login = () => {
 
   const handleLogin = () => {
     setLoading(true)
-    dispatch(login(credential))
-      .then(res => {
-        // console.log(res)
-      })
-      .finally(() => setLoading(false))
+    dispatch(login(credential)).then(res => {
+      // console.log(res)
+    })
   }
 
   return (

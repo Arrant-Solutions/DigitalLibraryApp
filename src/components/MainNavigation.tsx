@@ -5,6 +5,7 @@ import {useAppSelector, useAppDispatch} from 'redux/hooks'
 import {selectAuth, restoreSession} from 'redux/slices/authSlice'
 import {fetchCountries, fetchGenders} from 'redux/slices/resourceSlice'
 import AuthStack from './screens/auth/AuthStack'
+import DrawerContainer from './screens/home/DrawerContainer'
 import StartupError from './StartupError'
 
 export type AuthStackParamList = {
@@ -36,6 +37,10 @@ const MainNavigation = () => {
 
   if (error) {
     return <StartupError />
+  }
+
+  if (token) {
+    return <DrawerContainer />
   }
 
   return <AuthStack />

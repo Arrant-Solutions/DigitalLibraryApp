@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler'
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import MainNavigation from 'components/MainNavigation'
 import {purplePallet, pcl} from 'components/screens/common/style'
