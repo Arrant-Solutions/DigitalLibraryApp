@@ -17,6 +17,7 @@ interface PCLButtonProps {
   title: string
   onPress?: ((event: GestureResponderEvent) => void) | undefined
   icon?: IconNode | undefined
+  loading?: boolean
 }
 
 const PCLButton: React.FC<PCLButtonProps> = ({
@@ -26,6 +27,7 @@ const PCLButton: React.FC<PCLButtonProps> = ({
   title,
   icon,
   onPress,
+  loading,
 }) => {
   return (
     <Button
@@ -35,6 +37,7 @@ const PCLButton: React.FC<PCLButtonProps> = ({
       title={title}
       icon={icon}
       onPress={onPress}
+      loading={loading}
     />
   )
 }

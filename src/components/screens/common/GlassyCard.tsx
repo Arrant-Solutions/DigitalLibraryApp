@@ -79,7 +79,13 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
                 </LinearGradient>
               </BlurView>
             ) : (
-              <View style={[styles.cardContainer, shadow, solidContainerStyle]}>
+              <View
+                style={[
+                  styles.cardContainer,
+                  shadow,
+                  containerStyle,
+                  solidContainerStyle,
+                ]}>
                 {children}
               </View>
             )}

@@ -6,12 +6,14 @@ import {UserCredential} from '../../../models/user'
 import {useAppDispatch} from '../../../redux/hooks'
 import {login} from '../../../redux/slices/authSlice'
 import GlassyCard from '../common/GlassyCard'
+import PCLButton from '../common/PCLButton'
 import {
   purplePallet,
   flexRow,
   socialButton,
   googleBlue,
   flexColumn,
+  pcl,
 } from '../common/style'
 
 const Login = () => {
@@ -40,17 +42,15 @@ const Login = () => {
 
   return (
     <GlassyCard
-      containerStyle={{height: 400}}
+      blurAmount={0}
+      solidContainerStyle={{backgroundColor: pcl.background, padding: 20}}
       cardContainerStyle={{padding: 20, paddingVertical: 30}}
-      colors={[
-        purplePallet.purpleDarker,
-        purplePallet.purpleDarker,
-        purplePallet.purpleLight,
-      ]}>
+      colors={[pcl.background, pcl.background]}
+      containerStyle={{height: 400, backgroundColor: 'red'}}>
       <Text
         style={[
           {paddingHorizontal: 10, fontSize: 15, marginBottom: 10},
-          Platform.OS === 'android' ? {color: '#fff'} : {},
+          Platform.OS === 'android' ? {color: pcl.black} : {},
         ]}>
         Sign in with one of the following options.
       </Text>
@@ -59,7 +59,7 @@ const Login = () => {
           flexRow,
           {
             justifyContent: 'space-between',
-            marginBottom: 10,
+            marginBottom: 40,
             width: '100%',
           },
         ]}>
@@ -85,7 +85,7 @@ const Login = () => {
       </View>
       <Input
         inputContainerStyle={styles.inputContainerStyle}
-        placeholderTextColor="#ccc"
+        placeholderTextColor={pcl.textPlaceholder}
         placeholder="Email"
         leftIcon={<Ionicons name="mail-outline" size={20} color="white" />}
         onChangeText={value => handleChange('email', value)}
@@ -95,7 +95,7 @@ const Login = () => {
       <Input
         value={credential.password}
         inputContainerStyle={styles.inputContainerStyle}
-        placeholderTextColor="#ccc"
+        placeholderTextColor={pcl.textPlaceholder}
         multiline={false}
         secureTextEntry={!showPassword}
         placeholder="Password"
@@ -111,13 +111,7 @@ const Login = () => {
         onChangeText={value => handleChange('password', value)}
       />
       <View style={[flexColumn, {width: '100%'}]}>
-        <Button
-          containerStyle={{margin: 8, borderRadius: 10}}
-          buttonStyle={{
-            borderRadius: 10,
-            paddingVertical: 10,
-            backgroundColor: '#17171722',
-          }}
+        <PCLButton
           titleStyle={{fontSize: 16, fontWeight: 'bold', color: '#000b'}}
           loading={loading}
           title="Login"
@@ -132,7 +126,7 @@ export default Login
 
 const styles = StyleSheet.create({
   inputContainerStyle: {
-    borderColor: purplePallet.text,
+    borderColor: pcl.textPlaceholder,
     borderBottomWidth: 1 / 2,
   },
   container: {
