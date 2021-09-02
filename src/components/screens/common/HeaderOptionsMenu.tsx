@@ -1,14 +1,14 @@
 import React from 'react'
-import { Platform } from 'react-native'
-import { Pressable, StatusBar } from 'react-native'
-import { Modal, StyleSheet, Text, View } from 'react-native'
-import { Header, Icon, ListItem } from 'react-native-elements'
-import { useAppDispatch, useAppSelector } from '../../redux/hooks'
-import { selectModal, setVisible } from '../../redux/slices/modalSlice'
-import { purplePallet } from './style'
+import {Platform} from 'react-native'
+import {Pressable, StatusBar} from 'react-native'
+import {Modal, StyleSheet, Text, View} from 'react-native'
+import {Header, Icon, ListItem} from 'react-native-elements'
+import {useAppSelector, useAppDispatch} from 'redux/hooks'
+import {selectModal, setVisible} from 'redux/slices/modalSlice'
+import {purplePallet} from './style'
 
 const HeaderOptionsMenu = () => {
-  const { visible } = useAppSelector(selectModal)
+  const {visible} = useAppSelector(selectModal)
   const dispatch = useAppDispatch()
   console.log(StatusBar.currentHeight)
   return (
@@ -21,7 +21,7 @@ const HeaderOptionsMenu = () => {
             flex: 1,
             display: 'flex',
             backgroundColor: 'transparent',
-            alignItems: 'flex-end'
+            alignItems: 'flex-end',
           }}
           onPress={() => {
             setTimeout(() => {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   topRightView: {
     display: 'flex',
     alignItems: 'flex-end',
-    flex: 1
+    flex: 1,
   },
   modalView: {
     margin: Platform.OS === 'android' ? 5 : 0,
@@ -96,10 +96,10 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
-  }
+    elevation: 5,
+  },
 })

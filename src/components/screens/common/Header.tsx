@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import {useNavigation} from '@react-navigation/native'
 import React from 'react'
 import {
   GestureResponderEvent,
@@ -7,12 +7,12 @@ import {
   Text,
   useWindowDimensions,
   View,
-  ViewStyle
+  ViewStyle,
 } from 'react-native'
-import { Header as ElementsHeader, Icon } from 'react-native-elements'
-import { useAppDispatch } from '../../redux/hooks'
-import { setVisible } from '../../redux/slices/modalSlice'
-import { flexRow, purple, purplePallet } from './style'
+import {Header as ElementsHeader, Icon} from 'react-native-elements'
+import {useAppDispatch} from 'redux/hooks'
+import {setVisible} from 'redux/slices/modalSlice'
+import {flexRow, purple, purplePallet} from './style'
 
 interface HeaderProps {
   containerStyle?: ViewStyle
@@ -31,11 +31,11 @@ const Header: React.FC<HeaderProps> = ({
   color,
   title,
   back,
-  handleBackButton
+  handleBackButton,
 }) => {
   const dispatch = useAppDispatch()
-  const { width } = useWindowDimensions()
-  const { goBack } = useNavigation()
+  const {width} = useWindowDimensions()
+  const {goBack} = useNavigation()
   const handlePress = (e: GestureResponderEvent) =>
     handleBackButton ? handleBackButton(e) : goBack()
 
@@ -48,10 +48,10 @@ const Header: React.FC<HeaderProps> = ({
       /> */}
       <ElementsHeader
         containerStyle={containerStyle}
-        statusBarProps={{ barStyle: barStyle || 'light-content' }}
+        statusBarProps={{barStyle: barStyle || 'light-content'}}
         backgroundColor={backgroundColor || purple[60]}
         leftComponent={
-          <View style={[flexRow, { width, alignItems: 'center' }]}>
+          <View style={[flexRow, {width, alignItems: 'center'}]}>
             <Icon
               name={back ? 'ios-chevron-back' : 'logo-android'}
               color={color || '#fff'}
@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({
               size={30}
             />
             <Text
-              style={{ marginLeft: 10, color: color || '#fff', fontSize: 20 }}>
+              style={{marginLeft: 10, color: color || '#fff', fontSize: 20}}>
               {title}
             </Text>
           </View>
@@ -68,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
         rightComponent={
           <View style={flexRow}>
             <Icon
-              containerStyle={{ marginRight: 10 }}
+              containerStyle={{marginRight: 10}}
               name="search"
               color={color || '#fff'}
               type="ionicon"

@@ -1,5 +1,5 @@
-import React, { PureComponent } from 'react'
-import { TextStyle } from 'react-native'
+import React, {PureComponent} from 'react'
+import {TextStyle} from 'react-native'
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   Image,
   ImageSourcePropType,
   ViewStyle,
-  ImageStyle
+  ImageStyle,
 } from 'react-native'
 
 interface TileProps {
@@ -21,8 +21,7 @@ interface TileProps {
   subHeaderStyle?: TextStyle
   rounded?: boolean
 }
-
-export class Tile extends PureComponent<TileProps> {
+class Tile extends PureComponent<TileProps> {
   render() {
     const {
       size = 90,
@@ -33,10 +32,10 @@ export class Tile extends PureComponent<TileProps> {
       imageStyle,
       titleStyle,
       subHeaderStyle,
-      rounded = true
+      rounded = true,
     } = this.props
     return (
-      <View style={[styles.container, { width: size }, style]}>
+      <View style={[styles.container, {width: size}, style]}>
         <Image
           source={imageSrc}
           resizeMode="cover"
@@ -44,9 +43,9 @@ export class Tile extends PureComponent<TileProps> {
           width={undefined}
           style={[
             styles.image,
-            { width: size, height: size },
+            {width: size, height: size},
             imageStyle,
-            !rounded && { borderRadius: 0 }
+            !rounded && {borderRadius: 0},
           ]}
         />
         {Boolean(title && title.length) && (
@@ -72,19 +71,19 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
-    borderRadius: 30
+    borderRadius: 30,
   },
   text: {
     textAlign: 'center',
     paddingVertical: 3,
-    color: '#888'
+    color: '#888',
   },
   subHeaderText: {
     textAlign: 'center',
     paddingVertical: 3,
-    color: '#888'
-  }
+    color: '#888',
+  },
 })

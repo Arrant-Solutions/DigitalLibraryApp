@@ -1,13 +1,13 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import { AUTH_TOKEN, USER_STORE } from '../../constants/storage'
-import { GenericUser, GenericUserI, UserCredential } from '../../models/user'
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {Storage} from 'constants/storage'
+import {GENERIC_SERVER_ERROR} from '../../constants/errors'
+import {GenericUser, GenericUserI, UserCredential} from '../../models/user'
 import {
   deleteAsyncData,
   getAsyncData,
-  storeAsyncData
+  storeAsyncData,
 } from '../../utils/storage'
-import { RootState } from '../store'
+import {RootState} from '../store'
 
 export interface AuthSliceI {
   user: GenericUserI
@@ -18,7 +18,7 @@ export interface AuthSliceI {
 const initialState: AuthSliceI = {
   user: GenericUser.createReduxInstance(),
   token: '',
-  errorMessage: ''
+  errorMessage: '',
 }
 
 export const login = createAsyncThunk(
@@ -26,7 +26,7 @@ export const login = createAsyncThunk(
   async (credential: UserCredential) => {
     // const { success, payload } = await userLogin(credential)
 
-    const { user, token } = {
+    const {user, token} = {
       // statusCode?
       user: {
         firstName: 'Pablo',
@@ -36,23 +36,23 @@ export const login = createAsyncThunk(
         dateOfBirth: '1990-10-31',
         gender: {
           genderID: 1,
-          genderName: 'Male'
+          genderName: 'Male',
         },
         country: {
           countryID: 1,
-          countryName: 'Angola'
+          countryName: 'Angola',
         },
         branch: {
           branchID: 1,
-          branchName: 'Chadleigh Branch'
-        }
+          branchName: 'Chadleigh Branch',
+        },
       },
       token:
-        'eyJhbGciOixhc3RfbmFtZSI6Ik1JIUzI1J9.eyJmaXJzdF9uYW1lIjoiV2lsbGlhbSIsImvb25nYSIsInVzZXJuYW1lIjoiZ24xMzc2IiwiZW1haWwiOnsidmFsdWUiOiJXaWxsaWFtLk1vb25nYUB6YW10ZWwuY28uem0ifSwidXNlcl9sZXZlbCI6ImFkbWluIiwiYnVsa3Ntc19hZG1pbiI6dHJ1ZSwiNiIsInR5cCI6IkpXVCc3RhdHVzIjoxLCJpYXQiOjE2MDY3MjUzMzQsImV4cCI6MTYwNjc1NDEzNCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIn0.mTCIL3ImkMat2q4LiVfQF-LzQKxGPjpY8vRPZtyLhQQ'
+        'eyJhbGciOixhc3RfbmFtZSI6Ik1JIUzI1J9.eyJmaXJzdF9uYW1lIjoiV2lsbGlhbSIsImvb25nYSIsInVzZXJuYW1lIjoiZ24xMzc2IiwiZW1haWwiOnsidmFsdWUiOiJXaWxsaWFtLk1vb25nYUB6YW10ZWwuY28uem0ifSwidXNlcl9sZXZlbCI6ImFkbWluIiwiYnVsa3Ntc19hZG1pbiI6dHJ1ZSwiNiIsInR5cCI6IkpXVCc3RhdHVzIjoxLCJpYXQiOjE2MDY3MjUzMzQsImV4cCI6MTYwNjc1NDEzNCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIn0.mTCIL3ImkMat2q4LiVfQF-LzQKxGPjpY8vRPZtyLhQQ',
       // }
     }
 
-    return { token, user, errorMessage: '' }
+    return {token, user, errorMessage: ''}
 
     // if (success && typeof payload === 'object') {
     //   const { token, user } = payload
@@ -65,17 +65,17 @@ export const login = createAsyncThunk(
     //   ...initialState,
     //   errorMessage: payload as string
     // }
-  }
+  },
 )
 
 export const restoreSession = createAsyncThunk('user/restore', async () => {
-  const token = await getAsyncData<string>(AUTH_TOKEN)
-  const user = await getAsyncData<GenericUserI>(USER_STORE)
+  const token = await getAsyncData<string>(Storage.AUTH_TOKEN)
+  const user = await getAsyncData<GenericUserI>(Storage.USER_STORE)
 
   return {
     token,
     user,
-    errorMessage: ''
+    errorMessage: '',
   }
 })
 
@@ -84,8 +84,8 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     logout: state => {
-      deleteAsyncData(AUTH_TOKEN)
-      deleteAsyncData(USER_STORE)
+      deleteAsyncData(Storage.AUTH_TOKEN)
+      deleteAsyncData(Storage.USER_STORE)
 
       state.user = GenericUser.createReduxInstance()
       state.token = ''
@@ -95,17 +95,17 @@ export const authSlice = createSlice({
     },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
-    }
+    },
   },
   extraReducers: {
     [login.fulfilled.toString()]: (
       state,
-      action: PayloadAction<AuthSliceI>
+      action: PayloadAction<AuthSliceI>,
     ) => {
-      const { user, token, errorMessage } = action.payload
+      const {user, token, errorMessage} = action.payload
 
-      storeAsyncData(AUTH_TOKEN, token)
-      storeAsyncData(USER_STORE, user)
+      storeAsyncData(Storage.AUTH_TOKEN, token)
+      storeAsyncData(Storage.USER_STORE, user)
 
       state.user = user
       state.token = token
@@ -116,24 +116,24 @@ export const authSlice = createSlice({
     },
     [restoreSession.fulfilled.toString()]: (
       state,
-      action: PayloadAction<AuthSliceI>
+      action: PayloadAction<AuthSliceI>,
     ) => {
-      const { user, token, errorMessage } = action.payload
+      const {user, token, errorMessage} = action.payload
       state.user = user ? user : initialState.user
       state.token = token
       state.errorMessage = errorMessage
     },
     [restoreSession.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
-    }
-  }
+    },
+  },
 })
 
-export const { logout, setUser, setToken } = authSlice.actions
+export const {logout, setUser, setToken} = authSlice.actions
 
-export const selectAuth = ({ auth }: RootState): AuthSliceI => ({
+export const selectAuth = ({auth}: RootState): AuthSliceI => ({
   ...auth,
-  user: new GenericUser(auth.user)
+  user: new GenericUser(auth.user),
 })
 
 export default authSlice.reducer

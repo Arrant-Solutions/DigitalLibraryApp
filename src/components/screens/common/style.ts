@@ -12,6 +12,12 @@ export const skyBlue = {
   10: '#e6f9ff',
 }
 
+export const blue = {
+  100: '#0A81AB',
+  90: '#0779E4',
+  80: '#39A2DB',
+}
+
 export const gold = {
   100: '#a67c00',
   80: '#bf9b30',

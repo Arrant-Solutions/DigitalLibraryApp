@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import GlassyCard from '../common/GlassyCard'
 import PCLButton from '../common/PCLButton'
 import {purplePallet, linkText, googleBlue, pcl} from '../common/style'
-const logo = require('../../../../assets/icon.jpg')
+const logo = require('assets/icon.jpg')
 
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
 

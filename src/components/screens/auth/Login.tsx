@@ -5,8 +5,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../models/user'
 import {useAppDispatch} from '../../../redux/hooks'
 import {login} from '../../../redux/slices/authSlice'
-import GlassyCard from '../common/GlassyCard'
-import PCLButton from '../common/PCLButton'
+import GlassyCard from 'components/screens/common/GlassyCard'
+import PCLButton from 'components/screens/common/PCLButton'
 import {
   purplePallet,
   flexRow,
@@ -14,7 +14,7 @@ import {
   googleBlue,
   flexColumn,
   pcl,
-} from '../common/style'
+} from 'components/screens/common/style'
 
 const Login = () => {
   const dispatch = useAppDispatch()

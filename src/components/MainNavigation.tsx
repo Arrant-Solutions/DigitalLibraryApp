@@ -4,9 +4,10 @@ import SplashScreen from 'react-native-splash-screen'
 import {useAppSelector, useAppDispatch} from 'redux/hooks'
 import {selectAuth, restoreSession} from 'redux/slices/authSlice'
 import {fetchCountries, fetchGenders} from 'redux/slices/resourceSlice'
-import AuthStack from './screens/auth/AuthStack'
-import DrawerContainer from './screens/home/DrawerContainer'
-import StartupError from './StartupError'
+import AuthStack from 'components/screens/auth/AuthStack'
+// import DrawerContainer from 'components/screens/home/DrawerContainer'
+import StartupError from 'components/StartupError'
+import TabNavigator from './screens/main/TabNavigator'
 
 export type AuthStackParamList = {
   AuthHome: undefined
@@ -40,7 +41,7 @@ const MainNavigation = () => {
   }
 
   if (token) {
-    return <DrawerContainer />
+    return <TabNavigator />
   }
 
   return <AuthStack />
