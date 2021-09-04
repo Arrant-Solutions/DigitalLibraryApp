@@ -73,7 +73,8 @@ const More = () => {
               marginTop: 45,
               flex: 1,
             }}>
-            <Text style={{fontSize: 30, textAlign: 'center', color: gold[40]}}>
+            <Text
+              style={{fontSize: 30, textAlign: 'center', color: pcl.purple}}>
               {user.fullname}
             </Text>
             <Text
@@ -81,7 +82,7 @@ const More = () => {
                 fontSize: 12,
                 marginTop: 8,
                 textAlign: 'center',
-                color: copper[40],
+                color: pcl.purple,
               }}>
               {user.email}
             </Text>

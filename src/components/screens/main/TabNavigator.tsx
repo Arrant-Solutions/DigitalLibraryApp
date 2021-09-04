@@ -1,5 +1,5 @@
 import React from 'react'
-import {StatusBar, StyleSheet, View} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import LinearGradient from 'react-native-linear-gradient'
 import LibraryStack from './LibraryStack/'
@@ -10,6 +10,7 @@ import {RouteProp} from '@react-navigation/native'
 import HeaderOptionsMenu from '../common/HeaderOptionsMenu'
 import {pcl, purplePallet} from '../common/style'
 import HomeStack from './HomeStack'
+import GiftStack from './GiftStack'
 
 export type TabNavigatorParamList = {
   Home: undefined
@@ -91,7 +92,7 @@ const TabNavigator = () => {
               ),
             }}
             name="Gifts"
-            component={Favorites}
+            component={GiftStack}
           />
           <Tab.Screen
             options={{

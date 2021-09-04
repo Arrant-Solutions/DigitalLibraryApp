@@ -107,6 +107,7 @@ export const pcl = {
   gold: '#e1ac2d',
   black: '#000b',
   textPlaceholder: '#0008',
+  white: '#ffffff',
 }
 
 export const themeBlack = '#111111'
@@ -140,7 +141,7 @@ export const theme = {
 
 const style = StyleSheet.create({
   container: {
-    backgroundColor: '#111111',
+    backgroundColor: pcl.background,
     display: 'flex',
     flex: 1,
   },
