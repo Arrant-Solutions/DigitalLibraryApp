@@ -12,7 +12,7 @@ import {
 import {Header as ElementsHeader, Icon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
 import {setVisible} from 'redux/slices/modalSlice'
-import {flexRow, purple, purplePallet} from './style'
+import {flexRow, pcl, purple, purplePallet} from './style'
 
 interface HeaderProps {
   containerStyle?: ViewStyle
@@ -41,26 +41,25 @@ const Header: React.FC<HeaderProps> = ({
 
   return (
     <View>
-      {/* <StatusBar
-        barStyle="light-content"
-        translucent={true}
-        backgroundColor={statusBarBackgroundColor || purplePallet.purpleDeep}
-      /> */}
       <ElementsHeader
         containerStyle={containerStyle}
-        statusBarProps={{barStyle: barStyle || 'light-content'}}
-        backgroundColor={backgroundColor || purple[60]}
+        statusBarProps={{barStyle: barStyle || 'dark-content'}}
+        backgroundColor={backgroundColor || pcl.gold}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>
             <Icon
               name={back ? 'ios-chevron-back' : 'logo-android'}
-              color={color || '#fff'}
+              color={color || pcl.deepBlue}
               onPress={back ? handlePress : undefined}
               type="ionicon"
               size={30}
             />
             <Text
-              style={{marginLeft: 10, color: color || '#fff', fontSize: 20}}>
+              style={{
+                marginLeft: 10,
+                color: color || pcl.deepBlue,
+                fontSize: 20,
+              }}>
               {title}
             </Text>
           </View>
@@ -70,13 +69,13 @@ const Header: React.FC<HeaderProps> = ({
             <Icon
               containerStyle={{marginRight: 10}}
               name="search"
-              color={color || '#fff'}
+              color={color || pcl.deepBlue}
               type="ionicon"
               // onPress={() => dispatch(setVisible(true))}
             />
             <Icon
               name="ios-ellipsis-vertical-sharp"
-              color={color || '#fff'}
+              color={color || pcl.deepBlue}
               type="ionicon"
               onPress={() => dispatch(setVisible(true))}
             />

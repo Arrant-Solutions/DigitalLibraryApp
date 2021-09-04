@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native'
+import {Platform, StatusBar, StyleSheet} from 'react-native'
 
 export const skyBlue = {
   90: '#19c5ff',
@@ -178,6 +178,9 @@ const style = StyleSheet.create({
 
     elevation: 5,
   },
+  statusBar: {
+    height: Platform.OS === 'android' ? StatusBar.currentHeight : 47,
+  },
 })
 
 export const {
@@ -188,4 +191,5 @@ export const {
   socialButton,
   stretchedBox,
   shadow,
+  statusBar,
 } = style

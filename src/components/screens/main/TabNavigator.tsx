@@ -1,5 +1,5 @@
 import React from 'react'
-import {StyleSheet, View} from 'react-native'
+import {StatusBar, StyleSheet, View} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
 import LinearGradient from 'react-native-linear-gradient'
 import LibraryStack from './LibraryStack/'
@@ -7,9 +7,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Favorites from './Favorites'
 import More from './More'
 import {RouteProp} from '@react-navigation/native'
-import Home from './Home'
 import HeaderOptionsMenu from '../common/HeaderOptionsMenu'
-import {purplePallet} from '../common/style'
+import {pcl, purplePallet} from '../common/style'
+import HomeStack from './HomeStack'
 
 export type TabNavigatorParamList = {
   Home: undefined
@@ -29,6 +29,7 @@ const TabNavigator = () => {
 
   return (
     <View style={styles.container}>
+      {/* <StatusBar barStyle="light-content" backgroundColor={pcl.blue} /> */}
       <LinearGradient
         colors={[
           purplePallet.purpleDarker,
@@ -43,9 +44,10 @@ const TabNavigator = () => {
         <Tab.Navigator
           screenOptions={{
             headerShown: false,
-            tabBarActiveTintColor: purplePallet.text,
+            tabBarActiveTintColor: pcl.purple,
+            tabBarInactiveTintColor: pcl.deep,
             tabBarStyle: {
-              backgroundColor: purplePallet.purpleDeep,
+              backgroundColor: pcl.gold,
             },
             tabBarLabelStyle: {
               fontSize: 14,
@@ -63,7 +65,7 @@ const TabNavigator = () => {
               ),
             })}
             name="Home"
-            component={Home}
+            component={HomeStack}
           />
           <Tab.Screen
             options={{
@@ -82,8 +84,8 @@ const TabNavigator = () => {
             options={{
               tabBarIcon: ({focused, color, size}) => (
                 <Ionicons
-                  name={focused ? 'heart' : 'heart-outline'}
-                  color={focused ? 'red' : color}
+                  name={focused ? 'gift' : 'ios-gift-outline'}
+                  color={color}
                   size={size}
                 />
               ),

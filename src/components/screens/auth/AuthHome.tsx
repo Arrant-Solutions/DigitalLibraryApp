@@ -7,7 +7,7 @@ import {SocialIcon, Button} from 'react-native-elements'
 import Icon from 'react-native-vector-icons/Ionicons'
 import GlassyCard from '../common/GlassyCard'
 import PCLButton from '../common/PCLButton'
-import {purplePallet, linkText, googleBlue, pcl} from '../common/style'
+import {linkText, googleBlue, pcl} from '../common/style'
 const logo = require('assets/icon.jpg')
 
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
@@ -21,10 +21,6 @@ const AuthHome = () => {
       solidContainerStyle={{backgroundColor: pcl.background, padding: 20}}
       cardContainerStyle={{padding: 20, paddingVertical: 30}}
       colors={[pcl.background, pcl.background]}>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor={purplePallet.purpleDeep}
-      />
       <Image style={styles.logo} source={logo} />
       <View
         style={{

@@ -17,7 +17,7 @@ const AuthStack = () => {
         headerShown: true,
         headerBackTitleVisible: false,
         headerStyle: {
-          backgroundColor: pcl.background,
+          backgroundColor: pcl.gold,
         },
         headerTintColor: pcl.blue,
         // headerLeft: () => <></>

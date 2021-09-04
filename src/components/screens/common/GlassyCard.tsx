@@ -1,20 +1,20 @@
 import {BlurView} from '@react-native-community/blur'
 import React from 'react'
-import {KeyboardAvoidingView} from 'react-native'
+import {KeyboardAvoidingView, StatusBar, StatusBarStyle} from 'react-native'
 import {
   SafeAreaView,
   StyleSheet,
-  Image,
   View,
-  Text,
   StyleProp,
   ViewStyle,
 } from 'react-native'
 import {ScrollView} from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
-import {themeContainer, theme, shadow, pcl} from '../common/style'
+import {SafeAreaProvider} from 'react-native-safe-area-context'
+import {themeContainer, theme, shadow, statusBar} from '../common/style'
+import PCLStatusBar, {PCLStatusBarProps} from './PCLStatusBar'
 
-interface GlassyCardProps {
+interface GlassyCardProps extends PCLStatusBarProps {
   blurAmount?: number
   colors?: string[]
   angle?: number
@@ -34,10 +34,15 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
   containerStyle,
   cardContainerStyle,
   solidContainerStyle,
+  barStyle,
+  backgroundColor,
 }) => {
   return (
-    <SafeAreaView style={{display: 'flex', flex: 1}}>
-      <KeyboardAvoidingView style={{flex: 1}}>
+    <SafeAreaProvider>
+      {(barStyle || backgroundColor) && (
+        <PCLStatusBar barStyle={barStyle} backgroundColor={backgroundColor} />
+      )}
+      <KeyboardAvoidingView style={{flex: 1, backgroundColor: 'red'}}>
         <LinearGradient
           colors={
             colors || [theme.inputBackgroundColor, '#2b1b3b', theme.black]
@@ -92,7 +97,7 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </SafeAreaProvider>
   )
 }
 

@@ -11,7 +11,7 @@ const HeaderOptionsMenu = () => {
   const {visible} = useAppSelector(selectModal)
   const dispatch = useAppDispatch()
   console.log(StatusBar.currentHeight)
-  return (
+  return visible ? (
     <View style={styles.topRightView}>
       <StatusBar />
       <Header />
@@ -72,6 +72,8 @@ const HeaderOptionsMenu = () => {
         </Pressable>
       </Modal>
     </View>
+  ) : (
+    <></>
   )
 }
 

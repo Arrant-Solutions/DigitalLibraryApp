@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {StyleSheet, Text, View, Platform} from 'react-native'
-import {Button, Input, SocialIcon} from 'react-native-elements'
+import {Input, SocialIcon} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../models/user'
 import {useAppDispatch} from '../../../redux/hooks'
@@ -8,7 +8,6 @@ import {login} from '../../../redux/slices/authSlice'
 import GlassyCard from 'components/screens/common/GlassyCard'
 import PCLButton from 'components/screens/common/PCLButton'
 import {
-  purplePallet,
   flexRow,
   socialButton,
   googleBlue,
