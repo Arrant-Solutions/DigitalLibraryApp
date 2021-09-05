@@ -11,7 +11,7 @@ import {Divider, Icon} from 'react-native-elements'
 import {Platform} from 'react-native'
 import Header from '../common/Header'
 import IconButton from '../common/IconButton'
-import {gold, copper, purplePallet, purple} from '../common/style'
+import {gold, copper, purplePallet, purple, pcl} from '../common/style'
 // import video from '../../../../assets/audio/audio.mp3'
 // const video = require('../../../../assets/videos/video.mp4')
 
@@ -287,6 +287,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
             {...panResponder.panHandlers}
             style={{overflow: 'hidden', height: 220}}>
             <Video
+              repeat={false}
               source={
                 {
                   uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
@@ -301,7 +302,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               fullscreenOrientation="landscape"
               muted={muted}
               paused={paused}
-              volume={0}
+              volume={100}
               resizeMode="contain"
               style={[videoDimensions]}
               onError={handleError}
@@ -367,7 +368,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                 <ProgressBar
                   progress={progress}
                   color="#fff"
-                  unfilledColor={gold[60]}
+                  unfilledColor={pcl.black}
                   borderColor="#fff"
                   borderWidth={0}
                   borderRadius={0}
@@ -480,7 +481,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               raised
               name="playlist-play"
               type="material"
-              color="white"
+              color={pcl.purple}
               size={40}
               onPress={() => console.log('hello')}
             />
@@ -515,7 +516,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
                 '-ellipsis-vertical-sharp'
               }
               type="ionicon"
-              color="white"
+              color={pcl.purple}
               onPress={showOptionMenu}
             />
           </View>
@@ -528,7 +529,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: purplePallet.purpleDeep,
+    backgroundColor: pcl.background,
   },
   video: {
     width: '100%',
@@ -539,8 +540,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   progressContainer: {
-    backgroundColor: gold[60],
-    paddingVertical: 4,
+    backgroundColor: '#000',
+    paddingVertical: 3,
+    marginTop: -1
   },
   timersBox: {
     flexDirection: 'row',
@@ -550,7 +552,7 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontFamily: 'Roboto-Regular',
-    color: '#fff',
+    color: pcl.black,
   },
   control: {
     borderTopColor: gold[60],
@@ -570,13 +572,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   artist: {
-    color: gold[40],
+    color: pcl.black,
     fontFamily: 'Roboto-Regular',
     fontSize: 30,
   },
   title: {
     fontFamily: 'Roboto-Regular',
-    color: '#fff',
+    color: pcl.black,
     fontSize: 17,
     marginTop: 10,
   },
