@@ -157,6 +157,7 @@ const style = StyleSheet.create({
   flexRow: {
     display: 'flex',
     flexDirection: 'row',
+    alignItems: 'center',
     // flex: 1
   },
   socialButton: {

@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import {Icon} from 'react-native-elements'
 import {toPlayDate} from 'utils'
-import {flexColumn} from './style'
+import {flexColumn, flexRow, pcl} from './style'
 
 interface TileProps {
   size?: number
@@ -27,14 +27,7 @@ interface TileProps {
   horizontal?: boolean
 }
 
-interface TileState {
-  playing: boolean
-}
-class Tile extends PureComponent<TileProps, TileState> {
-  state = {
-    playing: false,
-  }
-
+class Tile extends PureComponent<TileProps> {
   render() {
     const {
       size = 90,
@@ -53,7 +46,7 @@ class Tile extends PureComponent<TileProps, TileState> {
       <View
         style={[
           styles.container,
-          {width: size},
+          !horizontal && {width: size},
           style,
           horizontal && {flexDirection: 'row'},
         ]}>
@@ -70,33 +63,34 @@ class Tile extends PureComponent<TileProps, TileState> {
           ]}
         />
         <View
-          style={[styles.textContainer, horizontal && {paddingHorizontal: 20}]}>
+          style={[
+            styles.textContainer,
+            horizontal && {
+              paddingHorizontal: 20,
+              flex: 1,
+            },
+          ]}>
           {Boolean(title && title.length) && (
-            <Text style={[styles.text, titleStyle]} numberOfLines={1}>
+            <Text
+              style={[
+                styles.text,
+                titleStyle,
+                horizontal && {textAlign: 'left'},
+              ]}
+              numberOfLines={1}>
               {title}
             </Text>
           )}
           {Boolean(subHeader && subHeader.length) && (
             <Text
-              style={[styles.subHeaderText, subHeaderStyle]}
+              style={[
+                styles.subHeaderText,
+                subHeaderStyle,
+                horizontal && {textAlign: 'left'},
+              ]}
               numberOfLines={1}>
               {subHeader}
             </Text>
-          )}
-          {horizontal && (
-            <View style={flexColumn}>
-              <Icon
-                type={'ionicon'}
-                name={this.state.playing ? 'playing' : 'paused'}
-                color={'black'}
-                size={20}
-              />
-              <Text>
-                {this.state.playing
-                  ? 'Now Playing'
-                  : toPlayDate(lastPlayed || new Date())}
-              </Text>
-            </View>
           )}
         </View>
       </View>

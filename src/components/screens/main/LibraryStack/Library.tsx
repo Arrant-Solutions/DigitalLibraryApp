@@ -9,13 +9,7 @@ import {
   ViewStyle,
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import {
-  FlatList,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
+import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler'
 import {CategoryI, CategoryIconI, IconName} from '../../../../models/category'
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
 import Anointing from 'assets/anointing.svg'
@@ -44,7 +38,6 @@ import {
   gold,
   copper,
   greys,
-  purplePallet,
   stretchedBox,
   pcl,
 } from 'components/screens/common/style'
@@ -138,7 +131,7 @@ class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
   }
 }
 
-type LibraryProp = StackNavigationProp<LibraryParamList, 'Library'>
+type LibraryProp = StackNavigationProp<LibraryParamList, 'LibraryScreen'>
 
 const Library = () => {
   const [loading, setLoading] = useState(false)
@@ -147,6 +140,11 @@ const Library = () => {
   const {navigate} = useNavigation<LibraryProp>()
   const {errorMessage: err, latest} = useAppSelector(selectHomeResources)
 
+  useEffect(() => {
+    dispatch(fetchCategories())
+  }, [])
+
+  console.log('Error =====> ', errorMessage, categories)
   return (
     <View style={stretchedBox}>
       <Header title="Library" />
@@ -192,15 +190,17 @@ const Library = () => {
             </Text>
             <ScrollView>
               {latest.slice(9, 15).map(({thumbnail, title}) => (
-                <Tile
-                  horizontal
-                  size={70}
-                  key={thumbnail}
-                  style={{marginRight: 10, marginLeft: 5}}
-                  imageStyle={{borderRadius: 10}}
-                  imageSrc={{uri: thumbnail}}
-                  title={title}
-                />
+                <View key={thumbnail}>
+                  <Tile
+                    horizontal
+                    size={70}
+                    style={{marginRight: 10, marginLeft: 5, padding: 5}}
+                    imageStyle={{borderRadius: 10}}
+                    imageSrc={{uri: thumbnail}}
+                    title={title}
+                  />
+                  <Divider width={2} color={pcl.background} />
+                </View>
               ))}
             </ScrollView>
           </View>

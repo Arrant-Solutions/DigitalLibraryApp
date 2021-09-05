@@ -6,7 +6,7 @@ import MediaPlayer from '../MediaPlayer'
 import {Media} from 'models/media'
 
 export type LibraryParamList = {
-  Library: undefined
+  LibraryScreen: undefined
   Category: {id: number; name: string}
   'Media Player': Media
 }
@@ -19,7 +19,7 @@ export default function index() {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Library" component={Library} />
+      <Stack.Screen name="LibraryScreen" component={Library} />
       <Stack.Screen name="Category" component={Category} />
       <Stack.Screen name="Media Player" component={MediaPlayer} />
     </Stack.Navigator>

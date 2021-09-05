@@ -18,6 +18,7 @@ import {fetchCategoryItems} from '../../../../redux/slices/categoriesSlice'
 import Header from 'components/screens/common/Header'
 import {
   greys,
+  pcl,
   purplePallet,
   stretchedBox,
 } from 'components/screens/common/style'
@@ -47,7 +48,7 @@ class Item extends PureComponent<
         style={[
           styles.itemContainer,
           {
-            backgroundColor: purplePallet.purpleDeeper,
+            backgroundColor: pcl.white,
           },
           playing && {borderColor: purplePallet.text, borderWidth: 2},
           style,
@@ -59,13 +60,13 @@ class Item extends PureComponent<
           subHeader={author}
           titleStyle={{
             fontSize: 13,
-            color: greys[20],
+            color: pcl.textPlaceholder,
             paddingHorizontal: 5,
           }}
           subHeaderStyle={{
             fontSize: 18,
             fontWeight: 'bold',
-            color: purplePallet.text,
+            color: pcl.black,
             paddingBottom: 10,
           }}
           rounded={false}
@@ -142,32 +143,20 @@ const Category = () => {
   const keyExtractor = ({id}: Media) => String(id)
 
   return (
-    <SafeAreaView>
-      <LinearGradient
-        colors={[
-          purplePallet.purpleDarker,
-          purplePallet.purpleDarker,
-          purplePallet.purpleLight,
-        ]}
-        start={{x: 0, y: 1}}
-        end={{x: 1, y: 1}}
-        useAngle
-        angle={110}
-        style={stretchedBox}>
-        <Header back title={params.name || ''} />
-        {loading ? (
-          <ActivityIndicator />
-        ) : (
-          <FlatList
-            data={media}
-            ItemSeparatorComponent={renderSeparator}
-            renderItem={renderItem}
-            numColumns={2}
-            keyExtractor={keyExtractor}
-          />
-        )}
-      </LinearGradient>
-    </SafeAreaView>
+    <View style={stretchedBox}>
+      <Header back title={params.name || ''} />
+      {loading ? (
+        <ActivityIndicator />
+      ) : (
+        <FlatList
+          data={media}
+          ItemSeparatorComponent={renderSeparator}
+          renderItem={renderItem}
+          numColumns={2}
+          keyExtractor={keyExtractor}
+        />
+      )}
+    </View>
   )
 }
 
