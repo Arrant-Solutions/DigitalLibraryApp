@@ -266,7 +266,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
     inputRange: [0, 1],
     outputRange: [0, 360],
   })
-  const rotateStyle = {transform: [{rotate: interpolatedAnimation}]}
+  const rotateStyle = {} // {transform: [{rotate: interpolatedAnimation}]}
   // console.log('height: ' + videoSize.height)
 
   return (
