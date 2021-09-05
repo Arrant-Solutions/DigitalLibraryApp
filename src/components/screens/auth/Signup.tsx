@@ -35,6 +35,7 @@ import {
   pcl,
 } from '../common/style'
 import PCLButton from '../common/PCLButton'
+import Header from '../common/Header'
 
 interface SignupProps {}
 
@@ -114,7 +115,8 @@ const Signup: React.FC<SignupProps> = () => {
     }),
   })
   return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={{flex: 1}}>
+      <Header back title="Register" showActionButtons={false} />
       <ScrollView>
         <KeyboardAvoidingView>
           <LinearGradient
@@ -313,7 +315,7 @@ const Signup: React.FC<SignupProps> = () => {
           </LinearGradient>
         </KeyboardAvoidingView>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   )
 }
 

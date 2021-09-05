@@ -12,22 +12,27 @@ import {ScrollView} from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
 import {themeContainer, theme, shadow, statusBar} from '../common/style'
+import Header from './Header'
 import PCLStatusBar, {PCLStatusBarProps} from './PCLStatusBar'
 
 interface GlassyCardProps extends PCLStatusBarProps {
   blurAmount?: number
   colors?: string[]
   angle?: number
+  title?: string
   gradientStyle?: StyleProp<ViewStyle>
   children?: React.ReactNode
   containerStyle?: StyleProp<ViewStyle>
   cardContainerStyle?: StyleProp<ViewStyle>
   solidContainerStyle?: StyleProp<ViewStyle>
+  showActionButtons?: boolean
+  showBack?: boolean
 }
 
 const GlassyCard: React.FC<GlassyCardProps> = ({
   blurAmount = 20,
   colors,
+  title,
   angle,
   gradientStyle,
   children,
@@ -36,10 +41,19 @@ const GlassyCard: React.FC<GlassyCardProps> = ({
   solidContainerStyle,
   barStyle,
   backgroundColor,
+  showActionButtons,
+  showBack,
 }) => {
   return (
     <SafeAreaProvider>
-      {(barStyle || backgroundColor) && (
+      {title && (
+        <Header
+          back={showBack}
+          showActionButtons={showActionButtons}
+          title={title}
+        />
+      )}
+      {(barStyle || backgroundColor) && !title && (
         <PCLStatusBar barStyle={barStyle} backgroundColor={backgroundColor} />
       )}
       <KeyboardAvoidingView style={{flex: 1, backgroundColor: 'red'}}>

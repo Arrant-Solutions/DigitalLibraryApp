@@ -14,12 +14,12 @@ const AuthStack = () => {
     <Stack.Navigator
       initialRouteName={'AuthHome'}
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         headerBackTitleVisible: false,
         headerStyle: {
-          backgroundColor: pcl.gold,
+          backgroundColor: pcl.purple,
         },
-        headerTintColor: pcl.blue,
+        headerTintColor: pcl.background,
         // headerLeft: () => <></>
       }}>
       <Stack.Screen

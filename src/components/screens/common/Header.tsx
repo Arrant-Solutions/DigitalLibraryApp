@@ -21,6 +21,7 @@ interface HeaderProps {
   color?: string
   title: string
   back?: boolean
+  showActionButtons?: boolean
   handleBackButton?: ((event: GestureResponderEvent) => void) | undefined
 }
 
@@ -31,6 +32,7 @@ const Header: React.FC<HeaderProps> = ({
   color,
   title,
   back,
+  showActionButtons = true,
   handleBackButton,
 }) => {
   const dispatch = useAppDispatch()
@@ -43,13 +45,13 @@ const Header: React.FC<HeaderProps> = ({
     <View>
       <ElementsHeader
         containerStyle={containerStyle}
-        statusBarProps={{barStyle: barStyle || 'dark-content'}}
-        backgroundColor={backgroundColor || pcl.gold}
+        statusBarProps={{barStyle: barStyle || 'light-content'}}
+        backgroundColor={backgroundColor || pcl.purple}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>
             <Icon
               name={back ? 'ios-chevron-back' : 'logo-android'}
-              color={color || pcl.deepBlue}
+              color={color || pcl.background}
               onPress={back ? handlePress : undefined}
               type="ionicon"
               size={30}
@@ -57,7 +59,7 @@ const Header: React.FC<HeaderProps> = ({
             <Text
               style={{
                 marginLeft: 10,
-                color: color || pcl.deepBlue,
+                color: color || pcl.background,
                 fontSize: 20,
               }}>
               {title}
@@ -65,21 +67,25 @@ const Header: React.FC<HeaderProps> = ({
           </View>
         }
         rightComponent={
-          <View style={flexRow}>
-            <Icon
-              containerStyle={{marginRight: 10}}
-              name="search"
-              color={color || pcl.deepBlue}
-              type="ionicon"
-              // onPress={() => dispatch(setVisible(true))}
-            />
-            <Icon
-              name="ios-ellipsis-vertical-sharp"
-              color={color || pcl.deepBlue}
-              type="ionicon"
-              onPress={() => dispatch(setVisible(true))}
-            />
-          </View>
+          showActionButtons ? (
+            <View style={flexRow}>
+              <Icon
+                containerStyle={{marginRight: 10}}
+                name="search"
+                color={color || pcl.background}
+                type="ionicon"
+                // onPress={() => dispatch(setVisible(true))}
+              />
+              <Icon
+                name="ios-ellipsis-vertical-sharp"
+                color={color || pcl.background}
+                type="ionicon"
+                onPress={() => dispatch(setVisible(true))}
+              />
+            </View>
+          ) : (
+            <></>
+          )
         }
       />
     </View>

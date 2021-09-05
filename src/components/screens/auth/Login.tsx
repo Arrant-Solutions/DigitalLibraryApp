@@ -39,11 +39,16 @@ const Login = () => {
 
   return (
     <GlassyCard
+      title="Login"
+      showActionButtons={false}
+      showBack
+      backgroundColor={pcl.purple}
+      barStyle="light-content"
       blurAmount={0}
       solidContainerStyle={{backgroundColor: pcl.background, padding: 20}}
       cardContainerStyle={{padding: 20, paddingVertical: 30}}
       colors={[pcl.background, pcl.background]}
-      containerStyle={{height: 400, backgroundColor: 'red'}}>
+      containerStyle={{height: 400}}>
       <Text
         style={[
           {paddingHorizontal: 10, fontSize: 15, marginBottom: 10},

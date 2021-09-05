@@ -57,6 +57,6 @@ const styles = StyleSheet.create({
   titleStyle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: pcl.purple,
+    color: pcl.black,
   },
 })

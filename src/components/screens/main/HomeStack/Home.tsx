@@ -46,7 +46,7 @@ const Home = () => {
   // console.log('tb height', useBottomTabBarHeight())
   return (
     <View style={{flex: 1}}>
-      <PCLStatusBar backgroundColor={pcl.gold} />
+      <PCLStatusBar backgroundColor={pcl.purple} />
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={{display: 'flex', height: 265}}>
@@ -70,6 +70,7 @@ const Home = () => {
                   style={{marginRight: 10}}
                   imageSrc={{uri: thumbnail}}
                   title={title}
+                  onPress={() => console.log('pressed')}
                 />
               ))}
             </ScrollView>
@@ -90,6 +91,7 @@ const Home = () => {
                   imageStyle={{borderRadius: 0}}
                   imageSrc={{uri: thumbnail}}
                   title={title}
+                  onPress={() => console.log('pressed')}
                 />
               ))}
             </ScrollView>
@@ -105,6 +107,7 @@ const Home = () => {
                   imageStyle={{borderRadius: 100}}
                   imageSrc={{uri: thumbnail}}
                   title={title}
+                  onPress={() => console.log('pressed')}
                 />
               ))}
             </ScrollView>

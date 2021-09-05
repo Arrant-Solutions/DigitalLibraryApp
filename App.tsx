@@ -1,10 +1,9 @@
-import {Platform, StatusBar, Text, View} from 'react-native'
 import React, {useEffect, useState} from 'react'
 import 'react-native-gesture-handler'
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import MainNavigation from 'components/MainNavigation'
-import {pcl, statusBar} from 'components/screens/common/style'
-import {SafeAreaView, StyleSheet} from 'react-native'
+import {pcl} from 'components/screens/common/style'
+import {StyleSheet} from 'react-native'
 import {Provider} from 'react-redux'
 import {store} from './src/redux/store'
 

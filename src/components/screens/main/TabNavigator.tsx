@@ -45,10 +45,10 @@ const TabNavigator = () => {
         <Tab.Navigator
           screenOptions={{
             headerShown: false,
-            tabBarActiveTintColor: pcl.purple,
-            tabBarInactiveTintColor: pcl.deep,
+            tabBarActiveTintColor: pcl.gold,
+            tabBarInactiveTintColor: pcl.background,
             tabBarStyle: {
-              backgroundColor: pcl.gold,
+              backgroundColor: pcl.purple,
             },
             tabBarLabelStyle: {
               fontSize: 14,
