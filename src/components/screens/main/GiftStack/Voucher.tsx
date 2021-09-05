@@ -1,6 +1,6 @@
 import {pcl} from 'components/screens/common/style'
 import React, {useEffect, useState} from 'react'
-import {Image, StyleSheet, Text, View} from 'react-native'
+import {Alert, Image, StyleSheet, Text, View} from 'react-native'
 import {Button, Icon, Input, Overlay} from 'react-native-elements'
 
 interface VoucherProps {
@@ -26,6 +26,11 @@ const Voucher: React.FC<VoucherProps> = ({
     setShowModal(state)
     setVoucher('')
   }
+
+  const handleReedemVoucher = () => {
+    if (voucher.length) Alert.alert('Invalid Voucher Code')
+  }
+
   return (
     <View>
       <Overlay
@@ -80,6 +85,7 @@ const Voucher: React.FC<VoucherProps> = ({
             />
 
             <Button
+              onPress={handleReedemVoucher}
               containerStyle={{marginHorizontal: 10}}
               buttonStyle={{
                 borderRadius: 8,

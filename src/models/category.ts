@@ -5,7 +5,8 @@
 //   | 'materialcommunity'
 //   | 'material'
 
-import { IconType } from 'react-native-elements/dist/icons/Icon'
+import {ViewStyle} from 'react-native'
+import {IconType} from 'react-native-elements/dist/icons/Icon'
 
 export type IconName =
   | 'anointing'
@@ -28,6 +29,8 @@ export type IconName =
   | 'soul_winning'
   | 'teens'
   | 'thanksgiving'
+  | 'book'
+  | 'video'
 export interface CategoryIconI {
   name: string
   type: IconType

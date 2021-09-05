@@ -9,33 +9,54 @@ import {
   ViewStyle,
   ImageStyle,
 } from 'react-native'
+import {Icon} from 'react-native-elements'
+import {toPlayDate} from 'utils'
+import {flexColumn} from './style'
 
 interface TileProps {
   size?: number
   title?: string
   subHeader?: string
+  lastPlayed?: Date
   imageSrc: ImageSourcePropType
   style?: ViewStyle
   imageStyle?: ImageStyle
   titleStyle?: TextStyle
   subHeaderStyle?: TextStyle
   rounded?: boolean
+  horizontal?: boolean
 }
-class Tile extends PureComponent<TileProps> {
+
+interface TileState {
+  playing: boolean
+}
+class Tile extends PureComponent<TileProps, TileState> {
+  state = {
+    playing: false,
+  }
+
   render() {
     const {
       size = 90,
       title,
       subHeader,
+      lastPlayed,
       imageSrc,
       style,
       imageStyle,
       titleStyle,
       subHeaderStyle,
       rounded = true,
+      horizontal,
     } = this.props
     return (
-      <View style={[styles.container, {width: size}, style]}>
+      <View
+        style={[
+          styles.container,
+          {width: size},
+          style,
+          horizontal && {flexDirection: 'row'},
+        ]}>
         <Image
           source={imageSrc}
           resizeMode="cover"
@@ -48,18 +69,36 @@ class Tile extends PureComponent<TileProps> {
             !rounded && {borderRadius: 0},
           ]}
         />
-        {Boolean(title && title.length) && (
-          <Text style={[styles.text, titleStyle]} numberOfLines={1}>
-            {title}
-          </Text>
-        )}
-        {Boolean(subHeader && subHeader.length) && (
-          <Text
-            style={[styles.subHeaderText, subHeaderStyle]}
-            numberOfLines={1}>
-            {subHeader}
-          </Text>
-        )}
+        <View
+          style={[styles.textContainer, horizontal && {paddingHorizontal: 20}]}>
+          {Boolean(title && title.length) && (
+            <Text style={[styles.text, titleStyle]} numberOfLines={1}>
+              {title}
+            </Text>
+          )}
+          {Boolean(subHeader && subHeader.length) && (
+            <Text
+              style={[styles.subHeaderText, subHeaderStyle]}
+              numberOfLines={1}>
+              {subHeader}
+            </Text>
+          )}
+          {horizontal && (
+            <View style={flexColumn}>
+              <Icon
+                type={'ionicon'}
+                name={this.state.playing ? 'playing' : 'paused'}
+                color={'black'}
+                size={20}
+              />
+              <Text>
+                {this.state.playing
+                  ? 'Now Playing'
+                  : toPlayDate(lastPlayed || new Date())}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     )
   }
@@ -75,6 +114,9 @@ const styles = StyleSheet.create({
   },
   image: {
     borderRadius: 30,
+  },
+  textContainer: {
+    flexDirection: 'column',
   },
   text: {
     textAlign: 'center',

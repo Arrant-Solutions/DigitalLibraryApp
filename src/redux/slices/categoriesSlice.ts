@@ -21,7 +21,7 @@ const initialState: CategoriesSliceI = {
 
 export const fetchCategories = createAsyncThunk('categories/all', async () => {
   return {
-    categories: categories,
+    categories,
     errorMessage: ''
   }
   // const { payload } = await getCategories()

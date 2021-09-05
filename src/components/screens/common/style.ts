@@ -168,6 +168,7 @@ const style = StyleSheet.create({
   stretchedBox: {
     height: '100%',
     width: '100%',
+    backgroundColor: pcl.background,
   },
   shadow: {
     shadowColor: '#000',
