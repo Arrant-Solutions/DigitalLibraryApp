@@ -6,10 +6,9 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
-  Image,
   SafeAreaView,
 } from 'react-native'
-import {Button, Input, SocialIcon} from 'react-native-elements'
+import {Input, SocialIcon} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'

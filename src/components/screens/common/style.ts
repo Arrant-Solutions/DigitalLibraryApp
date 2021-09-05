@@ -108,6 +108,7 @@ export const pcl = {
   black: '#000b',
   textPlaceholder: '#0008',
   white: '#ffffff',
+  giftBackground: '#f4d4c9',
 }
 
 export const themeBlack = '#111111'
