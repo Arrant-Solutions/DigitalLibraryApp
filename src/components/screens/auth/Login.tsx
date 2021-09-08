@@ -18,8 +18,8 @@ import {
 const Login = () => {
   const dispatch = useAppDispatch()
   const [credential, setCredential] = useState<UserCredential>({
-    email: 'email@mail.com',
-    password: 'password',
+    email: '',
+    password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -89,7 +89,9 @@ const Login = () => {
         inputContainerStyle={styles.inputContainerStyle}
         placeholderTextColor={pcl.textPlaceholder}
         placeholder="Email"
-        leftIcon={<Ionicons name="mail-outline" size={20} color="white" />}
+        leftIcon={
+          <Ionicons name="mail-outline" size={20} color={pcl.textPlaceholder} />
+        }
         onChangeText={value => handleChange('email', value)}
         value={credential.email}
         multiline={false}
@@ -101,12 +103,12 @@ const Login = () => {
         multiline={false}
         secureTextEntry={!showPassword}
         placeholder="Password"
-        leftIcon={<Ionicons name="key" size={20} color="white" />}
+        leftIcon={<Ionicons name="key" size={20} color={pcl.textPlaceholder} />}
         rightIcon={
           <Ionicons
             name={showPassword ? 'eye-off-outline' : 'eye-outline'}
             size={20}
-            color="white"
+            color={pcl.textPlaceholder}
             onPress={() => setShowPassword(!showPassword)}
           />
         }

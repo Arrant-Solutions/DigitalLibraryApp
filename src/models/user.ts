@@ -1,6 +1,6 @@
-import { BranchI } from './branch'
-import { CountryI } from './country'
-import { GenderI } from './gender'
+import {BranchI} from './branch'
+import {CountryI} from './country'
+import {GenderI} from './gender'
 
 export interface GenericUserI {
   avatar?: string
@@ -8,7 +8,7 @@ export interface GenericUserI {
   lastName: string
   fullname: string
   email: string
-  dateOfBirth: string
+  dateOfBirth: Date | string
   country: CountryI
   gender: GenderI
   password: string
@@ -28,7 +28,7 @@ export class GenericUser implements GenericUserI {
   firstName: string
   lastName: string
   email: string
-  dateOfBirth: string
+  dateOfBirth: Date | string
   country: CountryI
   gender: GenderI
   password: string
@@ -43,13 +43,14 @@ export class GenericUser implements GenericUserI {
     country,
     gender,
     password,
-    branch
+    branch,
   }: GenericUserI) {
     this.avatar = avatar
     this.firstName = firstName
     this.lastName = lastName
     this.email = email
-    this.dateOfBirth = dateOfBirth
+    this.dateOfBirth =
+      typeof dateOfBirth === 'string' ? new Date(dateOfBirth) : dateOfBirth
     this.country = country
     this.gender = gender
     this.password = password
@@ -64,10 +65,10 @@ export class GenericUser implements GenericUserI {
       fullname: '',
       email: '',
       dateOfBirth: '' as any,
-      country: { countryID: 0, countryName: '' },
-      gender: { genderID: 0, genderName: '' },
+      country: {countryID: 0, countryName: '', flag: ''},
+      gender: {genderID: 0, genderName: ''},
       password: '',
-      branch: { branchID: 0, branchName: '' }
+      branch: {branchID: 0, branchName: ''},
     }
   }
 

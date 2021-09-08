@@ -18,6 +18,7 @@ interface PCLButtonProps {
   onPress?: ((event: GestureResponderEvent) => void) | undefined
   icon?: IconNode | undefined
   loading?: boolean
+  disabled?: boolean
 }
 
 const PCLButton: React.FC<PCLButtonProps> = ({
@@ -28,6 +29,7 @@ const PCLButton: React.FC<PCLButtonProps> = ({
   icon,
   onPress,
   loading,
+  disabled,
 }) => {
   return (
     <Button
@@ -38,6 +40,7 @@ const PCLButton: React.FC<PCLButtonProps> = ({
       icon={icon}
       onPress={onPress}
       loading={loading}
+      disabled={disabled}
     />
   )
 }

@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
+import {deserialize} from 'utils'
 import {GENERIC_SERVER_ERROR} from '../../constants/errors'
 import {GenericUser, GenericUserI, UserCredential} from '../../models/user'
 import {
@@ -91,7 +92,7 @@ export const authSlice = createSlice({
       state.token = ''
     },
     setUser: (state, action: PayloadAction<GenericUserI>) => {
-      state.user = action.payload
+      state.user = deserialize(action.payload)
     },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
@@ -107,7 +108,7 @@ export const authSlice = createSlice({
       storeAsyncData(Storage.AUTH_TOKEN, token)
       storeAsyncData(Storage.USER_STORE, user)
 
-      state.user = user
+      state.user = deserialize(user)
       state.token = token
       state.errorMessage = errorMessage
     },
@@ -119,7 +120,7 @@ export const authSlice = createSlice({
       action: PayloadAction<AuthSliceI>,
     ) => {
       const {user, token, errorMessage} = action.payload
-      state.user = user ? user : initialState.user
+      state.user = user ? deserialize(user) : initialState.user
       state.token = token
       state.errorMessage = errorMessage
     },

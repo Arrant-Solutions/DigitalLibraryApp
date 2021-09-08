@@ -6,10 +6,12 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
-  SafeAreaView,
+  Alert,
+  Pressable,
 } from 'react-native'
 import {Input, SocialIcon} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import moment from 'moment'
@@ -36,6 +38,20 @@ import {
 } from '../common/style'
 import PCLButton from '../common/PCLButton'
 import Header from '../common/Header'
+import {BranchI} from 'models/branch'
+import {useNavigation} from '@react-navigation/native'
+import {AuthStackParamList} from 'components/MainNavigation'
+import {StackNavigationProp} from '@react-navigation/stack'
+import DatePicker from 'react-native-date-picker'
+import {setUser} from 'redux/slices/authSlice'
+import {deserialize} from 'utils'
+
+type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
+
+const branches: BranchI[] = [
+  {branchName: 'Chudleigh', branchID: 1},
+  {branchName: 'City Center', branchID: 2},
+]
 
 interface SignupProps {}
 
@@ -46,7 +62,6 @@ const Item = (item: CountryI) => (
       borderBottomWidth: 0.5,
       borderBottomColor: greys[40],
     }}>
-    {/* <SvgUri width={30} height={15} uri={item.flag} /> */}
     <Text style={{fontSize: 13, padding: 12}}>{item.countryName}</Text>
   </View>
 )
@@ -54,8 +69,12 @@ const Item = (item: CountryI) => (
 const CountryItem = React.memo(Item)
 
 const Signup: React.FC<SignupProps> = () => {
+  const {navigate} = useNavigation<SignupProp>()
   const dispatch = useAppDispatch()
   const {countries, genders, errorMessage} = useAppSelector(selectResources)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+
+  console.log(errorMessage)
 
   useEffect(() => {
     dispatch(restoreResources()).then(({payload}) => {
@@ -73,7 +92,7 @@ const Signup: React.FC<SignupProps> = () => {
   }, [])
 
   const [showPassword, setShowPassword] = useState(false)
-  const initialValues: SignupUserI & {isMember: boolean} = {
+  const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} = {
     firstName: '',
     lastName: '',
     email: '',
@@ -81,11 +100,12 @@ const Signup: React.FC<SignupProps> = () => {
     fullname: '',
     gender: genders.find(({genderName}) => genderName === 'Female') || {
       genderID: 0,
-      genderName: 'male',
+      genderName: '',
     },
-    dateOfBirth: '1990-10-31',
+    dateOfBirth: moment().subtract(5, 'years').toDate(),
     country: {countryID: 0, countryName: '', flag: ''},
-    isMember: false,
+    branch: {branchID: 0, branchName: ''},
+    isMember: true,
   }
 
   const renderItem = (item: CountryI) => <CountryItem {...item} />
@@ -126,11 +146,29 @@ const Signup: React.FC<SignupProps> = () => {
             useAngle
             angle={110}
             style={stretchedBox}>
-            {/* <Image style={{ height:30, width:90}} source={{ uri: 'https://restcountries.eu/data/asm.svg' }} /> */}
             <Formik
               validationSchema={SignupSchema}
               initialValues={initialValues}
-              onSubmit={values => console.log(values)}>
+              onSubmit={(values, helpers) => {
+                console.log(helpers)
+                helpers.setSubmitting(false)
+                dispatch(setUser(deserialize(values)))
+
+                Alert.alert(
+                  'Success',
+                  'Account created successfully.',
+                  [
+                    {
+                      text: 'Login',
+                      onPress: () => {
+                        helpers.resetForm()
+                        navigate('Login')
+                      },
+                    },
+                  ],
+                  {cancelable: false},
+                )
+              }}>
               {({
                 handleChange,
                 handleBlur,
@@ -138,6 +176,8 @@ const Signup: React.FC<SignupProps> = () => {
                 values,
                 errors,
                 setFieldValue,
+                setFieldError,
+                setErrors,
               }) => {
                 return (
                   <ScrollView style={styles.container}>
@@ -185,7 +225,11 @@ const Signup: React.FC<SignupProps> = () => {
                       }
                       placeholder="First Name"
                       leftIcon={
-                        <SimpleLineIcons name="user" size={20} color="white" />
+                        <SimpleLineIcons
+                          name="user"
+                          size={20}
+                          color={pcl.textPlaceholder}
+                        />
                       }
                       onChangeText={handleChange('firstName')}
                       onBlur={handleBlur('firstName')}
@@ -194,15 +238,17 @@ const Signup: React.FC<SignupProps> = () => {
                     />
                     <Input
                       inputContainerStyle={styles.inputContainerStyle}
-                      errorStyle={
-                        errors.firstName ? styles.inputErrorStyle : {}
-                      }
+                      errorStyle={errors.lastName ? styles.inputErrorStyle : {}}
                       labelStyle={styles.textStyle}
                       placeholderTextColor={pcl.textPlaceholder}
                       errorMessage={errors.lastName}
                       placeholder="Last Name"
                       leftIcon={
-                        <SimpleLineIcons name="user" size={20} color="white" />
+                        <SimpleLineIcons
+                          name="user"
+                          size={20}
+                          color={pcl.textPlaceholder}
+                        />
                       }
                       onChangeText={handleChange('lastName')}
                       onBlur={handleBlur('lastName')}
@@ -211,20 +257,80 @@ const Signup: React.FC<SignupProps> = () => {
                     />
                     <Input
                       inputContainerStyle={styles.inputContainerStyle}
-                      errorStyle={
-                        errors.firstName ? styles.inputErrorStyle : {}
-                      }
+                      errorStyle={errors.email ? styles.inputErrorStyle : {}}
                       errorMessage={errors.email}
                       labelStyle={styles.textStyle}
                       placeholderTextColor={pcl.textPlaceholder}
                       placeholder="Email"
                       leftIcon={
-                        <Ionicons name="mail-outline" size={20} color="white" />
+                        <Ionicons
+                          name="mail-outline"
+                          size={20}
+                          color={pcl.textPlaceholder}
+                        />
                       }
                       onChangeText={handleChange('email')}
                       onBlur={handleBlur('mail')}
                       value={values.email}
                       multiline={false}
+                    />
+                    <Pressable
+                      style={{position: 'relative', flex: 1}}
+                      onPress={() => {
+                        console.log('pressed')
+                        setShowDatePicker(true)
+                      }}>
+                      <Input
+                        inputContainerStyle={styles.inputContainerStyle}
+                        errorStyle={
+                          errors.dateOfBirth ? styles.inputErrorStyle : {}
+                        }
+                        disabled={true}
+                        errorMessage={
+                          errors.dateOfBirth && String(errors.dateOfBirth)
+                        }
+                        labelStyle={styles.textStyle}
+                        placeholderTextColor={pcl.textPlaceholder}
+                        placeholder="Date of Birth"
+                        leftIcon={
+                          <FontAwesome5
+                            name="baby"
+                            size={20}
+                            color={pcl.textPlaceholder}
+                          />
+                        }
+                        value={moment(values.dateOfBirth).format(
+                          'MMMM DD, YYYY',
+                        )}
+                        multiline={false}
+                      />
+                      <View
+                        style={{
+                          position: 'absolute',
+                          width: '100%',
+                          height: '100%',
+                          backgroundColor: 'transparent',
+                        }}
+                      />
+                    </Pressable>
+                    <DatePicker
+                      mode="date"
+                      maximumDate={moment().subtract(5, 'years').toDate()}
+                      minimumDate={moment().subtract(105, 'years').toDate()}
+                      modal
+                      open={showDatePicker}
+                      date={new Date(values.dateOfBirth)}
+                      onConfirm={date => {
+                        setShowDatePicker(false)
+                        setFieldValue('dateOfBirth', date)
+                      }}
+                      onDateChange={date => {
+                        setShowDatePicker(false)
+                        setFieldValue('dateOfBirth', date)
+                      }}
+                      onCancel={() => {
+                        setShowDatePicker(false)
+                      }}
                     />
                     <Input
                       inputContainerStyle={styles.inputContainerStyle}
@@ -237,7 +343,13 @@ const Signup: React.FC<SignupProps> = () => {
                       secureTextEntry={!showPassword}
                       errorMessage={errors.password}
                       placeholder="Password"
-                      leftIcon={<Ionicons name="key" size={20} color="white" />}
+                      leftIcon={
+                        <Ionicons
+                          name="key"
+                          size={20}
+                          color={pcl.textPlaceholder}
+                        />
+                      }
                       rightIcon={
                         <Ionicons
                           name={
@@ -283,13 +395,83 @@ const Signup: React.FC<SignupProps> = () => {
                       uncheckedColor={pcl.textPlaceholder}
                       titleStyle={{color: pcl.textPlaceholder}}
                       options={['Yes', 'No']}
-                      defaultValue="No"
-                      setSelectedValue={value =>
+                      defaultValue="Yes"
+                      setSelectedValue={value => {
+                        console.log(
+                          errors.firstName,
+                          errors.lastName,
+                          errors.email,
+                          errors.gender,
+                          errors.password,
+                          errors.dateOfBirth,
+                          (errors.branch, errors.country),
+                        )
+                        if (value === 'Yes') {
+                          setFieldValue('country', {
+                            countryName: '',
+                            countryID: undefined,
+                          })
+                          setFieldError(
+                            'country',
+                            'Select country from dropdown',
+                          )
+                          setErrors({
+                            ...errors,
+                            country: {countryName: '', countryID: undefined},
+                          })
+                        } else {
+                          setFieldValue('branch', {
+                            branchName: '',
+                            branchID: 0,
+                          })
+                          setFieldError('branch', 'Select branch from dropdown')
+                          setErrors({
+                            ...errors,
+                            branch: {
+                              branchName: '',
+                              branchID: undefined,
+                            },
+                          })
+                        }
                         setFieldValue('isMember', value === 'Yes')
-                      }
+                      }}
                     />
 
-                    {!values.isMember && (
+                    {values.isMember ? (
+                      <Dropdown
+                        style={styles.dropdown}
+                        data={branches.map(item => ({
+                          countryID: item.branchID,
+                          countryName: item.branchName,
+                        }))}
+                        search
+                        searchPlaceholder="Search"
+                        labelField="countryName"
+                        valueField="countryID"
+                        placeholder="Select Church/Organization"
+                        value={values.branch?.branchID}
+                        onChange={(item: CountryI) => {
+                          const branch = branches.find(
+                            ({branchID}) => branchID === item.countryID,
+                          )
+                          if (!branch) {
+                            setFieldError(
+                              'branch',
+                              'Select branch from dropdown',
+                            )
+                          } else {
+                            setErrors({...errors, branch: undefined})
+                            setFieldValue('branch', item)
+                            console.log('selected', item)
+                          }
+                          setFieldValue('branch', {
+                            branchID: item.countryID,
+                            branchName: item.countryName,
+                          })
+                        }}
+                        renderItem={item => renderItem(item)}
+                      />
+                    ) : (
                       <Dropdown
                         style={styles.dropdown}
                         data={countries}
@@ -300,14 +482,37 @@ const Signup: React.FC<SignupProps> = () => {
                         placeholder="Select Country"
                         value={values.country.countryID}
                         onChange={(item: CountryI) => {
-                          setFieldValue('country', item)
-                          console.log('selected', item)
+                          const country = countries.find(
+                            ({countryID}) => countryID === item.countryID,
+                          )
+                          if (!country) {
+                            setFieldError(
+                              'country',
+                              'Select country from dropdown',
+                            )
+                          } else {
+                            setErrors({...errors, country: undefined})
+                            setFieldValue('country', item)
+                            console.log('selected', item)
+                          }
                         }}
                         renderItem={item => renderItem(item)}
                       />
                     )}
 
-                    <PCLButton title="Register" onPress={handleSubmit} />
+                    <PCLButton
+                      disabled={Boolean(
+                        errors.firstName ||
+                          errors.lastName ||
+                          errors.email ||
+                          errors.gender ||
+                          errors.password ||
+                          errors.dateOfBirth ||
+                          (errors.branch && errors.country),
+                      )}
+                      title="Register"
+                      onPress={handleSubmit}
+                    />
                   </ScrollView>
                 )
               }}
@@ -327,7 +532,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     padding: '3%',
-    // backgroundColor: 'red'
   },
   textStyle: {
     color: '#000000aa',
@@ -340,12 +544,10 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 5,
     color: 'red',
-    // backgroundColor: `${purplePallet.purpleDeeper}90`
   },
   dropdown: {
     backgroundColor: 'white',
     borderBottomColor: 'gray',
-    // borderBottomWidth: 0.5,
     paddingVertical: 5,
     paddingHorizontal: 8,
     borderRadius: 8,
