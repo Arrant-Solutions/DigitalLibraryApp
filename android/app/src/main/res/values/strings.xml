@@ -2,4 +2,6 @@
     <string name="app_name">PCL</string>
     <string name="image_description">Logo</string>
     <string name="powered_by">Powered by Arrant Solutions Limited</string>
+    <string name="facebook_app_id">228193272492743</string>
+    <string name="facebook_client_token">e6e7e944a2b08af072c3cbb203100af1</string>    
 </resources>
