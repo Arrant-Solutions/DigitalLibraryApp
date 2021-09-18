@@ -1,8 +1,9 @@
 import {BlurView} from '@react-native-community/blur'
 import React from 'react'
-import {Image, StyleSheet, Text, View} from 'react-native'
+import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native'
 import {ScrollView} from 'react-native-gesture-handler'
 import Header from './screens/common/Header'
+import PCLStatusBar from './screens/common/PCLStatusBar'
 import {flexColumn, pcl} from './screens/common/style'
 
 const latest = [
@@ -30,6 +31,18 @@ const Tile: React.FC<{radius?: number; source: any}> = ({
 )
 
 const Skeleton = () => {
+  if (true) {
+    return (
+      <View style={styles.container}>
+        <PCLStatusBar barStyle="dark-content" backgroundColor={'#fff'} />
+        <ImageBackground
+          style={styles.container}
+          source={require('/assets/skeleton.jpg')}
+        />
+      </View>   
+    )
+  }
+
   return (
     <View style={styles.container}>
       <Header title="Register" showActionButtons={false} />
@@ -85,7 +98,7 @@ const Skeleton = () => {
         </View>
       </ScrollView>
 
-      <BlurView
+      {/* <BlurView
         blurType="light"
         blurAmount={20}
         style={{
@@ -96,7 +109,7 @@ const Skeleton = () => {
           right: 0,
         }}
         reducedTransparencyFallbackColor="white"
-      />
+      /> */}
     </View>
   )
 }
