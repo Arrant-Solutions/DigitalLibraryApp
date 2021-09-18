@@ -6,6 +6,7 @@ import {pcl} from 'components/screens/common/style'
 import {StyleSheet} from 'react-native'
 import {Provider} from 'react-redux'
 import {store} from './src/redux/store'
+import SplashScreen from 'react-native-splash-screen'
 
 const MyTheme = {
   ...DefaultTheme,
@@ -23,8 +24,7 @@ const MyTheme = {
 
 const App = () => {
   const [backgroundColor, setBackgroundColor] = useState(pcl.gold)
-
-  useEffect(() => {})
+  SplashScreen.hide()
 
   return (
     <Provider store={store}>

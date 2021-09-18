@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native'
 import React from 'react'
 import {
   GestureResponderEvent,
+  Image,
   StatusBar,
   StyleSheet,
   Text,
@@ -49,13 +50,20 @@ const Header: React.FC<HeaderProps> = ({
         backgroundColor={backgroundColor || pcl.purple}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>
-            <Icon
-              name={back ? 'ios-chevron-back' : 'logo-android'}
-              color={color || pcl.background}
-              onPress={back ? handlePress : undefined}
-              type="ionicon"
-              size={30}
-            />
+            {back ? (
+              <Icon
+                name={'ios-chevron-back'}
+                color={color || pcl.background}
+                onPress={back ? handlePress : undefined}
+                type="ionicon"
+                size={30}
+              />
+            ) : (
+              <Image
+                style={{height: 30, width: 30, borderRadius: 7}}
+                source={require('/assets/logo.jpg')}
+              />
+            )}
             <Text
               style={{
                 marginLeft: 10,

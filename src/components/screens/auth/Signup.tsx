@@ -16,14 +16,7 @@ import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import moment from 'moment'
 import {SignupUserI} from '../../../models/user'
-import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
-import {
-  fetchCountries,
-  fetchGenders,
-  ResourceSliceI,
-  restoreResources,
-  selectResources,
-} from '../../../redux/slices/resourceSlice'
+import {useAppDispatch} from '../../../redux/hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import {ScrollView} from 'react-native-gesture-handler'
 import {CountryI} from '../../../models/country'
@@ -45,6 +38,12 @@ import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
 import {setUser} from 'redux/slices/authSlice'
 import {deserialize} from 'utils'
+import {
+  useGetBranchesQuery,
+  useGetCountriesQuery,
+  useGetGendersQuery,
+} from 'redux/services/resourceService'
+import {Toast} from '../common/Toast'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -71,25 +70,39 @@ const CountryItem = React.memo(Item)
 const Signup: React.FC<SignupProps> = () => {
   const {navigate} = useNavigation<SignupProp>()
   const dispatch = useAppDispatch()
-  const {countries, genders, errorMessage} = useAppSelector(selectResources)
+  // const { countries, genders, errorMessage } = useAppSelector(selectResources)
+  const {
+    data: genders,
+    isLoading: isGendersLoading,
+    isError: isGendersError,
+  } = useGetGendersQuery(undefined)
+  const {
+    data: countries,
+    isLoading: isCountriesLoading,
+    isError: isCountriesError,
+  } = useGetCountriesQuery(undefined)
+  const {
+    data: branches,
+    isLoading: isBranchesLoading,
+    isError: isBranchesError,
+  } = useGetBranchesQuery(undefined)
   const [showDatePicker, setShowDatePicker] = useState(false)
 
-  console.log(errorMessage)
+  // useEffect(() => {
+  //   const bootstrapping = async () => {
+  //     await dispatch(fetchCountries()).catch(() => setError(true))
+  //     await dispatch(fetchGenders()).catch(() => setError(true))
 
-  useEffect(() => {
-    dispatch(restoreResources()).then(({payload}) => {
-      console.log(payload)
-      const {genders, countries} = payload as ResourceSliceI
+  //     if (error) {
+  //     }
+  //   }
 
-      if (genders.length === 0) {
-        dispatch(fetchGenders())
-      }
+  //   bootstrapping()
 
-      if (countries.length === 0) {
-        dispatch(fetchCountries())
-      }
-    })
-  }, [])
+  //   // return () => bootstrapping
+  // }, [])
+
+  if (!(genders && countries && branches)) return <></>
 
   const [showPassword, setShowPassword] = useState(false)
   const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} = {
@@ -110,6 +123,9 @@ const Signup: React.FC<SignupProps> = () => {
 
   const renderItem = (item: CountryI) => <CountryItem {...item} />
 
+  const loading = isGendersLoading || isCountriesLoading || isBranchesLoading
+  const error = isGendersError || isBranchesError || isCountriesError
+
   const nameValidator = Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
@@ -126,400 +142,417 @@ const Signup: React.FC<SignupProps> = () => {
       .max(dobUpper.toDate(), 'Might be too young')
       .required('Required'),
     gender: Yup.object().shape({
-      genderID: Yup.number().oneOf(genders.map(item => item.genderID)),
-      genderName: Yup.string().oneOf(genders.map(item => item.genderName)),
+      genderID: Yup.number().oneOf(genders?.map(item => item.genderID)),
+      genderName: Yup.string().oneOf(genders?.map(item => item.genderName)),
     }),
     country: Yup.object().shape({
-      countryID: Yup.number().oneOf(countries.map(item => item.countryID)),
-      countryName: Yup.string().oneOf(countries.map(item => item.countryName)),
+      countryID: Yup.number().oneOf(countries?.map(item => item.countryID)),
+      countryName: Yup.string().oneOf(countries?.map(item => item.countryName)),
     }),
   })
   return (
     <View style={{flex: 1}}>
       <Header back title="Register" showActionButtons={false} />
-      <ScrollView>
-        <KeyboardAvoidingView>
-          <LinearGradient
-            colors={[pcl.background, pcl.background]}
-            start={{x: 0, y: 1}}
-            end={{x: 1, y: 1}}
-            useAngle
-            angle={110}
-            style={stretchedBox}>
-            <Formik
-              validationSchema={SignupSchema}
-              initialValues={initialValues}
-              onSubmit={(values, helpers) => {
-                console.log(helpers)
-                helpers.setSubmitting(false)
-                dispatch(setUser(deserialize(values)))
+      {!(genders && countries && branches) ? (
+        <>
+          <Toast
+            type="error-outline"
+            message="Unable to fetch required resources. Please refresh to try again."
+          />
+          <Text>Refresh Icon comes here...</Text>
+        </>
+      ) : (
+        <ScrollView>
+          <KeyboardAvoidingView>
+            <LinearGradient
+              colors={[pcl.background, pcl.background]}
+              start={{x: 0, y: 1}}
+              end={{x: 1, y: 1}}
+              useAngle
+              angle={110}
+              style={stretchedBox}>
+              <Formik
+                validationSchema={SignupSchema}
+                initialValues={initialValues}
+                onSubmit={(values, helpers) => {
+                  console.log(helpers)
+                  helpers.setSubmitting(false)
+                  dispatch(setUser(deserialize(values)))
 
-                Alert.alert(
-                  'Success',
-                  'Account created successfully.',
-                  [
-                    {
-                      text: 'Login',
-                      onPress: () => {
-                        helpers.resetForm()
-                        navigate('Login')
+                  Alert.alert(
+                    'Success',
+                    'Account created successfully.',
+                    [
+                      {
+                        text: 'Login',
+                        onPress: () => {
+                          helpers.resetForm()
+                          navigate('Login')
+                        },
                       },
-                    },
-                  ],
-                  {cancelable: false},
-                )
-              }}>
-              {({
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                values,
-                errors,
-                setFieldValue,
-                setFieldError,
-                setErrors,
-              }) => {
-                return (
-                  <ScrollView style={styles.container}>
-                    <Text
-                      style={{
-                        paddingHorizontal: 10,
-                        marginVertical: 10,
-                        fontSize: 15,
-                        color: pcl.black,
-                      }}>
-                      Sign up with one of the following options.
-                    </Text>
-                    <View
-                      style={[
-                        flexRow,
-                        {justifyContent: 'space-between', marginBottom: 10},
-                      ]}>
-                      <SocialIcon
-                        style={socialButton}
-                        underlayColor={`${googleBlue}60`}
-                        button
-                        iconSize={20}
-                        type="facebook"
-                        onPress={() => console.log('pressed')}
-                      />
-                      <SocialIcon
+                    ],
+                    {cancelable: false},
+                  )
+                }}>
+                {({
+                  handleChange,
+                  handleBlur,
+                  handleSubmit,
+                  values,
+                  errors,
+                  setFieldValue,
+                  setFieldError,
+                  setErrors,
+                }) => {
+                  return (
+                    <ScrollView style={styles.container}>
+                      <Text
                         style={{
-                          ...socialButton,
-                          backgroundColor: googleBlue,
-                        }}
-                        iconSize={20}
-                        underlayColor={`${googleBlue}60`}
-                        button
-                        type="google"
-                        onPress={() => console.log('pressed')}
-                      />
-                    </View>
-                    <Input
-                      inputContainerStyle={styles.inputContainerStyle}
-                      labelStyle={styles.textStyle}
-                      placeholderTextColor={pcl.textPlaceholder}
-                      errorMessage={errors.firstName}
-                      errorStyle={
-                        errors.firstName ? styles.inputErrorStyle : {}
-                      }
-                      placeholder="First Name"
-                      leftIcon={
-                        <SimpleLineIcons
-                          name="user"
-                          size={20}
-                          color={pcl.textPlaceholder}
+                          paddingHorizontal: 10,
+                          marginVertical: 10,
+                          fontSize: 15,
+                          color: pcl.black,
+                        }}>
+                        Sign up with one of the following options.
+                      </Text>
+                      <View
+                        style={[
+                          flexRow,
+                          {justifyContent: 'space-between', marginBottom: 10},
+                        ]}>
+                        <SocialIcon
+                          style={socialButton}
+                          underlayColor={`${googleBlue}60`}
+                          button
+                          iconSize={20}
+                          type="facebook"
+                          onPress={() => console.log('pressed')}
                         />
-                      }
-                      onChangeText={handleChange('firstName')}
-                      onBlur={handleBlur('firstName')}
-                      value={values.firstName}
-                      multiline={false}
-                    />
-                    <Input
-                      inputContainerStyle={styles.inputContainerStyle}
-                      errorStyle={errors.lastName ? styles.inputErrorStyle : {}}
-                      labelStyle={styles.textStyle}
-                      placeholderTextColor={pcl.textPlaceholder}
-                      errorMessage={errors.lastName}
-                      placeholder="Last Name"
-                      leftIcon={
-                        <SimpleLineIcons
-                          name="user"
-                          size={20}
-                          color={pcl.textPlaceholder}
+                        <SocialIcon
+                          style={{
+                            ...socialButton,
+                            backgroundColor: googleBlue,
+                          }}
+                          iconSize={20}
+                          underlayColor={`${googleBlue}60`}
+                          button
+                          type="google"
+                          onPress={() => console.log('pressed')}
                         />
-                      }
-                      onChangeText={handleChange('lastName')}
-                      onBlur={handleBlur('lastName')}
-                      value={values.lastName}
-                      multiline={false}
-                    />
-                    <Input
-                      inputContainerStyle={styles.inputContainerStyle}
-                      errorStyle={errors.email ? styles.inputErrorStyle : {}}
-                      errorMessage={errors.email}
-                      labelStyle={styles.textStyle}
-                      placeholderTextColor={pcl.textPlaceholder}
-                      placeholder="Email"
-                      leftIcon={
-                        <Ionicons
-                          name="mail-outline"
-                          size={20}
-                          color={pcl.textPlaceholder}
-                        />
-                      }
-                      onChangeText={handleChange('email')}
-                      onBlur={handleBlur('mail')}
-                      value={values.email}
-                      multiline={false}
-                    />
-                    <Pressable
-                      style={{position: 'relative', flex: 1}}
-                      onPress={() => {
-                        console.log('pressed')
-                        setShowDatePicker(true)
-                      }}>
+                      </View>
                       <Input
                         inputContainerStyle={styles.inputContainerStyle}
-                        errorStyle={
-                          errors.dateOfBirth ? styles.inputErrorStyle : {}
-                        }
-                        disabled={true}
-                        errorMessage={
-                          errors.dateOfBirth && String(errors.dateOfBirth)
-                        }
                         labelStyle={styles.textStyle}
                         placeholderTextColor={pcl.textPlaceholder}
-                        placeholder="Date of Birth"
+                        errorMessage={errors.firstName}
+                        errorStyle={
+                          errors.firstName ? styles.inputErrorStyle : {}
+                        }
+                        placeholder="First Name"
                         leftIcon={
-                          <FontAwesome5
-                            name="baby"
+                          <SimpleLineIcons
+                            name="user"
                             size={20}
                             color={pcl.textPlaceholder}
                           />
                         }
-                        value={moment(values.dateOfBirth).format(
-                          'MMMM DD, YYYY',
-                        )}
+                        onChangeText={handleChange('firstName')}
+                        onBlur={handleBlur('firstName')}
+                        value={values.firstName}
                         multiline={false}
                       />
-                      <View
-                        style={{
-                          position: 'absolute',
-                          width: '100%',
-                          height: '100%',
-                          backgroundColor: 'transparent',
-                        }}
-                      />
-                    </Pressable>
-                    <DatePicker
-                      mode="date"
-                      maximumDate={moment().subtract(5, 'years').toDate()}
-                      minimumDate={moment().subtract(105, 'years').toDate()}
-                      modal
-                      open={showDatePicker}
-                      date={new Date(values.dateOfBirth)}
-                      onConfirm={date => {
-                        setShowDatePicker(false)
-                        setFieldValue('dateOfBirth', date)
-                      }}
-                      onDateChange={date => {
-                        setShowDatePicker(false)
-                        setFieldValue('dateOfBirth', date)
-                      }}
-                      onCancel={() => {
-                        setShowDatePicker(false)
-                      }}
-                    />
-                    <Input
-                      inputContainerStyle={styles.inputContainerStyle}
-                      errorStyle={
-                        errors.firstName ? styles.inputErrorStyle : {}
-                      }
-                      labelStyle={styles.textStyle}
-                      placeholderTextColor={pcl.textPlaceholder}
-                      multiline={false}
-                      secureTextEntry={!showPassword}
-                      errorMessage={errors.password}
-                      placeholder="Password"
-                      leftIcon={
-                        <Ionicons
-                          name="key"
-                          size={20}
-                          color={pcl.textPlaceholder}
-                        />
-                      }
-                      rightIcon={
-                        <Ionicons
-                          name={
-                            showPassword ? 'eye-off-outline' : 'eye-outline'
-                          }
-                          size={20}
-                          color="white"
-                          onPress={() => setShowPassword(!showPassword)}
-                        />
-                      }
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      value={values.password}
-                    />
-                    <RadioGroup
-                      labelStyle={{color: pcl.black}}
-                      label="Gender"
-                      checkedColor={pcl.lightBlue}
-                      uncheckedColor={pcl.textPlaceholder}
-                      titleStyle={{color: pcl.textPlaceholder}}
-                      options={genders.map(value => value.genderName)}
-                      defaultValue="Female"
-                      errorMessage={
-                        Boolean(errors.gender) ? 'Pick a gender' : ''
-                      }
-                      errorStyle={
-                        Boolean(errors.gender)
-                          ? styles.inputErrorStyle
-                          : styles.inputErrorStyle
-                      }
-                      setSelectedValue={value =>
-                        setFieldValue(
-                          'gender',
-                          genders.find(({genderName}) => genderName === value),
-                        )
-                      }
-                    />
-
-                    <RadioGroup
-                      labelStyle={{color: pcl.black}}
-                      label="Are you a member of Gospel Envoy's Church?"
-                      checkedColor={pcl.lightBlue}
-                      uncheckedColor={pcl.textPlaceholder}
-                      titleStyle={{color: pcl.textPlaceholder}}
-                      options={['Yes', 'No']}
-                      defaultValue="Yes"
-                      setSelectedValue={value => {
-                        console.log(
-                          errors.firstName,
-                          errors.lastName,
-                          errors.email,
-                          errors.gender,
-                          errors.password,
-                          errors.dateOfBirth,
-                          (errors.branch, errors.country),
-                        )
-                        if (value === 'Yes') {
-                          setFieldValue('country', {
-                            countryName: '',
-                            countryID: undefined,
-                          })
-                          setFieldError(
-                            'country',
-                            'Select country from dropdown',
-                          )
-                          setErrors({
-                            ...errors,
-                            country: {countryName: '', countryID: undefined},
-                          })
-                        } else {
-                          setFieldValue('branch', {
-                            branchName: '',
-                            branchID: 0,
-                          })
-                          setFieldError('branch', 'Select branch from dropdown')
-                          setErrors({
-                            ...errors,
-                            branch: {
-                              branchName: '',
-                              branchID: undefined,
-                            },
-                          })
+                      <Input
+                        inputContainerStyle={styles.inputContainerStyle}
+                        errorStyle={
+                          errors.lastName ? styles.inputErrorStyle : {}
                         }
-                        setFieldValue('isMember', value === 'Yes')
-                      }}
-                    />
-
-                    {values.isMember ? (
-                      <Dropdown
-                        style={styles.dropdown}
-                        data={branches.map(item => ({
-                          countryID: item.branchID,
-                          countryName: item.branchName,
-                        }))}
-                        search
-                        searchPlaceholder="Search"
-                        labelField="countryName"
-                        valueField="countryID"
-                        placeholder="Select Church/Organization"
-                        value={values.branch?.branchID}
-                        onChange={(item: CountryI) => {
-                          const branch = branches.find(
-                            ({branchID}) => branchID === item.countryID,
-                          )
-                          if (!branch) {
-                            setFieldError(
-                              'branch',
-                              'Select branch from dropdown',
-                            )
-                          } else {
-                            setErrors({...errors, branch: undefined})
-                            setFieldValue('branch', item)
-                            console.log('selected', item)
-                          }
-                          setFieldValue('branch', {
-                            branchID: item.countryID,
-                            branchName: item.countryName,
-                          })
-                        }}
-                        renderItem={item => renderItem(item)}
+                        labelStyle={styles.textStyle}
+                        placeholderTextColor={pcl.textPlaceholder}
+                        errorMessage={errors.lastName}
+                        placeholder="Last Name"
+                        leftIcon={
+                          <SimpleLineIcons
+                            name="user"
+                            size={20}
+                            color={pcl.textPlaceholder}
+                          />
+                        }
+                        onChangeText={handleChange('lastName')}
+                        onBlur={handleBlur('lastName')}
+                        value={values.lastName}
+                        multiline={false}
                       />
-                    ) : (
-                      <Dropdown
-                        style={styles.dropdown}
-                        data={countries}
-                        search
-                        searchPlaceholder="Search"
-                        labelField="countryName"
-                        valueField="countryID"
-                        placeholder="Select Country"
-                        value={values.country.countryID}
-                        onChange={(item: CountryI) => {
-                          const country = countries.find(
-                            ({countryID}) => countryID === item.countryID,
+                      <Input
+                        inputContainerStyle={styles.inputContainerStyle}
+                        errorStyle={errors.email ? styles.inputErrorStyle : {}}
+                        errorMessage={errors.email}
+                        labelStyle={styles.textStyle}
+                        placeholderTextColor={pcl.textPlaceholder}
+                        placeholder="Email"
+                        leftIcon={
+                          <Ionicons
+                            name="mail-outline"
+                            size={20}
+                            color={pcl.textPlaceholder}
+                          />
+                        }
+                        onChangeText={handleChange('email')}
+                        onBlur={handleBlur('mail')}
+                        value={values.email}
+                        multiline={false}
+                      />
+                      <Pressable
+                        style={{position: 'relative', flex: 1}}
+                        onPress={() => {
+                          console.log('pressed')
+                          setShowDatePicker(true)
+                        }}>
+                        <Input
+                          inputContainerStyle={styles.inputContainerStyle}
+                          errorStyle={
+                            errors.dateOfBirth ? styles.inputErrorStyle : {}
+                          }
+                          disabled={true}
+                          errorMessage={
+                            errors.dateOfBirth && String(errors.dateOfBirth)
+                          }
+                          labelStyle={styles.textStyle}
+                          placeholderTextColor={pcl.textPlaceholder}
+                          placeholder="Date of Birth"
+                          leftIcon={
+                            <FontAwesome5
+                              name="baby"
+                              size={20}
+                              color={pcl.textPlaceholder}
+                            />
+                          }
+                          value={moment(values.dateOfBirth).format(
+                            'MMMM DD, YYYY',
+                          )}
+                          multiline={false}
+                        />
+                        <View
+                          style={{
+                            position: 'absolute',
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'transparent',
+                          }}
+                        />
+                      </Pressable>
+                      <DatePicker
+                        mode="date"
+                        maximumDate={moment().subtract(5, 'years').toDate()}
+                        minimumDate={moment().subtract(105, 'years').toDate()}
+                        modal
+                        open={showDatePicker}
+                        date={new Date(values.dateOfBirth)}
+                        onConfirm={date => {
+                          setShowDatePicker(false)
+                          setFieldValue('dateOfBirth', date)
+                        }}
+                        onDateChange={date => {
+                          setShowDatePicker(false)
+                          setFieldValue('dateOfBirth', date)
+                        }}
+                        onCancel={() => {
+                          setShowDatePicker(false)
+                        }}
+                      />
+                      <Input
+                        inputContainerStyle={styles.inputContainerStyle}
+                        errorStyle={
+                          errors.firstName ? styles.inputErrorStyle : {}
+                        }
+                        labelStyle={styles.textStyle}
+                        placeholderTextColor={pcl.textPlaceholder}
+                        multiline={false}
+                        secureTextEntry={!showPassword}
+                        errorMessage={errors.password}
+                        placeholder="Password"
+                        leftIcon={
+                          <Ionicons
+                            name="key"
+                            size={20}
+                            color={pcl.textPlaceholder}
+                          />
+                        }
+                        rightIcon={
+                          <Ionicons
+                            name={
+                              showPassword ? 'eye-off-outline' : 'eye-outline'
+                            }
+                            size={20}
+                            color="white"
+                            onPress={() => setShowPassword(!showPassword)}
+                          />
+                        }
+                        onChangeText={handleChange('password')}
+                        onBlur={handleBlur('password')}
+                        value={values.password}
+                      />
+                      <RadioGroup
+                        labelStyle={{color: pcl.black}}
+                        label="Gender"
+                        checkedColor={pcl.lightBlue}
+                        uncheckedColor={pcl.textPlaceholder}
+                        titleStyle={{color: pcl.textPlaceholder}}
+                        options={genders.map(value => value.genderName)}
+                        defaultValue="Female"
+                        errorMessage={
+                          Boolean(errors.gender) ? 'Pick a gender' : ''
+                        }
+                        errorStyle={
+                          Boolean(errors.gender)
+                            ? styles.inputErrorStyle
+                            : styles.inputErrorStyle
+                        }
+                        setSelectedValue={value =>
+                          setFieldValue(
+                            'gender',
+                            genders.find(
+                              ({genderName}) => genderName === value,
+                            ),
                           )
-                          if (!country) {
+                        }
+                      />
+
+                      <RadioGroup
+                        labelStyle={{color: pcl.black}}
+                        label="Are you a member of Gospel Envoy's Church?"
+                        checkedColor={pcl.lightBlue}
+                        uncheckedColor={pcl.textPlaceholder}
+                        titleStyle={{color: pcl.textPlaceholder}}
+                        options={['Yes', 'No']}
+                        defaultValue="Yes"
+                        setSelectedValue={value => {
+                          console.log(
+                            errors.firstName,
+                            errors.lastName,
+                            errors.email,
+                            errors.gender,
+                            errors.password,
+                            errors.dateOfBirth,
+                            (errors.branch, errors.country),
+                          )
+                          if (value === 'Yes') {
+                            setFieldValue('country', {
+                              countryName: '',
+                              countryID: undefined,
+                            })
                             setFieldError(
                               'country',
                               'Select country from dropdown',
                             )
+                            setErrors({
+                              ...errors,
+                              country: {countryName: '', countryID: undefined},
+                            })
                           } else {
-                            setErrors({...errors, country: undefined})
-                            setFieldValue('country', item)
-                            console.log('selected', item)
+                            setFieldValue('branch', {
+                              branchName: '',
+                              branchID: 0,
+                            })
+                            setFieldError(
+                              'branch',
+                              'Select branch from dropdown',
+                            )
+                            setErrors({
+                              ...errors,
+                              branch: {
+                                branchName: '',
+                                branchID: undefined,
+                              },
+                            })
                           }
+                          setFieldValue('isMember', value === 'Yes')
                         }}
-                        renderItem={item => renderItem(item)}
                       />
-                    )}
 
-                    <PCLButton
-                      disabled={Boolean(
-                        errors.firstName ||
-                          errors.lastName ||
-                          errors.email ||
-                          errors.gender ||
-                          errors.password ||
-                          errors.dateOfBirth ||
-                          (errors.branch && errors.country),
+                      {values.isMember ? (
+                        <Dropdown
+                          style={styles.dropdown}
+                          data={branches.map(item => ({
+                            countryID: item.branchID,
+                            countryName: item.branchName,
+                          }))}
+                          search
+                          searchPlaceholder="Search"
+                          labelField="countryName"
+                          valueField="countryID"
+                          placeholder="Select Church/Organization"
+                          value={values.branch?.branchID}
+                          onChange={(item: CountryI) => {
+                            const branch = branches.find(
+                              ({branchID}) => branchID === item.countryID,
+                            )
+                            if (!branch) {
+                              setFieldError(
+                                'branch',
+                                'Select branch from dropdown',
+                              )
+                            } else {
+                              setErrors({...errors, branch: undefined})
+                              setFieldValue('branch', item)
+                              console.log('selected', item)
+                            }
+                            setFieldValue('branch', {
+                              branchID: item.countryID,
+                              branchName: item.countryName,
+                            })
+                          }}
+                          renderItem={item => renderItem(item)}
+                        />
+                      ) : (
+                        <Dropdown
+                          style={styles.dropdown}
+                          data={countries}
+                          search
+                          searchPlaceholder="Search"
+                          labelField="countryName"
+                          valueField="countryID"
+                          placeholder="Select Country"
+                          value={values.country.countryID}
+                          onChange={(item: CountryI) => {
+                            const country = countries.find(
+                              ({countryID}) => countryID === item.countryID,
+                            )
+                            if (!country) {
+                              setFieldError(
+                                'country',
+                                'Select country from dropdown',
+                              )
+                            } else {
+                              setErrors({...errors, country: undefined})
+                              setFieldValue('country', item)
+                              console.log('selected', item)
+                            }
+                          }}
+                          renderItem={item => renderItem(item)}
+                        />
                       )}
-                      title="Register"
-                      onPress={handleSubmit}
-                    />
-                  </ScrollView>
-                )
-              }}
-            </Formik>
-          </LinearGradient>
-        </KeyboardAvoidingView>
-      </ScrollView>
+
+                      <PCLButton
+                        disabled={Boolean(
+                          errors.firstName ||
+                            errors.lastName ||
+                            errors.email ||
+                            errors.gender ||
+                            errors.password ||
+                            errors.dateOfBirth ||
+                            (errors.branch && errors.country),
+                        )}
+                        title="Register"
+                        onPress={handleSubmit}
+                      />
+                    </ScrollView>
+                  )
+                }}
+              </Formik>
+            </LinearGradient>
+          </KeyboardAvoidingView>
+        </ScrollView>
+      )}
     </View>
   )
 }

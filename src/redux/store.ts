@@ -1,12 +1,10 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit'
 import resourcesReducer from './slices/resourceSlice'
 import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
 import modalReducer from './slices/modalSlice'
-// import customerReducer from './slices/customerSlice'
-// import SIMCardReducer from './slices/SIMCardSlice'
-// import backOfficeReducer from './slices/backOfficeSlice'
+import {branchesApi, countryApi, gendersApi} from './services/resourceService'
 
 export const store = configureStore({
   reducer: {
@@ -14,13 +12,16 @@ export const store = configureStore({
     auth: authReducer,
     homeResources: homeResourcesReducer,
     categories: categoriesReducer,
-    modal: modalReducer
-    // alerts: alertReducer,
-    // appResource: appResourceReducer,
-    // customers: customerReducer,
-    // SIMCards: SIMCardReducer,
-    // backOffice: backOfficeReducer
-  }
+    modal: modalReducer,
+    // [countryApi.reducerPath]: countryApi.reducer,
+    // [gendersApi.reducerPath]: gendersApi.reducer,
+    // [branchesApi.reducerPath]: branchesApi.reducer,
+  },
+  // middleware: gDM =>
+  //   gDM()
+  //     .concat(countryApi.middleware)
+  //     .concat(gendersApi.middleware)
+  //     .concat(branchesApi.middleware) as any, // not the cleanest solution
 })
 
 export type AppDispatch = typeof store.dispatch
