@@ -1,9 +1,16 @@
-import {BlurView} from '@react-native-community/blur'
 import React from 'react'
-import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native'
+import SkeletonContent from 'react-native-skeleton-content-nonexpo'
+import {
+  Image,
+  StyleProp,
+  StyleSheet,
+  Text,
+  useWindowDimensions,
+  View,
+  ViewStyle,
+} from 'react-native'
 import {ScrollView} from 'react-native-gesture-handler'
 import Header from './screens/common/Header'
-import PCLStatusBar from './screens/common/PCLStatusBar'
 import {flexColumn, pcl} from './screens/common/style'
 
 const latest = [
@@ -30,86 +37,111 @@ const Tile: React.FC<{radius?: number; source: any}> = ({
   </View>
 )
 
-const Skeleton = () => {
-  if (true) {
-    return (
-      <View style={styles.container}>
-        <PCLStatusBar barStyle="dark-content" backgroundColor={'#fff'} />
-        <ImageBackground
-          style={styles.container}
-          source={require('/assets/skeleton.jpg')}
-        />
-      </View>   
-    )
-  }
+const tile = (radius?: number): any => ({
+  height: 100,
+  width: 80,
+  marginRight: 5,
+  children: [
+    {height: 80, width: 80, borderRadius: radius},
+    {
+      marginTop: 5,
+      height: 14,
+      width: 70,
+      alignSelf: 'center',
+    },
+  ],
+})
 
+const Skeleton = () => {
+  const {width} = useWindowDimensions()
   return (
     <View style={styles.container}>
-      <Header title="Register" showActionButtons={false} />
-      <ScrollView>
-        <View style={{display: 'flex', height: 265}}>
-          <Image
-            source={require('assets/banner.png')}
-            resizeMode="cover"
-            style={{
-              flex: 1,
-              height: undefined,
-              width: undefined,
-            }}
-          />
-        </View>
-        <View style={styles.divider}></View>
-        <View style={styles.tileContainer}>
-          <Text style={styles.tileHeader}>Latest Uplifting Releases</Text>
-          <ScrollView horizontal style={styles.tileContentContainer}>
-            {latest
-              .sort(() => 0.5 - Math.random())
-              .map(item => (
-                <Tile source={item} key={item} />
-              ))}
-          </ScrollView>
-        </View>
-        <View style={styles.divider}></View>
-        <View style={styles.tileContainer}>
-          <View style={{...flexColumn, paddingHorizontal: 30}}>
-            <Text style={{fontSize: 20}}>More of what you like</Text>
-            <Text style={{fontSize: 12, color: '#777'}}>
-              Suggestions based on your previous views
-            </Text>
-          </View>
-          <ScrollView horizontal style={styles.tileContentContainer}>
-            {latest
-              .sort(() => 0.5 - Math.random())
-              .map(item => (
-                <Tile source={item} key={item} radius={100} />
-              ))}
-          </ScrollView>
-        </View>
-        <View style={styles.divider}></View>
-        <View style={styles.tileContainer}>
-          <Text style={styles.tileHeader}>Most Played titles</Text>
-          <ScrollView horizontal style={styles.tileContentContainer}>
-            {latest
-              .sort(() => 0.5 - Math.random())
-              .map(item => (
-                <Tile source={item} key={item} radius={10} />
-              ))}
-          </ScrollView>
-        </View>
-      </ScrollView>
-
-      {/* <BlurView
-        blurType="light"
-        blurAmount={20}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-        }}
-        reducedTransparencyFallbackColor="white"
-      /> */}
+      <Header title="PCL" showActionButtons={false} />
+      <SkeletonContent
+        containerStyle={{flex: 1, height: 300}}
+        isLoading={true}
+        layout={[
+          {
+            width,
+            height: 210,
+            children: [{width, height: 200}],
+          },
+          {
+            width,
+            height: 157,
+            children: [
+              {
+                width: width - 60,
+                height: 20,
+                alignSelf: 'center',
+              },
+              {
+                marginTop: 10,
+                width,
+                height: 20,
+                flexDirection: 'row',
+                children: [tile(), tile(), tile(), tile(), tile()],
+              },
+            ],
+          },
+          {
+            width,
+            height: 157,
+            children: [
+              {
+                width: '80%',
+                height: 20,
+                marginLeft: 10,
+              },
+              {
+                marginTop: 5,
+                width: '50%',
+                marginLeft: 10,
+                height: 10,
+              },
+              {
+                marginTop: 10,
+                width,
+                height: 100,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                children: [tile(50), tile(50), tile(50), tile(50), tile(50)],
+              },
+            ],
+          },
+          {
+            width,
+            height: 157,
+            children: [
+              {
+                width: '70%',
+                height: 20,
+                marginLeft: 10,
+              },
+              {
+                marginTop: 10,
+                width,
+                height: 100,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                children: [tile(30), tile(30), tile(30), tile(30), tile(30)],
+              },
+            ],
+          },
+          {
+            width,
+            height: 157,
+            children: [
+              {
+                width,
+                height: 20,
+                flexDirection: 'row',
+                children: [tile(), tile(), tile(), tile(), tile()],
+              },
+            ],
+          },
+        ]}
+      />
     </View>
   )
 }
@@ -120,6 +152,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: pcl.background,
+  },
+  background: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loader: {
+    backgroundColor: pcl.background,
+    height: 100,
+    width: 100,
+    borderRadius: 20,
   },
   tileContentContainer: {
     display: 'flex',
