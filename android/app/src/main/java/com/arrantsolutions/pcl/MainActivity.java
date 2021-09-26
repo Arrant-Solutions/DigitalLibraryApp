@@ -1,4 +1,4 @@
-package com.pcl;
+package com.arrantsolutions.pcl;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

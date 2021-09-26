@@ -13,6 +13,9 @@ target 'PCL' do
   )
 
 
+  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
+  pod 'Firebase/Analytics'
+
   target 'PCLTests' do
     inherit! :complete
     # Pods for testing
