@@ -2,4 +2,5 @@
 <resources>
     <color name="gray">#f7f7f7</color>
     <color name="deep_blue">#111d72</color>
+    <color name="primary_gold">#e1ac2d</color>
 </resources>

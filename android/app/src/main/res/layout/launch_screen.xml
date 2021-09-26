@@ -25,5 +25,6 @@
         android:layout_alignParentEnd="true"
         android:text="@string/powered_by"
         android:textSize="10sp"
-        android:textColor="@color/deep_blue" />
+        android:textColor="@color/deep_blue"
+        android:paddingRight="10dp" />
 </RelativeLayout>
