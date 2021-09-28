@@ -47,13 +47,13 @@ const Header: React.FC<HeaderProps> = ({
       <ElementsHeader
         containerStyle={containerStyle}
         statusBarProps={{barStyle: barStyle || 'light-content'}}
-        backgroundColor={backgroundColor || pcl.purple}
+        backgroundColor={backgroundColor || pcl.gold}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>
             {back ? (
               <Icon
                 name={'ios-chevron-back'}
-                color={color || pcl.background}
+                color={color || pcl.black}
                 onPress={back ? handlePress : undefined}
                 type="ionicon"
                 size={30}
@@ -67,7 +67,7 @@ const Header: React.FC<HeaderProps> = ({
             <Text
               style={{
                 marginLeft: 10,
-                color: color || pcl.background,
+                color: color || pcl.black,
                 fontSize: 20,
               }}>
               {title}
@@ -80,13 +80,13 @@ const Header: React.FC<HeaderProps> = ({
               <Icon
                 containerStyle={{marginRight: 10}}
                 name="search"
-                color={color || pcl.background}
+                color={color || pcl.black}
                 type="ionicon"
                 // onPress={() => dispatch(setVisible(true))}
               />
               <Icon
                 name="ios-ellipsis-vertical-sharp"
-                color={color || pcl.background}
+                color={color || pcl.black}
                 type="ionicon"
                 onPress={() => dispatch(setVisible(true))}
               />

@@ -1,16 +1,15 @@
 import {Dropdown} from 'react-native-element-dropdown'
 import {Formik} from 'formik'
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import {
   StyleSheet,
   View,
   Text,
   KeyboardAvoidingView,
-  Alert,
   Pressable,
   ActivityIndicator,
+  Alert,
 } from 'react-native'
-import firestore from '@react-native-firebase/firestore'
 import {Input, SocialIcon} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
@@ -39,7 +38,6 @@ import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
 import {setUser} from 'redux/slices/authSlice'
-import {deserialize} from 'utils'
 import {Toast} from '../common/Toast'
 import {
   useFetchBranchesQuery,
@@ -48,6 +46,8 @@ import {
   useFetchUserGroupsQuery,
   useFetchUserStatusesQuery,
 } from 'redux/services/resourceService'
+import {deserialize} from 'utils'
+import {registerUser} from 'redux/services/auth'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -221,24 +221,43 @@ const Signup: React.FC<SignupProps> = () => {
                       validationSchema={SignupSchema}
                       initialValues={initialValues}
                       onSubmit={(values, helpers) => {
-                        console.log(values)
-                        helpers.setSubmitting(false)
-                        // dispatch(setUser(deserialize(values)))
-
-                        // Alert.alert(
-                        //   'Success',
-                        //   'Account created successfully.',
-                        //   [
-                        //     {
-                        //       text: 'Login',
-                        //       onPress: () => {
-                        //         helpers.resetForm()
-                        //         navigate('Login')
-                        //       },
-                        //     },
-                        //   ],
-                        //   {cancelable: false},
-                        // )
+                        dispatch(setUser(deserialize(values)))
+                        registerUser(values.email, values.password)
+                          .then(({data, statusCode}) => {
+                            if (statusCode === 200) {
+                              Alert.alert(
+                                'Success',
+                                data,
+                                [
+                                  {
+                                    text: 'Login',
+                                    onPress: () => {
+                                      helpers.resetForm()
+                                      navigate('Login')
+                                    },
+                                  },
+                                ],
+                                {cancelable: false},
+                              )
+                            } else {
+                              Alert.alert(
+                                'Failure',
+                                data,
+                                [
+                                  {
+                                    text: 'Cancel',
+                                    onPress: () => {
+                                      helpers.resetForm()
+                                      navigate('Login')
+                                    },
+                                  },
+                                ],
+                                {cancelable: true},
+                              )
+                            }
+                          })
+                          .catch()
+                          .finally(() => helpers.setSubmitting(false))
                       }}>
                       {({
                         handleChange,
