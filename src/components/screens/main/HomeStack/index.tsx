@@ -1,7 +1,7 @@
 import React from 'react'
 import {createStackNavigator} from '@react-navigation/stack'
 import MediaPlayer from '../MediaPlayer'
-import {Media} from 'models/media'
+import {Media} from 'types/Media'
 import Home from './Home'
 
 export type HomeParamList = {

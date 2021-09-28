@@ -2,7 +2,7 @@ import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
 import {deserialize} from 'utils'
 import {GENERIC_SERVER_ERROR} from '../../constants/errors'
-import {GenericUser, GenericUserI, UserCredential} from '../../models/user'
+import {GenericUser, GenericUserI, UserCredential} from '../../types/User'
 import {
   deleteAsyncData,
   getAsyncData,

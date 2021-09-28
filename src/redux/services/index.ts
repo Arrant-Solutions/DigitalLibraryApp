@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from 'axios'
 import {UNEXPECTED_STATUS_EXCEPTION} from '../../constants/errors'
-import {ResponseI} from '../../models/response'
+import {ResponseI} from '../../types/Response'
 
 export const postData = async <T = unknown, P = unknown>(
   url: string,

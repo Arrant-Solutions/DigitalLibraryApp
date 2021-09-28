@@ -1,6 +1,6 @@
-import {BranchI} from './branch'
-import {CountryI} from './country'
-import {GenderI} from './gender'
+import {BranchI} from './Branch'
+import {CountryI} from './Country'
+import {GenderI} from './Gender'
 
 export interface GenericUserI {
   avatar?: string

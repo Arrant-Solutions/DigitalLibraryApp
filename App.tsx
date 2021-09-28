@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useState} from 'react'
 import 'react-native-gesture-handler'
 import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import MainNavigation from 'components/MainNavigation'
@@ -7,6 +7,7 @@ import {StyleSheet} from 'react-native'
 import {Provider} from 'react-redux'
 import {store} from './src/redux/store'
 import SplashScreen from 'react-native-splash-screen'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 const MyTheme = {
   ...DefaultTheme,
@@ -23,15 +24,14 @@ const MyTheme = {
 }
 
 const App = () => {
-  const [backgroundColor, setBackgroundColor] = useState(pcl.gold)
-  SplashScreen.hide()
-
   return (
-    <Provider store={store}>
-      <NavigationContainer>
-        <MainNavigation />
-      </NavigationContainer>
-    </Provider>
+    <SafeAreaProvider>
+      <Provider store={store}>
+        <NavigationContainer>
+          <MainNavigation />
+        </NavigationContainer>
+      </Provider>
+    </SafeAreaProvider>
   )
 }
 

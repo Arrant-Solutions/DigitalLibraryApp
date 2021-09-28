@@ -3,7 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import Library from './Library'
 import Category from './Category'
 import MediaPlayer from '../MediaPlayer'
-import {Media} from 'models/media'
+import {Media} from 'types/Media'
 
 export type LibraryParamList = {
   LibraryScreen: undefined

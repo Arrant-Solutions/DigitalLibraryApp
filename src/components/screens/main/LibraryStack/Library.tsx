@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler'
-import {CategoryI, CategoryIconI, IconName} from '../../../../models/category'
+import {CategoryI, CategoryIconI, IconName} from '../../../../types/Category'
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
 import Anointing from 'assets/anointing.svg'
 import Book from 'assets/book.svg'

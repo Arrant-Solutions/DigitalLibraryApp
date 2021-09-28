@@ -1,7 +1,7 @@
 import {pcl} from 'components/screens/common/style'
 import {colors} from 'react-native-elements'
-import {CategoryI} from '../../models/category'
-import {GenderI} from '../../models/gender'
+import {CategoryI} from '../../types/Category'
+import {GenderI} from '../../types/Gender'
 
 export const data = [
   {

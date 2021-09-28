@@ -25,18 +25,19 @@ const MainNavigation = () => {
   const [user, setUser] = useState()
 
   // Handle user state changes
-  // const onAuthStateChanged = async (user: any) => {
-  //   if (user) setUser(user)
-  //   else {
-  //     await dispatch(restoreSession()).catch(() => setError(true))
-  //   }
-  //   if (initializing) setInitializing(false)
-  // }
+  const onAuthStateChanged = async (user: any) => {
+    SplashScreen.hide()
+    if (user) setUser(user)
+    else {
+      // await dispatch(restoreSession()).catch(() => setError(true))
+    }
+    if (initializing) setInitializing(false)
+  }
 
-  // useEffect(() => {
-  //   const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
-  //   return subscriber // unsubscribe on unmount
-  // }, [])
+  useEffect(() => {
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
+    return subscriber // unsubscribe on unmount
+  }, [])
 
   // call this when offline
   // useEffect(() => {

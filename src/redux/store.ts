@@ -4,7 +4,7 @@ import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
 import modalReducer from './slices/modalSlice'
-import {branchesApi, countryApi, gendersApi} from './services/resourceService'
+import {resourceApi} from './services/resourceService'
 
 export const store = configureStore({
   reducer: {
@@ -13,15 +13,9 @@ export const store = configureStore({
     homeResources: homeResourcesReducer,
     categories: categoriesReducer,
     modal: modalReducer,
-    // [countryApi.reducerPath]: countryApi.reducer,
-    // [gendersApi.reducerPath]: gendersApi.reducer,
-    // [branchesApi.reducerPath]: branchesApi.reducer,
+    api: resourceApi.reducer,
   },
-  // middleware: gDM =>
-  //   gDM()
-  //     .concat(countryApi.middleware)
-  //     .concat(gendersApi.middleware)
-  //     .concat(branchesApi.middleware) as any, // not the cleanest solution
+  middleware: gDM => gDM().concat(resourceApi.middleware), // not the cleanest solution
 })
 
 export type AppDispatch = typeof store.dispatch

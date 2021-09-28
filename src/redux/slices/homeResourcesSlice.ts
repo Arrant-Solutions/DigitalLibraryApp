@@ -1,9 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { GENERIC_SERVER_ERROR } from '../../constants/errors'
-import { HomeMediaItem } from '../../models/media'
-import { getAsyncData, storeAsyncData } from '../../utils/storage'
-import { data } from '../services/data'
-import { RootState } from '../store'
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import {GENERIC_SERVER_ERROR} from '../../constants/errors'
+import {HomeMediaItem} from '../../types/Media'
+import {getAsyncData, storeAsyncData} from '../../utils/storage'
+import {data} from '../services/data'
+import {RootState} from '../store'
 
 export interface HomeResourceSliceI {
   latest: HomeMediaItem[]
@@ -16,7 +16,7 @@ const initialState: HomeResourceSliceI = {
   latest: [],
   suggestions: [],
   mostPlayed: [],
-  errorMessage: ''
+  errorMessage: '',
 }
 
 export const fetchLatest = createAsyncThunk(
@@ -24,13 +24,13 @@ export const fetchLatest = createAsyncThunk(
   async () => {
     console.log('getting')
     const latest = data.map(
-      ({ description, alt_description, urls, user: { name } }) => ({
+      ({description, alt_description, urls, user: {name}}) => ({
         title: description || alt_description || name,
-        thumbnail: urls.thumb
-      })
+        thumbnail: urls.thumb,
+      }),
     )
 
-    return { latest, errorMessage: '' }
+    return {latest, errorMessage: ''}
     // const { payload } = await getLatestReleases()
 
     // if (Array.isArray(payload)) {
@@ -41,7 +41,7 @@ export const fetchLatest = createAsyncThunk(
     //   ...initialState,
     //   errorMessage: payload
     // }
-  }
+  },
 )
 
 export const restoreLatest = createAsyncThunk(
@@ -51,11 +51,11 @@ export const restoreLatest = createAsyncThunk(
     const latest = await getAsyncData<HomeMediaItem[]>('LATEST_RELEASE')
 
     if (Array.isArray(latest)) {
-      return { ...initialState, latest }
+      return {...initialState, latest}
     }
 
     return initialState
-  }
+  },
 )
 
 export const homeResourceSlice = createSlice({
@@ -67,14 +67,14 @@ export const homeResourceSlice = createSlice({
     },
     setSuggestions: (state, action: PayloadAction<HomeMediaItem[]>) => {
       state.suggestions = action.payload
-    }
+    },
   },
   extraReducers: {
     [fetchLatest.fulfilled.toString()]: (
       state,
-      action: PayloadAction<HomeResourceSliceI>
+      action: PayloadAction<HomeResourceSliceI>,
     ) => {
-      const { latest, errorMessage } = action.payload
+      const {latest, errorMessage} = action.payload
       state.latest = latest
       state.errorMessage = errorMessage
       console.log(latest)
@@ -86,18 +86,18 @@ export const homeResourceSlice = createSlice({
     },
     [restoreLatest.fulfilled.toString()]: (
       state,
-      action: PayloadAction<HomeResourceSliceI>
+      action: PayloadAction<HomeResourceSliceI>,
     ) => {
-      const { latest, errorMessage } = action.payload
+      const {latest, errorMessage} = action.payload
       state.latest = latest
       state.errorMessage = errorMessage
 
       storeAsyncData('LATEST_RELEASE', latest)
-    }
-  }
+    },
+  },
 })
 
-export const { setSuggestions, setLatest } = homeResourceSlice.actions
+export const {setSuggestions, setLatest} = homeResourceSlice.actions
 
 export const selectHomeResources = (state: RootState): HomeResourceSliceI =>
   state.homeResources
