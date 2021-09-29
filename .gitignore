@@ -60,4 +60,5 @@ buck-out/
 
 
 ## app keys
-keys
+keys/*
+

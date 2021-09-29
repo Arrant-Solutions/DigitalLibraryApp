@@ -3,7 +3,6 @@ import React from 'react'
 import {
   GestureResponderEvent,
   Image,
-  StatusBar,
   StyleSheet,
   Text,
   useWindowDimensions,
@@ -13,7 +12,7 @@ import {
 import {Header as ElementsHeader, Icon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
 import {setVisible} from 'redux/slices/modalSlice'
-import {flexRow, pcl, purple, purplePallet} from './style'
+import {flexRow, pcl} from './style'
 
 interface HeaderProps {
   containerStyle?: ViewStyle

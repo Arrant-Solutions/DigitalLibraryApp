@@ -11,12 +11,14 @@ import {
 import {RootState} from '../store'
 
 export interface AuthSliceI {
+  synced: boolean
   user: GenericUserI
   token: string
   errorMessage: string
 }
 
 const initialState: AuthSliceI = {
+  synced: false,
   user: GenericUser.createReduxInstance(),
   token: '',
   errorMessage: '',
@@ -97,6 +99,9 @@ export const authSlice = createSlice({
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
+    setSynced: (state, action: PayloadAction<boolean>) => {
+      state.synced = action.payload
+    },
   },
   extraReducers: {
     [login.fulfilled.toString()]: (
@@ -130,7 +135,7 @@ export const authSlice = createSlice({
   },
 })
 
-export const {logout, setUser, setToken} = authSlice.actions
+export const {logout, setUser, setToken, setSynced} = authSlice.actions
 
 export const selectAuth = ({auth}: RootState): AuthSliceI => ({
   ...auth,

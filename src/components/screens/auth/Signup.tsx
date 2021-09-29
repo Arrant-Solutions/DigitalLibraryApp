@@ -227,7 +227,7 @@ const Signup: React.FC<SignupProps> = () => {
                             if (statusCode === 200) {
                               Alert.alert(
                                 'Success',
-                                data,
+                                `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
                                 [
                                   {
                                     text: 'Login',
@@ -617,7 +617,7 @@ const Signup: React.FC<SignupProps> = () => {
                             )}
 
                             <PCLButton
-                              // loading={isSubmitting}
+                              loading={isSubmitting}
                               disabled={Boolean(
                                 errors.firstName ||
                                   errors.lastName ||
