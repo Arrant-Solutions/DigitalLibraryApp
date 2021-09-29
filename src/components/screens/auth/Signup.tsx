@@ -39,15 +39,9 @@ import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
 import {setUser} from 'redux/slices/authSlice'
 import {Toast} from '../common/Toast'
-import {
-  useFetchBranchesQuery,
-  useFetchCountriesQuery,
-  useFetchGendersQuery,
-  useFetchUserGroupsQuery,
-  useFetchUserStatusesQuery,
-} from 'redux/services/resourceService'
 import {deserialize} from 'utils'
 import {registerUser} from 'redux/services/auth'
+import {useGetInitResourcesQuery} from 'redux/services/resourceService'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -70,44 +64,9 @@ const Signup: React.FC<SignupProps> = () => {
   const {navigate} = useNavigation<SignupProp>()
   const dispatch = useAppDispatch()
 
-  const {
-    data: genders,
-    error: gendersError,
-    isLoading: gendersLoading,
-  } = useFetchGendersQuery(undefined)
-  const {
-    data: countries,
-    error: countriesError,
-    isLoading: countriesLoading,
-  } = useFetchCountriesQuery(undefined)
-  const {
-    data: branches,
-    error: branchesError,
-    isLoading: branchesLoading,
-  } = useFetchBranchesQuery(undefined)
-  const {
-    data: userStatuses,
-    error: userStatusesError,
-    isLoading: userStatusesLoading,
-  } = useFetchUserStatusesQuery(undefined)
-  const {
-    data: userGroups,
-    error: userGroupsError,
-    isLoading: userGroupsLoading,
-  } = useFetchUserGroupsQuery(undefined)
+  const {data, error, isLoading} = useGetInitResourcesQuery()
 
-  const loading =
-    gendersLoading ||
-    countriesLoading ||
-    branchesLoading ||
-    userStatusesLoading ||
-    userGroupsLoading
-  const error =
-    gendersError ||
-    countriesError ||
-    branchesError ||
-    userStatusesError ||
-    userGroupsError
+  // const {genders, countries, userGroups, branches, userStatuses} = data
 
   const [showDatePicker, setShowDatePicker] = useState(false)
 
@@ -118,7 +77,7 @@ const Signup: React.FC<SignupProps> = () => {
     email: '',
     password: '',
     fullname: '',
-    gender: genders?.find(({genderName}) => genderName === 'Female') || {
+    gender: data?.genders.find(({genderName}) => genderName === 'Female') || {
       genderID: 0,
       genderName: '',
     },
@@ -161,17 +120,19 @@ const Signup: React.FC<SignupProps> = () => {
       .max(dobUpper.toDate(), 'Might be too young')
       .required('Required'),
     gender: Yup.object().shape({
-      genderID: Yup.number().oneOf(genders?.map(item => item.genderID) || []),
+      genderID: Yup.number().oneOf(
+        data?.genders.map(item => item.genderID) || [],
+      ),
       genderName: Yup.string().oneOf(
-        genders?.map(item => item.genderName) || [],
+        data?.genders.map(item => item.genderName) || [],
       ),
     }),
     country: Yup.object().shape({
       countryID: Yup.number().oneOf(
-        countries?.map(item => item.countryID) || [],
+        data?.countries.map(item => item.countryID) || [],
       ),
       countryName: Yup.string().oneOf(
-        countries?.map(item => item.countryName) || [],
+        data?.countries.map(item => item.countryName) || [],
       ),
     }),
   })
@@ -179,7 +140,7 @@ const Signup: React.FC<SignupProps> = () => {
     <View style={{flex: 1}}>
       <Header back title="Register" showActionButtons={false} />
       <>
-        {loading ? (
+        {isLoading ? (
           <ActivityIndicator
             style={{marginTop: 20}}
             size="large"
@@ -188,16 +149,16 @@ const Signup: React.FC<SignupProps> = () => {
         ) : (
           <>
             {!(
-              genders &&
-              genders.length &&
-              countries &&
-              countries.length &&
-              branches &&
-              branches.length &&
-              userGroups &&
-              userGroups.length &&
-              userStatuses &&
-              userStatuses.length &&
+              data?.genders &&
+              data?.genders.length &&
+              data?.countries &&
+              data?.countries.length &&
+              data?.branches &&
+              data?.branches.length &&
+              data?.userGroups &&
+              data?.userGroups.length &&
+              data?.userStatuses &&
+              data?.userStatuses.length &&
               !error
             ) ? (
               <>
@@ -477,7 +438,9 @@ const Signup: React.FC<SignupProps> = () => {
                               checkedColor={pcl.lightBlue}
                               uncheckedColor={pcl.textPlaceholder}
                               titleStyle={{color: pcl.textPlaceholder}}
-                              options={genders.map(value => value.genderName)}
+                              options={data?.genders.map(
+                                value => value.genderName,
+                              )}
                               defaultValue="Female"
                               errorMessage={
                                 Boolean(errors.gender) ? 'Pick a gender' : ''
@@ -490,7 +453,7 @@ const Signup: React.FC<SignupProps> = () => {
                               setSelectedValue={value =>
                                 setFieldValue(
                                   'gender',
-                                  genders.find(
+                                  data?.genders.find(
                                     ({genderName}) => genderName === value,
                                   ),
                                 )
@@ -555,7 +518,7 @@ const Signup: React.FC<SignupProps> = () => {
                             {values.isMember ? (
                               <Dropdown
                                 style={styles.dropdown}
-                                data={branches.map(item => ({
+                                data={data?.branches.map(item => ({
                                   countryID: item.branchID,
                                   countryName: item.branchName,
                                 }))}
@@ -566,7 +529,7 @@ const Signup: React.FC<SignupProps> = () => {
                                 placeholder="Select Church/Organization"
                                 value={values.branch?.branchID}
                                 onChange={(item: CountryI) => {
-                                  const branch = branches.find(
+                                  const branch = data?.branches.find(
                                     ({branchID}) => branchID === item.countryID,
                                   )
                                   if (!branch) {
@@ -589,7 +552,7 @@ const Signup: React.FC<SignupProps> = () => {
                             ) : (
                               <Dropdown
                                 style={styles.dropdown}
-                                data={countries}
+                                data={data?.countries}
                                 search
                                 searchPlaceholder="Search"
                                 labelField="countryName"
@@ -597,7 +560,7 @@ const Signup: React.FC<SignupProps> = () => {
                                 placeholder="Select Country"
                                 value={values.country.countryID}
                                 onChange={(item: CountryI) => {
-                                  const country = countries.find(
+                                  const country = data?.countries.find(
                                     ({countryID}) =>
                                       countryID === item.countryID,
                                   )
