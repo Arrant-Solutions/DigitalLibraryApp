@@ -13,8 +13,8 @@ target 'PCL' do
   )
 
 
-  pod 'react-native-blur', :path => '../node_modules/@react-native-community/blur'
-  pod 'Firebase/Analytics'
+  # pod 'Firebase/Analytics'
+  # pod 'RNFirebase' #, :path => '../node_modules/react-native-firebase/ios'
 
   target 'PCLTests' do
     inherit! :complete

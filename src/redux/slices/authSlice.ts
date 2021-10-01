@@ -1,16 +1,14 @@
+import {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
 import {deserialize} from 'utils'
 import {GENERIC_SERVER_ERROR} from '../../constants/errors'
-import {GenericUser, GenericUserI, UserCredential} from '../../types/User'
-import {
-  deleteAsyncData,
-  getAsyncData,
-  storeAsyncData,
-} from '../../utils/storage'
+import {GenericUser, GenericUserI} from '../../types/User'
+import {deleteAsyncData, getAsyncData} from '../../utils/storage'
 import {RootState} from '../store'
 
 export interface AuthSliceI {
+  credential?: FirebaseAuthTypes.UserCredential
   synced: boolean
   user: GenericUserI
   token: string
@@ -18,58 +16,12 @@ export interface AuthSliceI {
 }
 
 const initialState: AuthSliceI = {
+  credential: undefined,
   synced: false,
   user: GenericUser.createReduxInstance(),
   token: '',
   errorMessage: '',
 }
-
-export const login = createAsyncThunk(
-  'user/login',
-  async (credential: UserCredential) => {
-    // const { success, payload } = await userLogin(credential)
-
-    const {user, token} = {
-      // statusCode?
-      user: {
-        firstName: 'Pablo',
-        lastName: 'Miyuru',
-        username: 'sg1290',
-        email: 'Pablo.Miyuru@domain.co.zm',
-        dateOfBirth: '1990-10-31',
-        gender: {
-          genderID: 1,
-          genderName: 'Male',
-        },
-        country: {
-          countryID: 1,
-          countryName: 'Angola',
-        },
-        branch: {
-          branchID: 1,
-          branchName: 'Chadleigh Branch',
-        },
-      },
-      token:
-        'eyJhbGciOixhc3RfbmFtZSI6Ik1JIUzI1J9.eyJmaXJzdF9uYW1lIjoiV2lsbGlhbSIsImvb25nYSIsInVzZXJuYW1lIjoiZ24xMzc2IiwiZW1haWwiOnsidmFsdWUiOiJXaWxsaWFtLk1vb25nYUB6YW10ZWwuY28uem0ifSwidXNlcl9sZXZlbCI6ImFkbWluIiwiYnVsa3Ntc19hZG1pbiI6dHJ1ZSwiNiIsInR5cCI6IkpXVCc3RhdHVzIjoxLCJpYXQiOjE2MDY3MjUzMzQsImV4cCI6MTYwNjc1NDEzNCwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo5MDAwIn0.mTCIL3ImkMat2q4LiVfQF-LzQKxGPjpY8vRPZtyLhQQ',
-      // }
-    }
-
-    return {token, user, errorMessage: ''}
-
-    // if (success && typeof payload === 'object') {
-    //   const { token, user } = payload
-    //   axios.defaults.headers.common.authorization = `Bearer ${token}`
-
-    //   return { token, user, errorMessage: '' }
-    // }
-
-    // return {
-    //   ...initialState,
-    //   errorMessage: payload as string
-    // }
-  },
-)
 
 export const restoreSession = createAsyncThunk('user/restore', async () => {
   const token = await getAsyncData<string>(Storage.AUTH_TOKEN)
@@ -96,30 +48,23 @@ export const authSlice = createSlice({
     setUser: (state, action: PayloadAction<GenericUserI>) => {
       state.user = deserialize(action.payload)
     },
+    setUserDetails: (state, action: PayloadAction<Partial<GenericUser>>) => {
+      state.user = {...state.user, ...action.payload}
+    },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
     },
     setSynced: (state, action: PayloadAction<boolean>) => {
       state.synced = action.payload
     },
+    setCredential: (
+      state,
+      action: PayloadAction<FirebaseAuthTypes.UserCredential>,
+    ) => {
+      state.credential = action.payload
+    },
   },
   extraReducers: {
-    [login.fulfilled.toString()]: (
-      state,
-      action: PayloadAction<AuthSliceI>,
-    ) => {
-      const {user, token, errorMessage} = action.payload
-
-      storeAsyncData(Storage.AUTH_TOKEN, token)
-      storeAsyncData(Storage.USER_STORE, user)
-
-      state.user = deserialize(user)
-      state.token = token
-      state.errorMessage = errorMessage
-    },
-    [login.rejected.toString()]: state => {
-      state.errorMessage = GENERIC_SERVER_ERROR
-    },
     [restoreSession.fulfilled.toString()]: (
       state,
       action: PayloadAction<AuthSliceI>,
@@ -135,7 +80,14 @@ export const authSlice = createSlice({
   },
 })
 
-export const {logout, setUser, setToken, setSynced} = authSlice.actions
+export const {
+  logout,
+  setUser,
+  setToken,
+  setSynced,
+  setUserDetails,
+  setCredential,
+} = authSlice.actions
 
 export const selectAuth = ({auth}: RootState): AuthSliceI => ({
   ...auth,

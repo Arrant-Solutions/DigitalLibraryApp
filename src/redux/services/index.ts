@@ -1,4 +1,4 @@
-import axios, {AxiosResponse} from 'axios'
+import axios, {AxiosResponse, AxiosError} from 'axios'
 import {UNEXPECTED_STATUS_EXCEPTION} from '../../constants/errors'
 import {ResponseI} from '../../types/Response'
 
@@ -7,13 +7,14 @@ export const postData = async <T = unknown, P = unknown>(
   payload: P,
 ) => {
   try {
-    const {data} = await axios.post<ResponseI<T>>(url, payload)
+    const {data} = await axios.post<T>(url, payload)
 
     return data
   } catch (error) {
+    const {response} = error as AxiosError<ResponseI<T>>
     // console.log(error.response instanceof AxiosResponse)
-    if (typeof error.response === 'object') {
-      const {data} = error.response as AxiosResponse<ResponseI<T>>
+    if (typeof response === 'object') {
+      const {data} = response
 
       if (
         typeof data === 'object' &&
@@ -32,13 +33,14 @@ export const putData = async <T = unknown, P = unknown>(
   payload: P,
 ) => {
   try {
-    const {data} = await axios.put<ResponseI<T>>(url, payload)
+    const {data} = await axios.put<T>(url, payload)
 
     return data
   } catch (error) {
+    const {response} = error as AxiosError<ResponseI<T>>
     // console.log(error.response instanceof AxiosResponse)
-    if (typeof error.response === 'object') {
-      const {data} = error.response as AxiosResponse<ResponseI<T>>
+    if (typeof response === 'object') {
+      const {data} = response
 
       if (
         typeof data === 'object' &&
@@ -57,13 +59,14 @@ export const patchData = async <T = unknown, P = unknown>(
   payload: P,
 ) => {
   try {
-    const {data} = await axios.patch<ResponseI<T>>(url, payload)
+    const {data} = await axios.patch<T>(url, payload)
 
     return data
   } catch (error) {
+    const {response} = error as AxiosError<ResponseI<T>>
     // console.log(error.response instanceof AxiosResponse)
-    if (typeof error.response === 'object') {
-      const {data} = error.response as AxiosResponse<ResponseI<T>>
+    if (typeof response === 'object') {
+      const {data} = response
 
       if (
         typeof data === 'object' &&
@@ -77,18 +80,19 @@ export const patchData = async <T = unknown, P = unknown>(
   }
 }
 
-export const fetchData = async <T = unknown, P = unknown>(
+export const fetchData = async <T = unknown, B = unknown>(
   url: string,
-  params?: P,
+  params?: B,
 ) => {
   try {
-    const {status, data} = await axios.get<ResponseI<T>>(url, params)
+    const {status, data} = await axios.get<T>(url, params)
 
     return {statusCode: status, data}
   } catch (error) {
+    const {response} = error as AxiosError<ResponseI<T>>
     // console.log(error.response instanceof AxiosResponse)
-    if (typeof error.response === 'object') {
-      const {data} = error.response as AxiosResponse<ResponseI<T>>
+    if (typeof response === 'object') {
+      const {data} = response
 
       if (
         typeof data === 'object' &&
