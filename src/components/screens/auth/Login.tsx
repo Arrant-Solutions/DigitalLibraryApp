@@ -1,28 +1,36 @@
-import React, {useState} from 'react'
-import {StyleSheet, Text, View, Platform} from 'react-native'
-import {Input, SocialIcon} from 'react-native-elements'
+import React, {useEffect, useState} from 'react'
+import {Alert, StyleSheet, View} from 'react-native'
+import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../types/User'
 import {useAppDispatch} from '../../../redux/hooks'
-import {login} from '../../../redux/slices/authSlice'
 import GlassyCard from 'components/screens/common/GlassyCard'
 import PCLButton from 'components/screens/common/PCLButton'
-import {
-  flexRow,
-  socialButton,
-  googleBlue,
-  flexColumn,
-  pcl,
-} from 'components/screens/common/style'
+import {flexColumn, pcl} from 'components/screens/common/style'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
+import SocialAuth from '../common/SocialAuth'
+import ModalLoader from '../common/ModalLoader'
+import {AuthSliceI, login} from 'redux/slices/authSlice'
+import {AuthStackParamList} from 'components/MainNavigation'
+import {StackNavigationProp} from '@react-navigation/stack'
+
+type LoginNavProp = StackNavigationProp<AuthStackParamList, 'Login'>
 
 const Login = () => {
   const dispatch = useAppDispatch()
+  const {navigate} = useNavigation<LoginNavProp>()
   const [credential, setCredential] = useState<UserCredential>({
     email: '',
     password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
+  const focused = useIsFocused()
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    setLoading(false)
+  }, [focused])
+
   const handleChange = (key: keyof UserCredential, value: string) => {
     setCredential({
       ...credential,
@@ -31,10 +39,29 @@ const Login = () => {
   }
 
   const handleLogin = () => {
-    setLoading(true)
-    dispatch(login(credential)).then(res => {
-      // console.log(res)
-    })
+    if (credential.email.length && credential.password.length) {
+      setLoading(true)
+      dispatch(login(credential)).then(response => {
+        const {payload} = response as {payload: AuthSliceI}
+        if (payload.errorMessage.length) {
+          Alert.alert(
+            'Login Failed',
+            payload.errorMessage,
+            [
+              /Registration incomplete/i.test(payload.errorMessage)
+                ? {text: 'Register', onPress: () => navigate('Register')}
+                : {text: 'Close', style: 'cancel'},
+            ],
+            {cancelable: false},
+          )
+          setLoading(false)
+          setCredential({
+            ...credential,
+            password: '',
+          })
+        }
+      })
+    }
   }
 
   return (
@@ -49,42 +76,7 @@ const Login = () => {
       cardContainerStyle={{padding: 20, paddingVertical: 30}}
       colors={[pcl.background, pcl.background]}
       containerStyle={{height: 400}}>
-      <Text
-        style={[
-          {paddingHorizontal: 10, fontSize: 15, marginBottom: 10},
-          Platform.OS === 'android' ? {color: pcl.black} : {},
-        ]}>
-        Sign in with one of the following options.
-      </Text>
-      <View
-        style={[
-          flexRow,
-          {
-            justifyContent: 'space-between',
-            marginBottom: 40,
-            width: '100%',
-          },
-        ]}>
-        <SocialIcon
-          style={socialButton}
-          underlayColor={`${googleBlue}60`}
-          button
-          iconSize={20}
-          type="facebook"
-          onPress={() => console.log('pressed')}
-        />
-        <SocialIcon
-          style={{
-            ...socialButton,
-            backgroundColor: googleBlue,
-          }}
-          iconSize={20}
-          underlayColor={`${googleBlue}60`}
-          button
-          type="google"
-          onPress={() => console.log('pressed')}
-        />
-      </View>
+      <SocialAuth setLoading={setLoading} />
       <Input
         inputContainerStyle={styles.inputContainerStyle}
         placeholderTextColor={pcl.textPlaceholder}
@@ -122,6 +114,7 @@ const Login = () => {
           onPress={handleLogin}
         />
       </View>
+      <ModalLoader transparent={true} visible={loading} />
     </GlassyCard>
   )
 }

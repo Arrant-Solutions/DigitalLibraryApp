@@ -60,7 +60,7 @@ const AuthHome = () => {
             token: data.token,
             user: data.user,
             synced: true,
-            credential: data.credential,
+            credential: true,
           }),
         )
       } else {
@@ -72,7 +72,7 @@ const AuthHome = () => {
             avatar: data.user.avatar,
           }),
         )
-        dispatch(setCredential(data.credential))
+        dispatch(setCredential(true))
         navigate('Register')
       }
     }

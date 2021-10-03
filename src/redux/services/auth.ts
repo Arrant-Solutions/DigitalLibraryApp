@@ -4,7 +4,7 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {LoginManager, AccessToken} from 'react-native-fbsdk-next'
 import {GENERIC_SERVER_ERROR, LOGIN_FAILURE} from 'constants/errors'
 import {ResponseI} from 'types/Response'
-import {GenericUserI} from 'types/User'
+import {GenericUserI, UserCredential} from 'types/User'
 import {fetchData, postData} from '.'
 
 GoogleSignin.configure({
@@ -64,6 +64,47 @@ export const emailRegistration = async (
 
     return {statusCode, data: data as string} // always a string here
   } catch (error) {
+    return {statusCode: 500, data: GENERIC_SERVER_ERROR}
+  }
+}
+
+export const emailPasswordLogin = async ({email, password}: UserCredential) => {
+  try {
+    const credential = await auth().signInWithEmailAndPassword(
+      email.toLocaleLowerCase(),
+      password,
+    )
+
+    if (credential.user) {
+      return {statusCode: 200, data: credential}
+    }
+
+    return {statusCode: 401, data: 'Failed to login'}
+  } catch (error) {
+    console.log(error)
+    const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
+
+    if (code === 'auth/user-not-found') {
+      return {
+        statusCode: 404,
+        data: 'User with specified email does not exists',
+      }
+    }
+
+    if (code === 'auth/wrong-password') {
+      return {
+        statusCode: 401,
+        data: 'Invalid email/password combination',
+      }
+    }
+
+    if (code === 'auth/too-many-requests') {
+      return {
+        statusCode: 401,
+        data: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.',
+      }
+    }
+
     return {statusCode: 500, data: GENERIC_SERVER_ERROR}
   }
 }

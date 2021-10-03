@@ -1,6 +1,6 @@
 import {Dropdown} from 'react-native-element-dropdown'
 import {Formik} from 'formik'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {
   StyleSheet,
   View,
@@ -10,7 +10,7 @@ import {
   ActivityIndicator,
   Alert,
 } from 'react-native'
-import {Input, SocialIcon} from 'react-native-elements'
+import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import * as Yup from 'yup'
@@ -21,18 +21,11 @@ import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import {ScrollView} from 'react-native-gesture-handler'
 import RadioGroup from '../common/RadioGroup'
-import {
-  greys,
-  stretchedBox,
-  flexRow,
-  socialButton,
-  googleBlue,
-  pcl,
-} from '../common/style'
+import {greys, stretchedBox, pcl} from '../common/style'
 import PCLButton from '../common/PCLButton'
 import Header from '../common/Header'
 import {BranchI} from 'types/Branch'
-import {useNavigation} from '@react-navigation/native'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
@@ -41,6 +34,8 @@ import {Toast} from '../common/Toast'
 import {deserialize} from 'utils'
 import {emailRegistration, submitUserDetails} from 'redux/services/auth'
 import {useGetInitResourcesQuery} from 'redux/services/resourceService'
+import SocialAuth from '../common/SocialAuth'
+import ModalLoader from '../common/ModalLoader'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -68,36 +63,40 @@ const Signup: React.FC<SignupProps> = () => {
   const {navigate} = useNavigation<SignupProp>()
   const dispatch = useAppDispatch()
   const {user, credential} = useAppSelector(selectAuth)
-
-  console.log(JSON.stringify(user, null, 3), !!credential)
-
   const {data, error, isLoading} = useGetInitResourcesQuery()
-
   const [showDatePicker, setShowDatePicker] = useState(false)
-
   const [showPassword, setShowPassword] = useState(false)
-  const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} = {
+  const focused = useIsFocused()
+  const [loading, setLoading] = useState(false)
+  const [initialValues] = useState<
+    SignupUserI & {isMember: boolean; branch: BranchI}
+  >({
     first_name: user.first_name || '',
     last_name: user.last_name || '',
     email: user.email || '',
-    password: '',
+    password: credential ? 'R@nd0MGarbage' : '',
     fullname: user.fullname || '',
-    gender: user.gender ||
-      data?.genders.find(({gender_name}) => gender_name === 'Female') || {
-        gender_id: 0,
-        gender_name: '',
-      },
+    gender: user.gender || {
+      gender_id: 0,
+      gender_name: '',
+    },
     date_of_birth: user.date_of_birth || new Date(), // moment().subtract(5, 'years').toDate(),
     country: user.country.country_id
       ? user.country
-      : data?.countries.find(({country_name}) => country_name === 'Zambia') || {
+      : {
           country_id: 0,
           country_name: '',
           flag: '',
         },
     branch: user.branch || {branch_id: 0, branch_name: ''},
     isMember: true,
-  }
+  })
+
+  useEffect(() => {
+    setLoading(false)
+  }, [focused])
+
+  // const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} =
 
   const renderItem = (item: ListItemI) => <ListItem {...item} />
 
@@ -198,7 +197,19 @@ const Signup: React.FC<SignupProps> = () => {
                       validationSchema={SignupSchema}
                       initialValues={initialValues}
                       onSubmit={(values, helpers) => {
-                        dispatch(setUser(deserialize(values)))
+                        dispatch(
+                          setUser(
+                            deserialize({
+                              ...values,
+                              email: values.email.toLowerCase(),
+                            }),
+                          ),
+                        )
+
+                        console.log({
+                          ...values,
+                          email: values.email.toLowerCase(),
+                        })
 
                         const action =
                           /(.*)@(.*).(.*)/.test(user.email) && credential
@@ -207,6 +218,7 @@ const Signup: React.FC<SignupProps> = () => {
 
                         action({
                           ...values,
+                          email: values.email.toLowerCase(),
                           branch_id: values.branch.branch_id,
                           gender_id: values.gender.gender_id,
                           country_id: values.country.country_id,
@@ -268,43 +280,7 @@ const Signup: React.FC<SignupProps> = () => {
                       }) => {
                         return (
                           <ScrollView style={styles.container}>
-                            <Text
-                              style={{
-                                paddingHorizontal: 10,
-                                marginVertical: 10,
-                                fontSize: 15,
-                                color: pcl.black,
-                              }}>
-                              Sign up with one of the following options.
-                            </Text>
-                            <View
-                              style={[
-                                flexRow,
-                                {
-                                  justifyContent: 'space-between',
-                                  marginBottom: 10,
-                                },
-                              ]}>
-                              <SocialIcon
-                                style={socialButton}
-                                underlayColor={`${googleBlue}60`}
-                                button
-                                iconSize={20}
-                                type="facebook"
-                                onPress={() => console.log('pressed')}
-                              />
-                              <SocialIcon
-                                style={{
-                                  ...socialButton,
-                                  backgroundColor: googleBlue,
-                                }}
-                                iconSize={20}
-                                underlayColor={`${googleBlue}60`}
-                                button
-                                type="google"
-                                onPress={() => console.log('pressed')}
-                              />
-                            </View>
+                            <SocialAuth setLoading={setLoading} signup />
                             <Input
                               inputContainerStyle={styles.inputContainerStyle}
                               labelStyle={styles.textStyle}
@@ -352,6 +328,7 @@ const Signup: React.FC<SignupProps> = () => {
                               errorStyle={
                                 errors.email ? styles.inputErrorStyle : {}
                               }
+                              disabled={credential}
                               errorMessage={errors.email}
                               labelStyle={styles.textStyle}
                               placeholderTextColor={pcl.textPlaceholder}
@@ -482,7 +459,7 @@ const Signup: React.FC<SignupProps> = () => {
                               options={data?.genders.map(
                                 value => value.gender_name,
                               )}
-                              defaultValue="Female"
+                              defaultValue={values.gender.gender_name}
                               errorMessage={
                                 Boolean(errors.gender) ? 'Pick a gender' : ''
                               }
@@ -574,6 +551,10 @@ const Signup: React.FC<SignupProps> = () => {
                                   } else {
                                     setErrors({...errors, branch: undefined})
                                     setFieldValue('branch', branch)
+                                    setFieldValue('country', {
+                                      country_id: 249,
+                                      country_name: 'Zambia',
+                                    })
                                   }
                                 }}
                                 renderItem={item => renderItem(item)}
@@ -616,9 +597,14 @@ const Signup: React.FC<SignupProps> = () => {
                                   errors.last_name ||
                                   errors.email ||
                                   errors.gender ||
-                                  (!credential && errors.password) ||
                                   errors.date_of_birth ||
-                                  (errors.branch && errors.country),
+                                  (!credential && errors.password) ||
+                                  (values.isMember &&
+                                    (errors.branch ||
+                                      !values.branch.branch_id)) ||
+                                  (!values.isMember &&
+                                    (errors.country ||
+                                      !values.country.country_id)),
                               )}
                               title="Register"
                               onPress={handleSubmit}
@@ -629,6 +615,7 @@ const Signup: React.FC<SignupProps> = () => {
                     </Formik>
                   </LinearGradient>
                 </KeyboardAvoidingView>
+                <ModalLoader transparent={true} visible={loading} />
               </ScrollView>
             )}
           </>

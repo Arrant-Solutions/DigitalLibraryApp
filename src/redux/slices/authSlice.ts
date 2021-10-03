@@ -1,14 +1,15 @@
-import {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
+import {fetchData} from 'redux/services'
+import {emailPasswordLogin} from 'redux/services/auth'
 import {deserialize} from 'utils'
 import {GENERIC_SERVER_ERROR} from '../../constants/errors'
-import {GenericUser, GenericUserI} from '../../types/User'
+import {GenericUser, GenericUserI, UserCredential} from '../../types/User'
 import {deleteAsyncData, getAsyncData} from '../../utils/storage'
 import {RootState} from '../store'
 
 export interface AuthSliceI {
-  credential?: FirebaseAuthTypes.UserCredential
+  credential?: boolean
   synced: boolean
   user: GenericUserI
   token: string
@@ -22,6 +23,52 @@ const initialState: AuthSliceI = {
   token: '',
   errorMessage: '',
 }
+
+export const login = createAsyncThunk(
+  'user/login',
+  async (credential: UserCredential) => {
+    const {data} = await emailPasswordLogin(credential)
+
+    if (typeof data === 'string') {
+      return {
+        ...initialState,
+        errorMessage: data,
+      }
+    }
+
+    const {data: userData, statusCode} = await fetchData<{
+      user: GenericUserI
+      token: string
+    }>(`/auth/fetchUser/${data.user.email}`)
+
+    if (typeof userData === 'string') {
+      if (statusCode === 404) {
+        return {
+          ...initialState,
+          credential: true,
+          user: {
+            ...initialState.user,
+            email: credential.email,
+          },
+          errorMessage:
+            'Registration incomplete. Please complete your registration.',
+        }
+      }
+      return {
+        ...initialState,
+        errorMessage: userData,
+      }
+    }
+
+    return {
+      user: userData.user,
+      token: userData.token,
+      errorMessage: '',
+      credential: true,
+      synced: true,
+    }
+  },
+)
 
 export const restoreSession = createAsyncThunk('user/restore', async () => {
   const token = await getAsyncData<string>(Storage.AUTH_TOKEN)
@@ -41,7 +88,8 @@ export const authSlice = createSlice({
     updateAuth: (state, action: PayloadAction<Partial<AuthSliceI>>) => {
       const {credential, synced, user, token, errorMessage} = action.payload
 
-      state.credential = credential || state.credential
+      state.credential =
+        typeof credential === 'boolean' ? credential : state.credential
       state.synced = typeof synced === 'boolean' ? synced : state.synced
       state.user = deserialize(user) || state.user
       state.token = token || state.token
@@ -73,13 +121,8 @@ export const authSlice = createSlice({
     setSynced: (state, action: PayloadAction<boolean>) => {
       state.synced = action.payload
     },
-    setCredential: (
-      state,
-      action: PayloadAction<FirebaseAuthTypes.UserCredential>,
-    ) => {
-      state.credential = deserialize<FirebaseAuthTypes.UserCredential>(
-        action.payload,
-      )
+    setCredential: (state, action: PayloadAction<boolean>) => {
+      state.credential = action.payload
     },
   },
   extraReducers: {
@@ -96,6 +139,21 @@ export const authSlice = createSlice({
       state.errorMessage = errorMessage
     },
     [restoreSession.rejected.toString()]: state => {
+      state.errorMessage = GENERIC_SERVER_ERROR
+    },
+    [login.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<AuthSliceI>,
+    ) => {
+      const {credential, synced, user, token, errorMessage} = action.payload
+
+      state.credential = credential || undefined
+      state.synced = typeof synced === 'boolean' ? synced : false
+      state.user = user ? deserialize(user) : initialState.user
+      state.token = token
+      state.errorMessage = errorMessage
+    },
+    [login.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
     },
   },

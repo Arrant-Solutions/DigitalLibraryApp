@@ -15,7 +15,7 @@ export const store = configureStore({
     modal: modalReducer,
     resources: resourcesApi.reducer,
   },
-  middleware: gDM => gDM().concat(resourcesApi.middleware) as any, // not the cleanest solution
+  middleware: gDM => gDM().concat(resourcesApi.middleware), // not the cleanest solution
 })
 
 export type AppDispatch = typeof store.dispatch
