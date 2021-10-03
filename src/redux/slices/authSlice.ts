@@ -38,18 +38,34 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    updateAuth: (state, action: PayloadAction<Partial<AuthSliceI>>) => {
+      const {credential, synced, user, token, errorMessage} = action.payload
+
+      state.credential = credential || state.credential
+      state.synced = typeof synced === 'boolean' ? synced : state.synced
+      state.user = deserialize(user) || state.user
+      state.token = token || state.token
+      state.errorMessage = errorMessage || state.errorMessage
+    },
     logout: state => {
       deleteAsyncData(Storage.AUTH_TOKEN)
       deleteAsyncData(Storage.USER_STORE)
 
-      state.user = GenericUser.createReduxInstance()
+      state.user = initialState.user
       state.token = ''
+      state.credential = undefined
+      state.synced = false
+      state.errorMessage = ''
     },
     setUser: (state, action: PayloadAction<GenericUserI>) => {
-      state.user = deserialize(action.payload)
+      action.payload.password = ''
+      state.user = deserialize<GenericUserI>(action.payload)
     },
     setUserDetails: (state, action: PayloadAction<Partial<GenericUser>>) => {
-      state.user = {...state.user, ...action.payload}
+      state.user = {
+        ...state.user,
+        ...deserialize<Partial<GenericUser>>(action.payload),
+      }
     },
     setToken: (state, action: PayloadAction<string>) => {
       state.token = action.payload
@@ -61,7 +77,9 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<FirebaseAuthTypes.UserCredential>,
     ) => {
-      state.credential = action.payload
+      state.credential = deserialize<FirebaseAuthTypes.UserCredential>(
+        action.payload,
+      )
     },
   },
   extraReducers: {
@@ -69,7 +87,10 @@ export const authSlice = createSlice({
       state,
       action: PayloadAction<AuthSliceI>,
     ) => {
-      const {user, token, errorMessage} = action.payload
+      const {credential, synced, user, token, errorMessage} = action.payload
+
+      state.credential = credential || undefined
+      state.synced = typeof synced === 'boolean' ? synced : false
       state.user = user ? deserialize(user) : initialState.user
       state.token = token
       state.errorMessage = errorMessage
@@ -81,6 +102,7 @@ export const authSlice = createSlice({
 })
 
 export const {
+  updateAuth,
   logout,
   setUser,
   setToken,

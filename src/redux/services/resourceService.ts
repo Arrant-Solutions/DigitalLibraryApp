@@ -9,6 +9,8 @@ import {
 import {BranchI} from 'types/Branch'
 import {CountryI} from 'types/Country'
 import {GenderI} from 'types/Gender'
+import {PCLError} from 'types/PCLException'
+import {ResponseI} from 'types/Response'
 import {UserGroupI} from 'types/userGroup'
 import {UserStatusI} from 'types/UserStatus'
 
@@ -108,6 +110,13 @@ export const resourcesApi = createApi({
   endpoints: build => ({
     getInitResources: build.query<ResourceI, void>({
       query: () => '/assets',
+      transformResponse: ({data}: ResponseI<ResourceI>) => {
+        if (typeof data === 'string') {
+          throw new PCLError(data, 1000)
+        }
+
+        return data
+      },
     }),
   }),
 })

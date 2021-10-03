@@ -17,10 +17,9 @@ import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import moment from 'moment'
 import {SignupUserI} from '../../../types/User'
-import {useAppDispatch} from '../../../redux/hooks'
+import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import {ScrollView} from 'react-native-gesture-handler'
-import {CountryI} from '../../../types/Country'
 import RadioGroup from '../common/RadioGroup'
 import {
   greys,
@@ -37,57 +36,70 @@ import {useNavigation} from '@react-navigation/native'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
-import {setUser} from 'redux/slices/authSlice'
+import {selectAuth, setUser, updateAuth} from 'redux/slices/authSlice'
 import {Toast} from '../common/Toast'
 import {deserialize} from 'utils'
-import {registerUser} from 'redux/services/auth'
+import {emailRegistration, submitUserDetails} from 'redux/services/auth'
 import {useGetInitResourcesQuery} from 'redux/services/resourceService'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
 interface SignupProps {}
 
-const Item = (item: CountryI) => (
+interface ListItemI {
+  name: string
+  id: number
+}
+
+const Item = (item: ListItemI) => (
   <View
     style={{
       flexDirection: 'row',
       borderBottomWidth: 0.5,
       borderBottomColor: greys[40],
     }}>
-    <Text style={{fontSize: 13, padding: 12}}>{item.countryName}</Text>
+    <Text style={{fontSize: 13, padding: 12}}>{item.name}</Text>
   </View>
 )
 
-const CountryItem = React.memo(Item)
+const ListItem = React.memo(Item)
 
 const Signup: React.FC<SignupProps> = () => {
   const {navigate} = useNavigation<SignupProp>()
   const dispatch = useAppDispatch()
+  const {user, credential} = useAppSelector(selectAuth)
+
+  console.log(JSON.stringify(user, null, 3), !!credential)
 
   const {data, error, isLoading} = useGetInitResourcesQuery()
-
-  // const {genders, countries, userGroups, branches, userStatuses} = data
 
   const [showDatePicker, setShowDatePicker] = useState(false)
 
   const [showPassword, setShowPassword] = useState(false)
   const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} = {
-    firstName: '',
-    lastName: '',
-    email: '',
+    first_name: user.first_name || '',
+    last_name: user.last_name || '',
+    email: user.email || '',
     password: '',
-    fullname: '',
-    gender: data?.genders.find(({genderName}) => genderName === 'Female') || {
-      genderID: 0,
-      genderName: '',
-    },
-    dateOfBirth: moment().subtract(5, 'years').toDate(),
-    country: {countryID: 0, countryName: '', flag: ''},
-    branch: {branchID: 0, branchName: ''},
+    fullname: user.fullname || '',
+    gender: user.gender ||
+      data?.genders.find(({gender_name}) => gender_name === 'Female') || {
+        gender_id: 0,
+        gender_name: '',
+      },
+    date_of_birth: user.date_of_birth || new Date(), // moment().subtract(5, 'years').toDate(),
+    country: user.country.country_id
+      ? user.country
+      : data?.countries.find(({country_name}) => country_name === 'Zambia') || {
+          country_id: 0,
+          country_name: '',
+          flag: '',
+        },
+    branch: user.branch || {branch_id: 0, branch_name: ''},
     isMember: true,
   }
 
-  const renderItem = (item: CountryI) => <CountryItem {...item} />
+  const renderItem = (item: ListItemI) => <ListItem {...item} />
 
   const nameValidator = Yup.string()
     .min(2, 'Too Short!')
@@ -96,8 +108,8 @@ const Signup: React.FC<SignupProps> = () => {
   const dobLower = moment().subtract(110, 'years')
   const dobUpper = moment().subtract(2, 'years')
   const SignupSchema = Yup.object().shape({
-    firstName: nameValidator,
-    lastName: nameValidator,
+    first_name: nameValidator,
+    last_name: nameValidator,
     email: Yup.string().email('Invalid email').required('Required'),
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters long')
@@ -114,27 +126,31 @@ const Signup: React.FC<SignupProps> = () => {
         /(?=(.*[!@#$%^&*()\-__+.]){1,})/,
         'Password must contain at least one special charactor (e.g. !@#$%^&*()-__+.)',
       )
-      .required('Required'),
-    dateOfBirth: Yup.date()
+      .required('Password required'),
+    date_of_birth: Yup.date()
       .min(dobLower.toDate(), 'Might be too old')
       .max(dobUpper.toDate(), 'Might be too young')
-      .required('Required'),
-    gender: Yup.object().shape({
-      genderID: Yup.number().oneOf(
-        data?.genders.map(item => item.genderID) || [],
-      ),
-      genderName: Yup.string().oneOf(
-        data?.genders.map(item => item.genderName) || [],
-      ),
-    }),
-    country: Yup.object().shape({
-      countryID: Yup.number().oneOf(
-        data?.countries.map(item => item.countryID) || [],
-      ),
-      countryName: Yup.string().oneOf(
-        data?.countries.map(item => item.countryName) || [],
-      ),
-    }),
+      .required('Date of birth is required'),
+    gender: Yup.object()
+      .shape({
+        gender_id: Yup.number().oneOf(
+          data?.genders.map(item => item.gender_id) || [],
+        ),
+        genderName: Yup.string().oneOf(
+          data?.genders.map(item => item.gender_name) || [],
+        ),
+      })
+      .required('Gender is required'),
+    country: Yup.object()
+      .shape({
+        country_id: Yup.number().oneOf(
+          data?.countries.map(item => item.country_id) || [],
+        ),
+        country_name: Yup.string().oneOf(
+          data?.countries.map(item => item.country_name) || [],
+        ),
+      })
+      .required('Country is required'),
   })
   return (
     <View style={{flex: 1}}>
@@ -183,34 +199,53 @@ const Signup: React.FC<SignupProps> = () => {
                       initialValues={initialValues}
                       onSubmit={(values, helpers) => {
                         dispatch(setUser(deserialize(values)))
-                        registerUser(values.email, values.password)
+
+                        const action =
+                          /(.*)@(.*).(.*)/.test(user.email) && credential
+                            ? submitUserDetails
+                            : emailRegistration
+
+                        action({
+                          ...values,
+                          branch_id: values.branch.branch_id,
+                          gender_id: values.gender.gender_id,
+                          country_id: values.country.country_id,
+                        })
                           .then(({data, statusCode}) => {
-                            if (statusCode === 200) {
-                              Alert.alert(
-                                'Success',
-                                `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
-                                [
-                                  {
-                                    text: 'Login',
-                                    onPress: () => {
-                                      helpers.resetForm()
-                                      navigate('Login')
+                            console.log(data)
+                            if (
+                              statusCode === 200 &&
+                              typeof data === 'object'
+                            ) {
+                              if (
+                                /(.*)@(.*).(.*)/.test(user.email) &&
+                                credential
+                              ) {
+                                dispatch(updateAuth(data))
+                              } else {
+                                Alert.alert(
+                                  'Success',
+                                  `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
+                                  [
+                                    {
+                                      text: 'Login',
+                                      onPress: () => {
+                                        helpers.resetForm()
+                                        navigate('Login')
+                                      },
                                     },
-                                  },
-                                ],
-                                {cancelable: false},
-                              )
+                                  ],
+                                  {cancelable: false},
+                                )
+                              }
                             } else {
                               Alert.alert(
                                 'Failure',
-                                data,
+                                data as string, // always a string here
                                 [
                                   {
                                     text: 'Cancel',
-                                    onPress: () => {
-                                      helpers.resetForm()
-                                      navigate('Login')
-                                    },
+                                    style: 'cancel',
                                   },
                                 ],
                                 {cancelable: true},
@@ -274,9 +309,9 @@ const Signup: React.FC<SignupProps> = () => {
                               inputContainerStyle={styles.inputContainerStyle}
                               labelStyle={styles.textStyle}
                               placeholderTextColor={pcl.textPlaceholder}
-                              errorMessage={errors.firstName}
+                              errorMessage={errors.first_name}
                               errorStyle={
-                                errors.firstName ? styles.inputErrorStyle : {}
+                                errors.first_name ? styles.inputErrorStyle : {}
                               }
                               placeholder="First Name"
                               leftIcon={
@@ -286,19 +321,19 @@ const Signup: React.FC<SignupProps> = () => {
                                   color={pcl.textPlaceholder}
                                 />
                               }
-                              onChangeText={handleChange('firstName')}
-                              onBlur={handleBlur('firstName')}
-                              value={values.firstName}
+                              onChangeText={handleChange('first_name')}
+                              onBlur={handleBlur('first_name')}
+                              value={values.first_name}
                               multiline={false}
                             />
                             <Input
                               inputContainerStyle={styles.inputContainerStyle}
                               errorStyle={
-                                errors.lastName ? styles.inputErrorStyle : {}
+                                errors.last_name ? styles.inputErrorStyle : {}
                               }
                               labelStyle={styles.textStyle}
                               placeholderTextColor={pcl.textPlaceholder}
-                              errorMessage={errors.lastName}
+                              errorMessage={errors.last_name}
                               placeholder="Last Name"
                               leftIcon={
                                 <SimpleLineIcons
@@ -307,9 +342,9 @@ const Signup: React.FC<SignupProps> = () => {
                                   color={pcl.textPlaceholder}
                                 />
                               }
-                              onChangeText={handleChange('lastName')}
-                              onBlur={handleBlur('lastName')}
-                              value={values.lastName}
+                              onChangeText={handleChange('last_name')}
+                              onBlur={handleBlur('last_name')}
+                              value={values.last_name}
                               multiline={false}
                             />
                             <Input
@@ -342,14 +377,14 @@ const Signup: React.FC<SignupProps> = () => {
                               <Input
                                 inputContainerStyle={styles.inputContainerStyle}
                                 errorStyle={
-                                  errors.dateOfBirth
+                                  errors.date_of_birth
                                     ? styles.inputErrorStyle
                                     : {}
                                 }
                                 disabled={true}
                                 errorMessage={
-                                  errors.dateOfBirth &&
-                                  String(errors.dateOfBirth)
+                                  errors.date_of_birth &&
+                                  String(errors.date_of_birth)
                                 }
                                 labelStyle={styles.textStyle}
                                 placeholderTextColor={pcl.textPlaceholder}
@@ -361,7 +396,7 @@ const Signup: React.FC<SignupProps> = () => {
                                     color={pcl.textPlaceholder}
                                   />
                                 }
-                                value={moment(values.dateOfBirth).format(
+                                value={moment(values.date_of_birth).format(
                                   'MMMM DD, YYYY',
                                 )}
                                 multiline={false}
@@ -385,53 +420,59 @@ const Signup: React.FC<SignupProps> = () => {
                                 .toDate()}
                               modal
                               open={showDatePicker}
-                              date={new Date(values.dateOfBirth)}
+                              date={new Date(values.date_of_birth)}
                               onConfirm={date => {
                                 setShowDatePicker(false)
-                                setFieldValue('dateOfBirth', date)
+                                setFieldValue('date_of_birth', date)
                               }}
                               onDateChange={date => {
                                 setShowDatePicker(false)
-                                setFieldValue('dateOfBirth', date)
+                                setFieldValue('date_of_birth', date)
                               }}
                               onCancel={() => {
                                 setShowDatePicker(false)
                               }}
                             />
-                            <Input
-                              inputContainerStyle={styles.inputContainerStyle}
-                              errorStyle={
-                                errors.firstName ? styles.inputErrorStyle : {}
-                              }
-                              labelStyle={styles.textStyle}
-                              placeholderTextColor={pcl.textPlaceholder}
-                              multiline={false}
-                              secureTextEntry={!showPassword}
-                              errorMessage={errors.password}
-                              placeholder="Password"
-                              leftIcon={
-                                <Ionicons
-                                  name="key"
-                                  size={20}
-                                  color={pcl.textPlaceholder}
-                                />
-                              }
-                              rightIcon={
-                                <Ionicons
-                                  name={
-                                    showPassword
-                                      ? 'eye-off-outline'
-                                      : 'eye-outline'
-                                  }
-                                  size={20}
-                                  color="white"
-                                  onPress={() => setShowPassword(!showPassword)}
-                                />
-                              }
-                              onChangeText={handleChange('password')}
-                              onBlur={handleBlur('password')}
-                              value={values.password}
-                            />
+                            {!credential && (
+                              <Input
+                                inputContainerStyle={styles.inputContainerStyle}
+                                errorStyle={
+                                  errors.first_name
+                                    ? styles.inputErrorStyle
+                                    : {}
+                                }
+                                labelStyle={styles.textStyle}
+                                placeholderTextColor={pcl.textPlaceholder}
+                                multiline={false}
+                                secureTextEntry={!showPassword}
+                                errorMessage={errors.password}
+                                placeholder="Password"
+                                leftIcon={
+                                  <Ionicons
+                                    name="key"
+                                    size={20}
+                                    color={pcl.textPlaceholder}
+                                  />
+                                }
+                                rightIcon={
+                                  <Ionicons
+                                    name={
+                                      showPassword
+                                        ? 'eye-off-outline'
+                                        : 'eye-outline'
+                                    }
+                                    size={20}
+                                    color="white"
+                                    onPress={() =>
+                                      setShowPassword(!showPassword)
+                                    }
+                                  />
+                                }
+                                onChangeText={handleChange('password')}
+                                onBlur={handleBlur('password')}
+                                value={values.password}
+                              />
+                            )}
                             <RadioGroup
                               labelStyle={{color: pcl.black}}
                               label="Gender"
@@ -439,7 +480,7 @@ const Signup: React.FC<SignupProps> = () => {
                               uncheckedColor={pcl.textPlaceholder}
                               titleStyle={{color: pcl.textPlaceholder}}
                               options={data?.genders.map(
-                                value => value.genderName,
+                                value => value.gender_name,
                               )}
                               defaultValue="Female"
                               errorMessage={
@@ -454,7 +495,7 @@ const Signup: React.FC<SignupProps> = () => {
                                 setFieldValue(
                                   'gender',
                                   data?.genders.find(
-                                    ({genderName}) => genderName === value,
+                                    ({gender_name}) => gender_name === value,
                                   ),
                                 )
                               }
@@ -469,19 +510,10 @@ const Signup: React.FC<SignupProps> = () => {
                               options={['Yes', 'No']}
                               defaultValue="Yes"
                               setSelectedValue={value => {
-                                console.log(
-                                  errors.firstName,
-                                  errors.lastName,
-                                  errors.email,
-                                  errors.gender,
-                                  errors.password,
-                                  errors.dateOfBirth,
-                                  (errors.branch, errors.country),
-                                )
                                 if (value === 'Yes') {
                                   setFieldValue('country', {
-                                    countryName: '',
-                                    countryID: undefined,
+                                    country_name: '',
+                                    country_id: undefined,
                                   })
                                   setFieldError(
                                     'country',
@@ -490,14 +522,14 @@ const Signup: React.FC<SignupProps> = () => {
                                   setErrors({
                                     ...errors,
                                     country: {
-                                      countryName: '',
-                                      countryID: undefined,
+                                      country_name: '',
+                                      country_id: undefined,
                                     },
                                   })
                                 } else {
                                   setFieldValue('branch', {
-                                    branchName: '',
-                                    branchID: 0,
+                                    branch_name: '',
+                                    branch_id: 0,
                                   })
                                   setFieldError(
                                     'branch',
@@ -506,8 +538,8 @@ const Signup: React.FC<SignupProps> = () => {
                                   setErrors({
                                     ...errors,
                                     branch: {
-                                      branchName: '',
-                                      branchID: undefined,
+                                      branch_name: '',
+                                      branch_id: undefined,
                                     },
                                   })
                                 }
@@ -518,20 +550,22 @@ const Signup: React.FC<SignupProps> = () => {
                             {values.isMember ? (
                               <Dropdown
                                 style={styles.dropdown}
-                                data={data?.branches.map(item => ({
-                                  countryID: item.branchID,
-                                  countryName: item.branchName,
+                                data={data.branches.map(item => ({
+                                  id: item.branch_id,
+                                  name: item.branch_name,
                                 }))}
                                 search
                                 searchPlaceholder="Search"
-                                labelField="countryName"
-                                valueField="countryID"
+                                labelField="name"
+                                valueField="id"
                                 placeholder="Select Church/Organization"
-                                value={values.branch?.branchID}
-                                onChange={(item: CountryI) => {
+                                value={values.branch?.branch_id}
+                                onChange={(item: ListItemI) => {
+                                  console.log(item)
                                   const branch = data?.branches.find(
-                                    ({branchID}) => branchID === item.countryID,
+                                    ({branch_id}) => branch_id === item.id,
                                   )
+                                  console.log(branch)
                                   if (!branch) {
                                     setFieldError(
                                       'branch',
@@ -539,30 +573,27 @@ const Signup: React.FC<SignupProps> = () => {
                                     )
                                   } else {
                                     setErrors({...errors, branch: undefined})
-                                    setFieldValue('branch', item)
-                                    console.log('selected', item)
+                                    setFieldValue('branch', branch)
                                   }
-                                  setFieldValue('branch', {
-                                    branchID: item.countryID,
-                                    branchName: item.countryName,
-                                  })
                                 }}
                                 renderItem={item => renderItem(item)}
                               />
                             ) : (
                               <Dropdown
                                 style={styles.dropdown}
-                                data={data?.countries}
+                                data={data?.countries.map(item => ({
+                                  id: item.country_id,
+                                  name: item.country_name,
+                                }))}
                                 search
                                 searchPlaceholder="Search"
-                                labelField="countryName"
-                                valueField="countryID"
+                                labelField="name"
+                                valueField="id"
                                 placeholder="Select Country"
-                                value={values.country.countryID}
-                                onChange={(item: CountryI) => {
+                                value={values.country.country_id}
+                                onChange={(item: ListItemI) => {
                                   const country = data?.countries.find(
-                                    ({countryID}) =>
-                                      countryID === item.countryID,
+                                    ({country_id}) => country_id === item.id,
                                   )
                                   if (!country) {
                                     setFieldError(
@@ -571,8 +602,7 @@ const Signup: React.FC<SignupProps> = () => {
                                     )
                                   } else {
                                     setErrors({...errors, country: undefined})
-                                    setFieldValue('country', item)
-                                    console.log('selected', item)
+                                    setFieldValue('country', country)
                                   }
                                 }}
                                 renderItem={item => renderItem(item)}
@@ -582,12 +612,12 @@ const Signup: React.FC<SignupProps> = () => {
                             <PCLButton
                               loading={isSubmitting}
                               disabled={Boolean(
-                                errors.firstName ||
-                                  errors.lastName ||
+                                errors.first_name ||
+                                  errors.last_name ||
                                   errors.email ||
                                   errors.gender ||
-                                  errors.password ||
-                                  errors.dateOfBirth ||
+                                  (!credential && errors.password) ||
+                                  errors.date_of_birth ||
                                   (errors.branch && errors.country),
                               )}
                               title="Register"

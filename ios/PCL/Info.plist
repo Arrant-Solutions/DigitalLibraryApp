@@ -23,9 +23,19 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fbAPP-ID</string>
+				<string>com.googleusercontent.apps.1078867846949-f6katf1k89ltp8j8p8dhoe9tka2tdlji</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb228193272492743</string>
 			</array>
 		</dict>
 	</array>

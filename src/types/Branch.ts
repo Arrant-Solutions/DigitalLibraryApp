@@ -1,4 +1,4 @@
 export interface BranchI {
-  branchID: number
-  branchName: string
+  branch_id: number
+  branch_name: string
 }

@@ -1,6 +1,6 @@
 export interface CountryI {
-  countryID: number
-  countryName: string
+  country_id: number
+  country_name: string
   flag: string
   // name?: string
   // capitals?: string

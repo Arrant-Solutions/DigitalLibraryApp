@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({
     <View>
       <ElementsHeader
         containerStyle={containerStyle}
-        statusBarProps={{barStyle: barStyle || 'light-content'}}
+        statusBarProps={{barStyle: barStyle || 'dark-content'}}
         backgroundColor={backgroundColor || pcl.gold}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>

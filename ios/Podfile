@@ -13,6 +13,7 @@ target 'PCL' do
   )
 
 
+  # pod 'GoogleSignIn'
   # pod 'Firebase/Analytics'
   # pod 'RNFirebase' #, :path => '../node_modules/react-native-firebase/ios'
 

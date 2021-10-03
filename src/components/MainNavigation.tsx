@@ -18,19 +18,18 @@ export type AuthStackParamList = {
 
 const MainNavigation = () => {
   const [error, setError] = useState(false)
-  const {token} = useAppSelector(selectAuth)
+  const {token, user} = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
 
   const [initializing, setInitializing] = useState(true)
-  const [user, setUser] = useState()
 
   // Handle user state changes
   const onAuthStateChanged = async (user: any) => {
     SplashScreen.hide()
-    if (user) setUser(user)
-    else {
-      // await dispatch(restoreSession()).catch(() => setError(true))
-    }
+    // if (user) setUser(user)
+    // else {
+    //   // await dispatch(restoreSession()).catch(() => setError(true))
+    // }
     if (initializing) setInitializing(false)
   }
 
@@ -38,22 +37,6 @@ const MainNavigation = () => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
     return subscriber // unsubscribe on unmount
   }, [])
-
-  // call this when offline
-  // useEffect(() => {
-  //   const bootstrap = async () => {
-  //     try {
-  //       await dispatch(restoreSession()).catch(() => setError(true))
-  //       // await dispatch(fetchCountries()).catch(() => setError(true))
-  //       // await dispatch(fetchGenders()).catch(() => setError(true))
-
-  //     } catch (err) {
-  //       setError(true)
-  //     }
-  //   }
-
-  //   bootstrap()
-  // }, [])
 
   if (initializing) {
     return <Skeleton />

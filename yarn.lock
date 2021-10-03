@@ -1396,6 +1396,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-12.8.0.tgz#d470a90dbb43b9121e44432fedb9fc8ad8c90778"
   integrity sha512-ekI/qyl6/hAmFZJhGx8A4NwrJzFmhMPHDJYCzmDy2CJzbMBFJRmebTBsvVh/DIB+M1X2idQwqx1iz4kkF8CssQ==
 
+"@react-native-google-signin/google-signin@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@react-native-google-signin/google-signin/-/google-signin-7.0.0.tgz#a0136f9d3336364e43cab488a4c065e619d3e6e9"
+  integrity sha512-kSOCsTigRDCuoahVE3jc0+bKpkdNZdkaW2FHK1uchbin2gaFT/+QI+ypR8ud6us4OoTMjREKEa/1LAqPpf1Zzw==
+
 "@react-native/assets@1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@react-native/assets/-/assets-1.0.0.tgz#c6f9bf63d274bafc8e970628de24986b30a55c8e"
@@ -6388,6 +6393,11 @@ react-native-elements@^3.4.2:
     opencollective-postinstall "^2.0.3"
     react-native-ratings "8.0.4"
     react-native-size-matters "^0.3.1"
+
+react-native-fbsdk-next@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-fbsdk-next/-/react-native-fbsdk-next-4.5.0.tgz#3d8a29343b43958e58dcb05c82374b144031b3ac"
+  integrity sha512-8rL5BEiDJqx0++U4uZi9D1yeR+DetkQIkB5lkiHl5+u7q9ckPR/YsMxMvCGUJdfV/NYFkbByX22mnaVMsjQaCg==
 
 react-native-gesture-handler@^1.10.3:
   version "1.10.3"

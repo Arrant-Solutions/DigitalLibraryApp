@@ -1,4 +1,4 @@
 export interface UserStatusI {
-  userStatusID: number
-  userStatusName: string
+  user_status_id: number
+  user_status_name: string
 }

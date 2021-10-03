@@ -1,7 +1,7 @@
-import {useNavigation} from '@react-navigation/native'
+import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {AuthStackParamList} from 'components/MainNavigation'
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {StyleSheet, Image, View, Text, Platform, Alert} from 'react-native'
 import {SocialIcon} from 'react-native-elements'
 import {AppleButton} from '@invertase/react-native-apple-authentication'
@@ -9,10 +9,16 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import GlassyCard from '../common/GlassyCard'
 import PCLButton from '../common/PCLButton'
 import {linkText, googleBlue, pcl} from '../common/style'
-import {appleSignIn} from 'redux/services/auth'
+import {
+  appleSignIn,
+  googleAuth,
+  facebookAuth,
+} from 'redux/services/auth'
 import {useAppDispatch} from 'redux/hooks'
-import {setCredential, setUserDetails} from 'redux/slices/authSlice'
-import {GenericUser} from 'types/User'
+import {updateAuth, setUserDetails, setCredential} from 'redux/slices/authSlice'
+import ModalLoader from '../common/ModalLoader'
+import {FirebaseAuthTypes} from '@react-native-firebase/auth'
+import {GenericUserI} from 'types/User'
 const logo = require('assets/icon.jpg')
 
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
@@ -20,28 +26,74 @@ type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
 const AuthHome = () => {
   const dispatch = useAppDispatch()
   const {navigate} = useNavigation<AuthHomeProp>()
+  const focused = useIsFocused()
+  const [loading, setLoading] = useState(false)
 
-  const handleAppleLogin = async () => {
-    const {data} = await appleSignIn()
+  useEffect(() => {
+    setLoading(false)
+  }, [focused])
+
+  const processLoginRequest = (
+    data:
+      | {
+          credential: FirebaseAuthTypes.UserCredential
+          user:
+            | Pick<
+                GenericUserI,
+                'email' | 'first_name' | 'last_name' | 'avatar'
+              >
+            | GenericUserI
+          token?: string
+        }
+      | string,
+  ) => {
     if (typeof data === 'string') {
       Alert.alert('Login Failed', data, [{text: 'Ok', style: 'cancel'}], {
         cancelable: true,
       })
+      setLoading(false)
     } else {
-      if (data.user instanceof GenericUser) {
-        dispatch(setUserDetails(data.user))
+      // succcessful login
+      if (data.token && typeof data.user !== 'object') {
+        dispatch(
+          updateAuth({
+            token: data.token,
+            user: data.user,
+            synced: true,
+            credential: data.credential,
+          }),
+        )
       } else {
         dispatch(
           setUserDetails({
             email: data.user.email,
-            firstName: data.user.firstName,
-            lastName: data.user.lastName,
+            first_name: data.user.first_name,
+            last_name: data.user.last_name,
+            avatar: data.user.avatar,
           }),
         )
         dispatch(setCredential(data.credential))
+        navigate('Register')
       }
-      dispatch(setCredential(data.credential))
     }
+  }
+
+  const handleAppleLogin = async () => {
+    setLoading(true)
+    const {data} = await appleSignIn()
+    processLoginRequest(data)
+  }
+
+  const handleFacebookLogin = async () => {
+    setLoading(true)
+    const {data} = await facebookAuth()
+    processLoginRequest(data)
+  }
+
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+    const {data} = await googleAuth()
+    processLoginRequest(data)
   }
 
   return (
@@ -94,7 +146,7 @@ const AuthHome = () => {
           underlayColor={`${googleBlue}60`}
           button
           type="facebook"
-          onPress={() => console.log('pressed')}
+          onPress={() => handleFacebookLogin()}
         />
         <SocialIcon
           style={{borderRadius: 10, backgroundColor: googleBlue}}
@@ -102,7 +154,7 @@ const AuthHome = () => {
           title="Sign-In With Google"
           button
           type="google"
-          onPress={() => console.log('pressed')}
+          onPress={() => handleGoogleLogin()}
         />
         <PCLButton
           icon={
@@ -117,6 +169,7 @@ const AuthHome = () => {
           onPress={() => navigate('Register')}
         />
       </View>
+      <ModalLoader transparent={true} visible={loading} />
     </GlassyCard>
   )
 }

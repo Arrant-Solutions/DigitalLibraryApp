@@ -4,15 +4,16 @@ import {GenderI} from './Gender'
 
 export interface GenericUserI {
   avatar?: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   fullname: string
   email: string
-  dateOfBirth: Date | string
+  date_of_birth: Date | string
   country: CountryI
   gender: GenderI
   password: string
   branch: BranchI
+  has_missing?: boolean
 }
 
 export type SignupUserI = Omit<GenericUserI, 'branch'>
@@ -25,10 +26,10 @@ export type GEMemberI = Omit<GenericUserI, 'password' | 'country'>
 
 export class GenericUser implements GenericUserI {
   avatar?: string
-  firstName: string
-  lastName: string
+  first_name: string
+  last_name: string
   email: string
-  dateOfBirth: Date | string
+  date_of_birth: Date | string
   country: CountryI
   gender: GenderI
   password: string
@@ -36,21 +37,22 @@ export class GenericUser implements GenericUserI {
 
   constructor({
     avatar,
-    firstName,
-    lastName,
+    first_name,
+    last_name,
     email,
-    dateOfBirth,
+    date_of_birth,
     country,
     gender,
     password,
     branch,
   }: GenericUserI) {
     this.avatar = avatar
-    this.firstName = firstName
-    this.lastName = lastName
+    this.first_name = first_name
+    this.last_name = last_name
     this.email = email
-    this.dateOfBirth =
-      typeof dateOfBirth === 'string' ? new Date(dateOfBirth) : dateOfBirth
+    this.date_of_birth = Number.isNaN(new Date(date_of_birth).valueOf())
+      ? new Date()
+      : new Date(date_of_birth)
     this.country = country
     this.gender = gender
     this.password = password
@@ -60,19 +62,32 @@ export class GenericUser implements GenericUserI {
   static createReduxInstance(): GenericUserI {
     return {
       avatar: '',
-      firstName: '',
-      lastName: '',
+      first_name: '',
+      last_name: '',
       fullname: '',
       email: '',
-      dateOfBirth: '' as any,
-      country: {countryID: 0, countryName: '', flag: ''},
-      gender: {genderID: 0, genderName: ''},
+      date_of_birth: '',
+      country: {country_id: 0, country_name: '', flag: ''},
+      gender: {gender_id: 0, gender_name: ''},
       password: '',
-      branch: {branchID: 0, branchName: ''},
+      branch: {branch_id: 0, branch_name: ''},
+      has_missing: false,
     }
   }
 
   get fullname() {
-    return `${this.firstName} ${this.lastName}`
+    return `${this.first_name} ${this.last_name}`
+  }
+
+  get has_missing(): boolean {
+    return !Boolean(
+      this.first_name &&
+        this.last_name &&
+        this.email &&
+        this.date_of_birth &&
+        this.country &&
+        this.gender &&
+        this.branch,
+    )
   }
 }

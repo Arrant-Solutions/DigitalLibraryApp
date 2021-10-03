@@ -1,13 +1,44 @@
-import axios, {AxiosResponse, AxiosError} from 'axios'
+import {APP_BASE_URL} from '@env'
+import axios, {AxiosError} from 'axios'
 import {UNEXPECTED_STATUS_EXCEPTION} from '../../constants/errors'
 import {ResponseI} from '../../types/Response'
+
+axios.defaults.baseURL = APP_BASE_URL
+
+// Add a request interceptor
+// axios.interceptors.request.use(
+//   function (config) {
+//     // Do something before request is sent
+//     console.log(config.url, config.baseURL)
+//     return config
+//   },
+//   function (error) {
+//     // Do something with request error
+//     return Promise.reject(error)
+//   },
+// )
+
+// // Add a response interceptor
+// axios.interceptors.response.use(
+//   function (response) {
+//     // Any status code that lie within the range of 2xx cause this function to trigger
+//     // Do something with response data
+//     console.log(response.config.url)
+//     return response
+//   },
+//   function (error) {
+//     // Any status codes that falls outside the range of 2xx cause this function to trigger
+//     // Do something with response error
+//     return Promise.reject(error)
+//   },
+// )
 
 export const postData = async <T = unknown, P = unknown>(
   url: string,
   payload: P,
 ) => {
   try {
-    const {data} = await axios.post<T>(url, payload)
+    const {data} = await axios.post<ResponseI<T>>(url, payload)
 
     return data
   } catch (error) {
@@ -33,7 +64,7 @@ export const putData = async <T = unknown, P = unknown>(
   payload: P,
 ) => {
   try {
-    const {data} = await axios.put<T>(url, payload)
+    const {data} = await axios.put<ResponseI<T>>(url, payload)
 
     return data
   } catch (error) {
@@ -59,7 +90,7 @@ export const patchData = async <T = unknown, P = unknown>(
   payload: P,
 ) => {
   try {
-    const {data} = await axios.patch<T>(url, payload)
+    const {data} = await axios.patch<ResponseI<T>>(url, payload)
 
     return data
   } catch (error) {
@@ -85,12 +116,12 @@ export const fetchData = async <T = unknown, B = unknown>(
   params?: B,
 ) => {
   try {
-    const {status, data} = await axios.get<T>(url, params)
+    const {data} = await axios.get<ResponseI<T>>(url, params)
 
-    return {statusCode: status, data}
+    return data
   } catch (error) {
     const {response} = error as AxiosError<ResponseI<T>>
-    // console.log(error.response instanceof AxiosResponse)
+
     if (typeof response === 'object') {
       const {data} = response
 

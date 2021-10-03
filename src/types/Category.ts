@@ -39,7 +39,7 @@ export interface CategoryIconI {
 }
 
 export interface CategoryI {
-  categoryID: number
+  category_id: number
   name: string
   numberOfItems: number
   icon: IconName | CategoryIconI

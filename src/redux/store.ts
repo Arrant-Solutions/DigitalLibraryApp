@@ -1,5 +1,5 @@
 import {configureStore, ThunkAction, Action} from '@reduxjs/toolkit'
-import resourcesReducer from './slices/resourceSlice'
+// import resourcesReducer from './slices/resourceSlice'
 import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
@@ -8,12 +8,12 @@ import {resourcesApi} from './services/resourceService'
 
 export const store = configureStore({
   reducer: {
-    resources: resourcesReducer,
+    // resources: resourcesReducer,
     auth: authReducer,
     homeResources: homeResourcesReducer,
     categories: categoriesReducer,
     modal: modalReducer,
-    api: resourcesApi.reducer,
+    resources: resourcesApi.reducer,
   },
   middleware: gDM => gDM().concat(resourcesApi.middleware) as any, // not the cleanest solution
 })
