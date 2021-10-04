@@ -542,7 +542,7 @@ const Signup: React.FC<SignupProps> = () => {
                                   const branch = data?.branches.find(
                                     ({branch_id}) => branch_id === item.id,
                                   )
-                                  console.log(branch)
+                                  // console.log(branch)?
                                   if (!branch) {
                                     setFieldError(
                                       'branch',

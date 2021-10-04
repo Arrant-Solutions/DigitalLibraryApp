@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Alert, StyleSheet, View} from 'react-native'
+import {Alert, Pressable, StyleSheet, Text, View} from 'react-native'
 import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../types/User'
@@ -13,6 +13,7 @@ import ModalLoader from '../common/ModalLoader'
 import {AuthSliceI, login} from 'redux/slices/authSlice'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
+import LinkText from '../common/LinkText'
 
 type LoginNavProp = StackNavigationProp<AuthStackParamList, 'Login'>
 
@@ -112,6 +113,17 @@ const Login = () => {
           loading={loading}
           title="Login"
           onPress={handleLogin}
+        />
+        <LinkText
+          style={{
+            marginTop: 10,
+            marginLeft: 8,
+            fontWeight: '500',
+            textAlign: 'left',
+            fontSize: 14,
+          }}
+          text="Forgot your password?"
+          onPress={() => navigate('Forgot')}
         />
       </View>
       <ModalLoader transparent={true} visible={loading} />

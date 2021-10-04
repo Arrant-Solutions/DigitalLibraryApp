@@ -46,7 +46,7 @@ const Home = () => {
   // console.log('tb height', useBottomTabBarHeight())
   return (
     <View style={{flex: 1}}>
-      <PCLStatusBar backgroundColor={pcl.purple} />
+      {/* <PCLStatusBar backgroundColor={pcl.purple} /> */}
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
           <View style={{display: 'flex', height: 265}}>

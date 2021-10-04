@@ -14,6 +14,7 @@ export type AuthStackParamList = {
   AuthHome: undefined
   Login: undefined
   Register: undefined
+  Forgot: undefined
 }
 
 const MainNavigation = () => {

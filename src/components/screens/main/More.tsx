@@ -29,7 +29,7 @@ const More = () => {
           borderRightWidth: Dimensions.get('window').width,
           borderTopWidth: 70,
           borderRightColor: 'transparent',
-          borderTopColor: pcl.purple,
+          borderTopColor: pcl.gold,
         }}></View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.shadowed}>

@@ -12,6 +12,64 @@ GoogleSignin.configure({
     '1078867846949-9k6qcvbngjchvgc7mcdem30c2m5ql6je.apps.googleusercontent.com',
 })
 
+export const requestPasswordReset = async (email: string) => {
+  try {
+    await auth().sendPasswordResetEmail(email)
+
+    return {
+      statusCode: 200,
+      data: 'A password reset email has been sent. Check your email to complete the reset process.',
+    }
+  } catch (error) {
+    const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
+
+    if (code === 'auth/user-not-found') {
+      return {statusCode: 404, data: 'User with specified email do not exist'}
+    }
+
+    if (code === 'auth/invalid-email') {
+      return {statusCode: 422, data: 'Invalid email address'}
+    }
+
+    return {statusCode: 500, data: GENERIC_SERVER_ERROR}
+  }
+}
+
+export const resetPassword = async (password: string, code: string) => {
+  try {
+    await auth().confirmPasswordReset(code, password)
+
+    return {statusCode: 200, data: 'You password has been reset successfully'}
+  } catch (error) {
+    const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
+
+    if (code === 'auth/user-not-found') {
+      return {statusCode: 404, data: 'User with specified email do not exist'}
+    }
+
+    if (code === 'auth/expired-action-code') {
+      return {statusCode: 422, data: 'Invalid email address'}
+    }
+
+    if (code === 'auth/invalid-action-code') {
+      return {statusCode: 422, data: 'Invalid password reset code'}
+    }
+
+    if (code === 'auth/user-disabled') {
+      return {statusCode: 422, data: 'Your user account has been disabled'}
+    }
+
+    if (code === 'auth/weak-password') {
+      return {
+        statusCode: 422,
+        data: 'Password should contain at least 1 uppercase letter, 1 number, 1 special character & should be at least 8 characters long',
+      }
+    }
+
+    return {statusCode: 500, data: GENERIC_SERVER_ERROR}
+  }
+}
+
 export const emailPasswordSignup = async (
   email: string,
   password: string,

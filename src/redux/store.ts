@@ -4,7 +4,9 @@ import authReducer from './slices/authSlice'
 import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
 import modalReducer from './slices/modalSlice'
+import themeReducer from './slices/themeSlice'
 import {resourcesApi} from './services/resourceService'
+
 
 export const store = configureStore({
   reducer: {
@@ -13,6 +15,7 @@ export const store = configureStore({
     homeResources: homeResourcesReducer,
     categories: categoriesReducer,
     modal: modalReducer,
+    theme: themeReducer,
     resources: resourcesApi.reducer,
   },
   middleware: gDM => gDM().concat(resourcesApi.middleware), // not the cleanest solution

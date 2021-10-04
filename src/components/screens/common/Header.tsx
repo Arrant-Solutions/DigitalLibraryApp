@@ -10,8 +10,9 @@ import {
   ViewStyle,
 } from 'react-native'
 import {Header as ElementsHeader, Icon} from 'react-native-elements'
-import {useAppDispatch} from 'redux/hooks'
+import {useAppDispatch, useAppSelector} from 'redux/hooks'
 import {setVisible} from 'redux/slices/modalSlice'
+import {selectTheme} from 'redux/slices/themeSlice'
 import {flexRow, pcl} from './style'
 
 interface HeaderProps {
@@ -35,6 +36,7 @@ const Header: React.FC<HeaderProps> = ({
   showActionButtons = true,
   handleBackButton,
 }) => {
+  const {background, text, active, inactive, barStyle: statusBarStyle} = useAppSelector(selectTheme)
   const dispatch = useAppDispatch()
   const {width} = useWindowDimensions()
   const {goBack} = useNavigation()
@@ -45,14 +47,14 @@ const Header: React.FC<HeaderProps> = ({
     <View>
       <ElementsHeader
         containerStyle={containerStyle}
-        statusBarProps={{barStyle: barStyle || 'dark-content'}}
-        backgroundColor={backgroundColor || pcl.gold}
+        statusBarProps={{barStyle: barStyle || statusBarStyle}}
+        backgroundColor={backgroundColor || background}
         leftComponent={
           <View style={[flexRow, {width, alignItems: 'center'}]}>
             {back ? (
               <Icon
                 name={'ios-chevron-back'}
-                color={color || pcl.black}
+                color={color || text}
                 onPress={back ? handlePress : undefined}
                 type="ionicon"
                 size={30}
@@ -66,7 +68,7 @@ const Header: React.FC<HeaderProps> = ({
             <Text
               style={{
                 marginLeft: 10,
-                color: color || pcl.black,
+                color: color || text,
                 fontSize: 20,
               }}>
               {title}

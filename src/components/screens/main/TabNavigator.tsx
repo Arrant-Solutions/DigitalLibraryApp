@@ -11,6 +11,8 @@ import HeaderOptionsMenu from '../common/HeaderOptionsMenu'
 import {pcl, purplePallet} from '../common/style'
 import HomeStack from './HomeStack'
 import GiftStack from './GiftStack'
+import {useAppSelector} from 'redux/hooks'
+import {selectTheme} from 'redux/slices/themeSlice'
 
 export type TabNavigatorParamList = {
   Home: undefined
@@ -22,6 +24,7 @@ export type TabNavigatorParamList = {
 const Tab = createBottomTabNavigator<TabNavigatorParamList>()
 
 const TabNavigator = () => {
+  const {background, text, active, inactive} = useAppSelector(selectTheme)
   const getTabBarVisibility = ({
     name,
   }: RouteProp<Record<string, object | undefined>, 'Home'>) => {
@@ -31,7 +34,7 @@ const TabNavigator = () => {
   return (
     <View style={styles.container}>
       {/* <StatusBar barStyle="light-content" backgroundColor={pcl.blue} /> */}
-      <LinearGradient
+      {/* <LinearGradient
         colors={[
           purplePallet.purpleDarker,
           purplePallet.purpleDarker,
@@ -41,78 +44,78 @@ const TabNavigator = () => {
         end={{x: 1, y: 1}}
         useAngle
         angle={110}
-        style={[styles.card]}>
-        <Tab.Navigator
-          screenOptions={{
-            headerShown: false,
-            tabBarActiveTintColor: pcl.gold,
-            tabBarInactiveTintColor: pcl.background,
-            tabBarStyle: {
-              backgroundColor: pcl.purple,
-            },
-            tabBarLabelStyle: {
-              fontSize: 14,
-            },
-          }}>
-          <Tab.Screen
-            options={({route}) => ({
-              // tabBarVisible: getTabBarVisibility(route),
-              tabBarIcon: ({focused, color, size}) => (
-                <Ionicons
-                  name={focused ? 'home' : 'home-outline'}
-                  color={color}
-                  size={size}
-                />
-              ),
-            })}
-            name="Home"
-            component={HomeStack}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Ionicons
-                  name={focused ? 'grid' : 'grid-outline'}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-            name="Library"
-            component={LibraryStack}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Ionicons
-                  name={focused ? 'gift' : 'ios-gift-outline'}
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-            name="Gifts"
-            component={GiftStack}
-          />
-          <Tab.Screen
-            options={{
-              tabBarIcon: ({focused, color, size}) => (
-                <Ionicons
-                  name={
-                    focused
-                      ? 'ios-ellipsis-vertical-sharp'
-                      : 'ellipsis-vertical-outline'
-                  }
-                  color={color}
-                  size={size}
-                />
-              ),
-            }}
-            name="More"
-            component={More}
-          />
-        </Tab.Navigator>
-      </LinearGradient>
+        style={[styles.card]}> */}
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarActiveTintColor: active,
+          tabBarInactiveTintColor: inactive,
+          tabBarStyle: {
+            backgroundColor: background,
+          },
+          tabBarLabelStyle: {
+            fontSize: 14,
+          },
+        }}>
+        <Tab.Screen
+          options={({route}) => ({
+            // tabBarVisible: getTabBarVisibility(route),
+            tabBarIcon: ({focused, color, size}) => (
+              <Ionicons
+                name={focused ? 'home' : 'home-outline'}
+                color={color}
+                size={size}
+              />
+            ),
+          })}
+          name="Home"
+          component={HomeStack}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <Ionicons
+                name={focused ? 'grid' : 'grid-outline'}
+                color={color}
+                size={size}
+              />
+            ),
+          }}
+          name="Library"
+          component={LibraryStack}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <Ionicons
+                name={focused ? 'gift' : 'ios-gift-outline'}
+                color={color}
+                size={size}
+              />
+            ),
+          }}
+          name="Gifts"
+          component={GiftStack}
+        />
+        <Tab.Screen
+          options={{
+            tabBarIcon: ({focused, color, size}) => (
+              <Ionicons
+                name={
+                  focused
+                    ? 'ios-ellipsis-vertical-sharp'
+                    : 'ellipsis-vertical-outline'
+                }
+                color={color}
+                size={size}
+              />
+            ),
+          }}
+          name="More"
+          component={More}
+        />
+      </Tab.Navigator>
+      {/* </LinearGradient> */}
       <HeaderOptionsMenu />
     </View>
   )

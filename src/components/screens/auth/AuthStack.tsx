@@ -4,6 +4,7 @@ import React from 'react'
 import {StyleSheet} from 'react-native'
 import {pcl} from '../common/style'
 import AuthHome from './AuthHome'
+import ForgotPassword from './ForgotPassword'
 import Login from './Login'
 import Signup from './Signup'
 
@@ -29,6 +30,7 @@ const AuthStack = () => {
       />
       <Stack.Screen name={'Register'} component={Signup} />
       <Stack.Screen name={'Login'} component={Login} />
+      <Stack.Screen name={'Forgot'} component={ForgotPassword} />
     </Stack.Navigator>
   )
 }
