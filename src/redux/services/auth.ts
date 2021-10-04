@@ -6,6 +6,7 @@ import {GENERIC_SERVER_ERROR, LOGIN_FAILURE} from 'constants/errors'
 import {ResponseI} from 'types/Response'
 import {GenericUserI, UserCredential} from 'types/User'
 import {fetchData, postData} from '.'
+import axios from 'axios'
 
 GoogleSignin.configure({
   webClientId:
@@ -117,6 +118,10 @@ export const emailRegistration = async (
     if (statusCode === 409 || statusCode === 200) {
       const response = await submitUserDetails(user)
 
+      if (typeof response.data === 'object') {
+        axios.defaults.headers.common.authorization = `Bearer ${response.data.token}`
+      }
+
       return response
     }
 
@@ -179,6 +184,10 @@ export const submitUserDetails = async (
       token: string
     }>('/auth/register', user)
 
+    if (typeof data === 'object') {
+      axios.defaults.headers.common.authorization = `Bearer ${data.token}`
+    }
+
     return {statusCode, data}
   } catch (error: any) {
     return {statusCode: 500, data: GENERIC_SERVER_ERROR}
@@ -234,6 +243,8 @@ export const appleSignIn = async (): Promise<
     }>(`/auth/fetchUser/${email}`)
 
     if (typeof data === 'object') {
+      axios.defaults.headers.common.authorization = `Bearer ${data.token}`
+
       return {
         data: {
           credential: response,
@@ -326,6 +337,8 @@ export const facebookAuth = async (): Promise<
     }>(`/auth/fetchUser/${email}`)
 
     if (typeof serverData === 'object') {
+      axios.defaults.headers.common.authorization = `Bearer ${serverData.token}`
+
       return {
         data: {
           credential: response,
@@ -401,6 +414,8 @@ export const googleAuth = async (): Promise<
     }>(`/auth/fetchUser/${email}`)
 
     if (typeof serverData === 'object') {
+      axios.defaults.headers.common.authorization = `Bearer ${serverData.token}`
+
       return {
         data: {
           credential,
