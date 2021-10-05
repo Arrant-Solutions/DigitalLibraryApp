@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import {StyleSheet, Text, View} from 'react-native'
-import auth from '@react-native-firebase/auth'
+import {StyleSheet} from 'react-native'
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import SplashScreen from 'react-native-splash-screen'
+import {useNetInfo} from '@react-native-community/netinfo'
 import {useAppSelector, useAppDispatch} from 'redux/hooks'
-import {selectAuth, restoreSession} from 'redux/slices/authSlice'
+import {refreshToken, selectAuth, setUserDetails} from 'redux/slices/authSlice'
 import AuthStack from 'components/screens/auth/AuthStack'
 // import DrawerContainer from 'components/screens/home/DrawerContainer'
 import StartupError from 'components/StartupError'
@@ -18,26 +19,34 @@ export type AuthStackParamList = {
 }
 
 const MainNavigation = () => {
-  const [error, setError] = useState(false)
+  const {isInternetReachable} = useNetInfo()
+  const [error, setError] = useState(true)
   const {token, user} = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
 
   const [initializing, setInitializing] = useState(true)
 
   // Handle user state changes
-  const onAuthStateChanged = async (user: any) => {
+  const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     SplashScreen.hide()
-    // if (user) setUser(user)
-    // else {
-    //   // await dispatch(restoreSession()).catch(() => setError(true))
-    // }
+    if (user) {
+      const names = (user.displayName || '').split(' ')
+      setUserDetails({
+        email: String(user.email),
+        first_name: names[0],
+        last_name: names.length > 1 ? names[1] : names[0],
+      })
+    }
+    await dispatch(refreshToken(isInternetReachable)).catch(() =>
+      setError(true),
+    )
     if (initializing) setInitializing(false)
   }
 
   useEffect(() => {
     const subscriber = auth().onAuthStateChanged(onAuthStateChanged)
     return subscriber // unsubscribe on unmount
-  }, [])
+  }, [isInternetReachable])
 
   if (initializing) {
     return <Skeleton />

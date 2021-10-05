@@ -1,5 +1,5 @@
 import {APP_BASE_URL} from '@env'
-import axios, {AxiosError} from 'axios'
+import axios, {AxiosError, AxiosRequestConfig} from 'axios'
 import {UNEXPECTED_STATUS_EXCEPTION} from '../../constants/errors'
 import {ResponseI} from '../../types/Response'
 
@@ -36,12 +36,14 @@ axios.defaults.baseURL = APP_BASE_URL
 export const postData = async <T = unknown, P = unknown>(
   url: string,
   payload: P,
+  config?: AxiosRequestConfig,
 ) => {
   try {
-    const {data} = await axios.post<ResponseI<T>>(url, payload)
+    const {data} = await axios.post<ResponseI<T>>(url, payload, config)
 
     return data
   } catch (error) {
+    console.log(error)
     const {response} = error as AxiosError<ResponseI<T>>
     // console.log(error.response instanceof AxiosResponse)
     if (typeof response === 'object') {

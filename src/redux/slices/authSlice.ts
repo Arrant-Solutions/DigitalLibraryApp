@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
-import {fetchData} from 'redux/services'
+import {fetchData, postData} from 'redux/services'
 import {emailPasswordLogin} from 'redux/services/auth'
 import {IFbCredential} from 'types'
 import {deserialize} from 'utils'
@@ -77,6 +77,44 @@ export const login = createAsyncThunk(
   },
 )
 
+export const refreshToken = createAsyncThunk(
+  'user/restoreToken',
+  async (online: boolean | null) => {
+    const storageData = await getAsyncData<AuthSliceI>(Storage.AUTH_STORAGE)
+    console.log(JSON.stringify({...storageData, online}, null, 2))
+
+    if (storageData) {
+      if (online) {
+        const {data} = await postData<{user: GenericUserI; token: string}, {}>(
+          '/auth/refreshToken',
+          {},
+          {headers: {token: storageData.token}},
+        )
+
+        console.log(JSON.stringify(data, null, 2))
+
+        if (typeof data === 'object') {
+          return {
+            ...initialState,
+            errorMessage: '',
+            token: data.token,
+            user: data.user,
+          }
+        }
+
+        return {
+          ...initialState,
+          errorMessage: data,
+        }
+      }
+
+      return storageData
+    }
+
+    throw new Error('failed to fetch data')
+  },
+)
+
 export const restoreSession = createAsyncThunk('user/restore', async () => {
   const auth = await getAsyncData<AuthSliceI>(Storage.AUTH_STORAGE)
 
@@ -101,8 +139,7 @@ export const authSlice = createSlice({
       state.errorMessage = errorMessage || state.errorMessage
     },
     logout: state => {
-      deleteAsyncData(Storage.AUTH_TOKEN)
-      deleteAsyncData(Storage.USER_STORE)
+      deleteAsyncData(Storage.AUTH_STORAGE)
 
       state.user = initialState.user
       state.token = ''
@@ -137,7 +174,7 @@ export const authSlice = createSlice({
     ) => {
       const {credential, synced, user, token, errorMessage} = action.payload
 
-      state.credential = credential || undefined
+      state.credential = credential
       state.synced = typeof synced === 'boolean' ? synced : false
       state.user = user ? deserialize(user) : initialState.user
       state.token = token
@@ -152,13 +189,26 @@ export const authSlice = createSlice({
     ) => {
       const {credential, synced, user, token, errorMessage} = action.payload
 
-      state.credential = credential || undefined
+      state.credential = credential
       state.synced = typeof synced === 'boolean' ? synced : false
       state.user = user ? deserialize(user) : initialState.user
       state.token = token
       state.errorMessage = errorMessage
     },
     [login.rejected.toString()]: state => {
+      state.errorMessage = GENERIC_SERVER_ERROR
+    },
+    [refreshToken.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<AuthSliceI>,
+    ) => {
+      const {user, token, errorMessage} = action.payload
+
+      state.user = user ? deserialize(user) : initialState.user
+      state.token = token
+      state.errorMessage = errorMessage
+    },
+    [refreshToken.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR
     },
   },

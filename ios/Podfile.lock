@@ -750,6 +750,8 @@ PODS:
   - react-native-fbsdk-next/Share (4.5.0):
     - FBSDKShareKit (~> 9.3)
     - React-Core
+  - react-native-netinfo (6.0.2):
+    - React-Core
   - react-native-pdf (6.3.0):
     - React-Core
   - react-native-progress-bar-android (1.0.4):
@@ -938,6 +940,7 @@ DEPENDENCIES:
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-element-dropdown (from `../node_modules/react-native-element-dropdown`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pdf (from `../node_modules/react-native-pdf`)
   - "react-native-progress-bar-android (from `../node_modules/@react-native-community/progress-bar-android`)"
   - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
@@ -1053,6 +1056,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-element-dropdown"
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   react-native-pdf:
     :path: "../node_modules/react-native-pdf"
   react-native-progress-bar-android:
@@ -1175,6 +1180,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: da6c4f85945a2c087c569c7ac52851819ed24218
   react-native-element-dropdown: 6bb6cfebb4b10878d6f5de502ae9c56fbc1f107c
   react-native-fbsdk-next: 4eccacef3540758367a02738331d7249f266bddf
+  react-native-netinfo: 92e6e4476eb8bf6fc2d7c0a6ca0a1406f663d73a
   react-native-pdf: ef641e79a6d550cfabe5d7ec1916799726514c43
   react-native-progress-bar-android: be43138ab7da30d51fc038bafa98e9ed594d0c40
   react-native-progress-view: 9e6b6a5305a9115c2157ae3b8852081aba0aab7c

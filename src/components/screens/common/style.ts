@@ -109,6 +109,7 @@ export const pcl = {
   textPlaceholder: '#0008',
   white: '#ffffff',
   giftBackground: '#f4d4c9',
+  danger: '#CA0B00',
 }
 
 export const themeBlack = '#111111'

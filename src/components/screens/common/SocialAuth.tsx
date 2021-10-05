@@ -1,3 +1,4 @@
+import { AppleButton } from '@invertase/react-native-apple-authentication'
 import {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import {useNavigation} from '@react-navigation/core'
 import {StackNavigationProp} from '@react-navigation/stack'
@@ -8,24 +9,26 @@ import {Button, SocialIcon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
 import {appleSignIn, facebookAuth, googleAuth} from 'redux/services/auth'
 import {updateAuth, setUserDetails, setCredential} from 'redux/slices/authSlice'
+import { IFbCredential } from 'types'
 import {GenericUserI} from 'types/User'
-import {pcl, flexRow, socialButton, googleBlue} from './style'
+import {pcl, flexRow, socialButton, googleBlue, shadow} from './style'
 
 type StackNavProp = StackNavigationProp<any, ''>
 
 interface SocialAuthProps {
   signup?: boolean
+  largeButton?: boolean
   setLoading: (loading: boolean) => void
 }
 
-function SocialAuth({signup, setLoading}: SocialAuthProps) {
+function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
   const dispatch = useAppDispatch()
   const {navigate} = useNavigation<StackNavProp>()
 
   const processLoginRequest = (
     data:
       | {
-          credential: FirebaseAuthTypes.UserCredential
+          credential: IFbCredential
           user:
             | Pick<
                 GenericUserI,
@@ -83,6 +86,45 @@ function SocialAuth({signup, setLoading}: SocialAuthProps) {
     setLoading(true)
     const {data} = await googleAuth()
     processLoginRequest(data)
+  }
+
+  if (largeButton) {
+    return (
+      <View>
+        {Platform.OS === 'ios' && (
+          <AppleButton
+            buttonStyle={AppleButton.Style.WHITE}
+            buttonType={AppleButton.Type.SIGN_IN}
+            style={[
+              {
+                borderRadius: 10,
+                marginHorizontal: 8,
+                marginBottom: 8,
+                height: 50,
+              },
+              shadow,
+            ]}
+            onPress={handleAppleLogin}
+          />
+        )}
+        <SocialIcon
+          style={{borderRadius: 10}}
+          title="Sign-In With Facebook"
+          underlayColor={`${googleBlue}60`}
+          button
+          type="facebook"
+          onPress={() => handleFacebookLogin()}
+        />
+        <SocialIcon
+          style={{borderRadius: 10, backgroundColor: googleBlue}}
+          underlayColor={`${googleBlue}60`}
+          title="Sign-In With Google"
+          button
+          type="google"
+          onPress={() => handleGoogleLogin()}
+        />
+      </View>
+    )
   }
 
   return (
