@@ -12,3 +12,8 @@ export type FirebaseFieldType =
   | string
   | number
   | FirebaseFirestoreTypes.FieldPath
+
+export interface IFbCredential {
+  refreshToken: string
+  uid: string
+}

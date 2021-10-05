@@ -2,6 +2,7 @@ import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
 import {fetchData} from 'redux/services'
 import {emailPasswordLogin} from 'redux/services/auth'
+import {IFbCredential} from 'types'
 import {deserialize} from 'utils'
 import {GENERIC_SERVER_ERROR} from '../../constants/errors'
 import {GenericUser, GenericUserI, UserCredential} from '../../types/User'
@@ -9,7 +10,10 @@ import {deleteAsyncData, getAsyncData} from '../../utils/storage'
 import {RootState} from '../store'
 
 export interface AuthSliceI {
-  credential?: boolean
+  credential?: {
+    refreshToken: string
+    uid: string
+  }
   synced: boolean
   user: GenericUserI
   token: string
@@ -17,7 +21,10 @@ export interface AuthSliceI {
 }
 
 const initialState: AuthSliceI = {
-  credential: undefined,
+  credential: {
+    refreshToken: '',
+    uid: '',
+  },
   synced: false,
   user: GenericUser.createReduxInstance(),
   token: '',
@@ -39,13 +46,13 @@ export const login = createAsyncThunk(
     const {data: userData, statusCode} = await fetchData<{
       user: GenericUserI
       token: string
-    }>(`/auth/fetchUser/${data.user.email}`)
+    }>(`/auth/fetchUser/${data.email}`)
 
     if (typeof userData === 'string') {
       if (statusCode === 404) {
         return {
           ...initialState,
-          credential: true,
+          credential: data,
           user: {
             ...initialState.user,
             email: credential.email,
@@ -64,21 +71,20 @@ export const login = createAsyncThunk(
       user: userData.user,
       token: userData.token,
       errorMessage: '',
-      credential: true,
+      credential: data,
       synced: true,
     }
   },
 )
 
 export const restoreSession = createAsyncThunk('user/restore', async () => {
-  const token = await getAsyncData<string>(Storage.AUTH_TOKEN)
-  const user = await getAsyncData<GenericUserI>(Storage.USER_STORE)
+  const auth = await getAsyncData<AuthSliceI>(Storage.AUTH_STORAGE)
 
-  return {
-    token,
-    user,
-    errorMessage: '',
+  if (auth) {
+    return auth
   }
+
+  return initialState
 })
 
 export const authSlice = createSlice({
@@ -88,8 +94,7 @@ export const authSlice = createSlice({
     updateAuth: (state, action: PayloadAction<Partial<AuthSliceI>>) => {
       const {credential, synced, user, token, errorMessage} = action.payload
 
-      state.credential =
-        typeof credential === 'boolean' ? credential : state.credential
+      state.credential = credential || state.credential
       state.synced = typeof synced === 'boolean' ? synced : state.synced
       state.user = deserialize(user) || state.user
       state.token = token || state.token
@@ -121,7 +126,7 @@ export const authSlice = createSlice({
     setSynced: (state, action: PayloadAction<boolean>) => {
       state.synced = action.payload
     },
-    setCredential: (state, action: PayloadAction<boolean>) => {
+    setCredential: (state, action: PayloadAction<IFbCredential>) => {
       state.credential = action.payload
     },
   },

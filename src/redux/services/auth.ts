@@ -7,6 +7,7 @@ import {ResponseI} from 'types/Response'
 import {GenericUserI, UserCredential} from 'types/User'
 import {fetchData, postData} from '.'
 import axios from 'axios'
+import {IFbCredential} from 'types'
 
 GoogleSignin.configure({
   webClientId:
@@ -138,8 +139,18 @@ export const emailPasswordLogin = async ({email, password}: UserCredential) => {
       password,
     )
 
+    console.log(JSON.stringify(credential, null, 2))
+
     if (credential.user) {
-      return {statusCode: 200, data: credential}
+      return {
+        statusCode: 200,
+        data: {
+          refreshToken: '',
+          uid: credential.user.uid,
+          email: credential.user.email,
+          displayName: credential.user.displayName,
+        },
+      }
     }
 
     return {statusCode: 401, data: 'Failed to login'}
@@ -196,7 +207,7 @@ export const submitUserDetails = async (
 
 export const appleSignIn = async (): Promise<
   ResponseI<{
-    credential: FirebaseAuthTypes.UserCredential
+    credential: IFbCredential
     user:
       | Pick<GenericUserI, 'email' | 'first_name' | 'last_name' | 'avatar'>
       | GenericUserI
@@ -247,7 +258,10 @@ export const appleSignIn = async (): Promise<
 
       return {
         data: {
-          credential: response,
+          credential: {
+            refreshToken: '',
+            uid: response.user.uid,
+          },
           user: data.user,
           token: data.token,
         },
@@ -258,7 +272,10 @@ export const appleSignIn = async (): Promise<
     return {
       statusCode: 200,
       data: {
-        credential: response,
+        credential: {
+          refreshToken: '',
+          uid: response.user.uid,
+        },
         user: {
           email: String(email),
           first_name:
@@ -287,7 +304,7 @@ export const appleSignIn = async (): Promise<
 
 export const facebookAuth = async (): Promise<
   ResponseI<{
-    credential: FirebaseAuthTypes.UserCredential
+    credential: IFbCredential
     user:
       | Pick<GenericUserI, 'email' | 'first_name' | 'last_name' | 'avatar'>
       | GenericUserI
@@ -320,6 +337,8 @@ export const facebookAuth = async (): Promise<
     // Sign-in the user with the credential
     const response = await auth().signInWithCredential(facebookCredential)
 
+    // console.log(JSON.stringify(response, null, 2))
+
     const {
       user: {email, displayName, photoURL},
     } = response
@@ -341,7 +360,10 @@ export const facebookAuth = async (): Promise<
 
       return {
         data: {
-          credential: response,
+          credential: {
+            refreshToken: '',
+            uid: response.user.uid,
+          },
           user: serverData.user,
           token: serverData.token,
         },
@@ -349,12 +371,16 @@ export const facebookAuth = async (): Promise<
       }
     }
 
-    const names = (displayName || '').split('')
+    const names = (displayName || '').split(' ')
+    console.log(names)
 
     return {
       statusCode: 200,
       data: {
-        credential: response,
+        credential: {
+          refreshToken: '',
+          uid: response.user.uid,
+        },
         user: {
           email,
           first_name: names.length ? names[0] : '',
@@ -364,6 +390,7 @@ export const facebookAuth = async (): Promise<
       },
     }
   } catch (error: any) {
+    console.log(error)
     const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
 
     if (code === 'auth/account-exists-with-different-credential') {
@@ -382,7 +409,7 @@ export const facebookAuth = async (): Promise<
 
 export const googleAuth = async (): Promise<
   ResponseI<{
-    credential: FirebaseAuthTypes.UserCredential
+    credential: IFbCredential
     user:
       | Pick<GenericUserI, 'email' | 'first_name' | 'last_name' | 'avatar'>
       | GenericUserI
@@ -418,7 +445,10 @@ export const googleAuth = async (): Promise<
 
       return {
         data: {
-          credential,
+          credential: {
+            refreshToken: '',
+            uid: credential.user.uid,
+          },
           user: serverData.user,
           token: serverData.token,
         },
@@ -431,7 +461,10 @@ export const googleAuth = async (): Promise<
     return {
       statusCode: 200,
       data: {
-        credential,
+        credential: {
+          refreshToken: '',
+          uid: credential.user.uid,
+        },
         user: {
           email,
           first_name: names.length ? names[0] : '',
