@@ -5,13 +5,13 @@ import {IResourceCategory} from 'types/ResourceCategory'
 import {RootState} from '../store'
 
 interface MediaResourceI {
-  //   categories: IResourceCategory[]
+  categories: Record<string, IResourceCategory[]>
   media: ResourceItemT[]
   errorMessage: string
 }
 
 const initialState: MediaResourceI = {
-  //   categories: [],
+  categories: {},
   media: [],
   errorMessage: '',
 }
@@ -54,13 +54,18 @@ export const mediaResourceSlice = createSlice({
 
 export const {setMedia} = mediaResourceSlice.actions
 
-export const selectMedia = (state: RootState) => state.media
-
-export const categories = (state: RootState) =>
-  state.media.media.reduce((acc, item) => {
-    acc[item.resource_category_name] += 1
+export const selectMedia = (state: RootState) => ({
+  media: state.media.media,
+  errorMessage: state.media.errorMessage,
+  categories: state.media.media.reduce((acc, item) => {
+    if (acc[item.resource_category_name]) {
+      acc[item.resource_category_name].push(item)
+    } else {
+      acc[item.resource_category_name] = [item]
+    }
 
     return acc
-  }, {} as Record<string, number>)
+  }, {} as Record<string, ResourceItemT[]>),
+})
 
 export default mediaResourceSlice.reducer

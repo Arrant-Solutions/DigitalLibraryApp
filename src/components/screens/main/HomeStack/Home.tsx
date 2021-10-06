@@ -24,10 +24,11 @@ const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight
 const Home = () => {
   const dispatch = useAppDispatch()
   const {token} = useAppSelector(selectAuth)
-  const {media, errorMessage} = useAppSelector(selectMedia)
+  const {media, categories} = useAppSelector(selectMedia)
   const [error, setError] = useState(false)
   // const {data, error, isLoading} = useGetMediaQuery()
   // const [media, setMedia] = useState<HomeMediaItem[]>([])
+  console.log(JSON.stringify(Object.keys(categories), null, 2))
   const [loading, setLoading] = useState(false)
 
   // console.log(media, errorMessage)
@@ -81,7 +82,7 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>Videos</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
+              {categories.Video.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
@@ -101,7 +102,7 @@ const Home = () => {
               </Text>
             </View>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
+              {categories.Audio.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
@@ -117,7 +118,7 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>eBook</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
+              {categories.eBook.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
