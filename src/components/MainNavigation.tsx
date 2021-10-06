@@ -20,7 +20,7 @@ export type AuthStackParamList = {
 
 const MainNavigation = () => {
   const {isInternetReachable} = useNetInfo()
-  const [error, setError] = useState(true)
+  const [error, setError] = useState(false)
   const {token, user} = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
 

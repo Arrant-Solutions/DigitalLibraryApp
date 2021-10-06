@@ -5,8 +5,9 @@ import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
 import modalReducer from './slices/modalSlice'
 import themeReducer from './slices/themeSlice'
-import {resourcesApi} from './services/resourceService'
+import {resourcesApi} from './apis/resourceApi'
 import {unauthenticatedMiddleware} from './middleware'
+import { mediaResourceApi } from './apis/mediaResourceApi'
 
 export const store = configureStore({
   reducer: {
@@ -17,9 +18,13 @@ export const store = configureStore({
     modal: modalReducer,
     theme: themeReducer,
     resources: resourcesApi.reducer,
+    media: mediaResourceApi.reducer,
   },
   middleware: gDM =>
-    gDM().concat(resourcesApi.middleware).concat([unauthenticatedMiddleware]), // not the cleanest solution
+    gDM()
+      .concat(resourcesApi.middleware)
+      .concat(mediaResourceApi.middleware)
+      .concat([unauthenticatedMiddleware]) as any, // not the cleanest solution
 })
 
 export type AppDispatch = typeof store.dispatch

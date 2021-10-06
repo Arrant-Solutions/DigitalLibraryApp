@@ -33,7 +33,7 @@ import {selectAuth, setUser, updateAuth} from 'redux/slices/authSlice'
 import {Toast} from '../common/Toast'
 import {deserialize} from 'utils'
 import {emailRegistration, submitUserDetails} from 'redux/services/auth'
-import {useGetInitResourcesQuery} from 'redux/services/resourceService'
+import {useGetInitResourcesQuery} from 'redux/apis/resourceApi'
 import SocialAuth from '../common/SocialAuth'
 import ModalLoader from '../common/ModalLoader'
 
