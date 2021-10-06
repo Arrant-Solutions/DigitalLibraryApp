@@ -7,43 +7,60 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
+  Alert,
 } from 'react-native'
 import {ScrollView} from 'react-native-gesture-handler'
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
-import {
-  fetchLatest,
-  restoreLatest,
-  selectHomeResources,
-} from '../../../../redux/slices/homeResourcesSlice'
 import {flexColumn, pcl} from 'components/screens/common/style'
 import Tile from '../../common/Tile'
-import PCLStatusBar from 'components/screens/common/PCLStatusBar'
+// import {useGetMediaQuery} from 'redux/apis/mediaResourceApi'
+import Skeleton from 'components/Skeleton'
+import {data} from 'redux/services/data'
+import {selectAuth} from 'redux/slices/authSlice'
+import {selectMedia, fetchMedia} from 'redux/slices/mediaResourceSlice'
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight
 
 const Home = () => {
   const dispatch = useAppDispatch()
-  const {errorMessage, latest} = useAppSelector(selectHomeResources)
+  const {token} = useAppSelector(selectAuth)
+  const {media, errorMessage} = useAppSelector(selectMedia)
+  const [error, setError] = useState(false)
+  // const {data, error, isLoading} = useGetMediaQuery()
   // const [media, setMedia] = useState<HomeMediaItem[]>([])
+  const [loading, setLoading] = useState(false)
+
+  // console.log(media, errorMessage)
 
   useEffect(() => {
-    dispatch(restoreLatest())
-      .then(({payload}: any) => {
-        if (Array.isArray(payload.latest) && payload.latest.length === 0) {
-          dispatch(fetchLatest())
-        }
-      })
-      .catch(() => {
-        dispatch(fetchLatest())
-      })
-  }, [])
-  // console.log(latest)
-  // const { height } = useWindowDimensions()
-  // const [tileHeight] = useState(
-  //   (height - 265 - 60 - useBottomTabBarHeight()) / 3
-  // )
-  // console.log('tileHeight', tileHeight)
-  // console.log('tb height', useBottomTabBarHeight())
+    // console.log('effecting', token)
+    if (Boolean(token)) {
+      setLoading(true)
+      dispatch(fetchMedia())
+        .then((res: any) => {
+          if (res.type === '/media/home/fulfilled') {
+            setError(false)
+          }
+          // console.log(res)
+        })
+        .catch(setError(true))
+        .finally(() => setLoading(false))
+    }
+  }, [token])
+
+  if (loading) {
+    return <Skeleton />
+  }
+
+  if (!data || error) {
+    // Alert.alert(
+    //   'Error Occured',
+    //   'Unable to fetch your media resource. Please check your internet.',
+    // )
+    return <Text>Home Failed {JSON.stringify(error)}</Text>
+    // return <Skeleton />
+  }
+
   return (
     <View style={{flex: 1}}>
       {/* <PCLStatusBar backgroundColor={pcl.purple} /> */}
@@ -62,13 +79,13 @@ const Home = () => {
           </View>
           <View style={styles.divider}></View>
           <View style={styles.tileContainer}>
-            <Text style={styles.tileHeader}>Latest Uplifting Releases</Text>
+            <Text style={styles.tileHeader}>Videos</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {latest.slice(0, 8).map(({thumbnail, title}) => (
+              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
                 <Tile
-                  key={thumbnail}
+                  key={resource_id}
                   style={{marginRight: 10}}
-                  imageSrc={{uri: thumbnail}}
+                  imageSrc={{uri: thumbnail_url}}
                   title={title}
                   onPress={() => console.log('pressed')}
                 />
@@ -78,18 +95,18 @@ const Home = () => {
           <View style={styles.divider}></View>
           <View style={styles.tileContainer}>
             <View style={{...flexColumn, paddingHorizontal: 30}}>
-              <Text style={{fontSize: 20}}>More of what you like</Text>
+              <Text style={{fontSize: 20}}>Audio</Text>
               <Text style={{fontSize: 12, color: '#777'}}>
                 Suggestions based on your previous views
               </Text>
             </View>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {latest.slice(9, 15).map(({thumbnail, title}) => (
+              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
                 <Tile
-                  key={thumbnail}
+                  key={resource_id}
                   style={{marginRight: 10}}
                   imageStyle={{borderRadius: 0}}
-                  imageSrc={{uri: thumbnail}}
+                  imageSrc={{uri: thumbnail_url}}
                   title={title}
                   onPress={() => console.log('pressed')}
                 />
@@ -98,14 +115,14 @@ const Home = () => {
           </View>
           <View style={styles.divider}></View>
           <View style={styles.tileContainer}>
-            <Text style={styles.tileHeader}>Most Played titles</Text>
+            <Text style={styles.tileHeader}>eBook</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {latest.slice(15, 20).map(({thumbnail, title}) => (
+              {media.slice(0, 8).map(({resource_id, title, thumbnail_url}) => (
                 <Tile
-                  key={thumbnail}
+                  key={resource_id}
                   style={{marginRight: 10}}
                   imageStyle={{borderRadius: 100}}
-                  imageSrc={{uri: thumbnail}}
+                  imageSrc={{uri: thumbnail_url}}
                   title={title}
                   onPress={() => console.log('pressed')}
                 />

@@ -328,7 +328,7 @@ const Signup: React.FC<SignupProps> = () => {
                               errorStyle={
                                 errors.email ? styles.inputErrorStyle : {}
                               }
-                              disabled={credential}
+                              disabled={Boolean(credential)}
                               errorMessage={errors.email}
                               labelStyle={styles.textStyle}
                               placeholderTextColor={pcl.textPlaceholder}

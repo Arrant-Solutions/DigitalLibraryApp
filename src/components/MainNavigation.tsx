@@ -26,6 +26,8 @@ const MainNavigation = () => {
 
   const [initializing, setInitializing] = useState(true)
 
+  // console.log('token  ============>  ', token)
+
   // Handle user state changes
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     SplashScreen.hide()
@@ -37,10 +39,13 @@ const MainNavigation = () => {
         last_name: names.length > 1 ? names[1] : names[0],
       })
     }
-    await dispatch(refreshToken(isInternetReachable)).catch(() =>
-      setError(true),
-    )
-    if (initializing) setInitializing(false)
+    await dispatch(refreshToken(isInternetReachable))
+      .then((res: any) => {
+        setError(false)
+      })
+      .catch(() => setError(true))
+      .finally(() => setInitializing(false))
+    // if (initializing) setInitializing(false)
   }
 
   useEffect(() => {
@@ -56,7 +61,7 @@ const MainNavigation = () => {
     return <StartupError />
   }
 
-  if (token) {
+  if (Boolean(token) && !user.has_missing) {
     return <TabNavigator />
   }
 

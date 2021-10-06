@@ -1,4 +1,5 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
+import axios from 'axios'
 import {Storage} from 'constants/storage'
 import {fetchData, postData} from 'redux/services'
 import {emailPasswordLogin} from 'redux/services/auth'
@@ -81,9 +82,10 @@ export const refreshToken = createAsyncThunk(
   'user/restoreToken',
   async (online: boolean | null) => {
     const storageData = await getAsyncData<AuthSliceI>(Storage.AUTH_STORAGE)
-    console.log(JSON.stringify({...storageData, online}, null, 2))
+    // console.log(JSON.stringify({...storageData, online}, null, 2))
 
     if (storageData) {
+      axios.defaults.headers.common.authorization = `Bearer ${storageData.token}`
       if (online) {
         const {data} = await postData<{user: GenericUserI; token: string}, {}>(
           '/auth/refreshToken',
@@ -91,9 +93,11 @@ export const refreshToken = createAsyncThunk(
           {headers: {token: storageData.token}},
         )
 
-        console.log(JSON.stringify(data, null, 2))
+        // console.log(JSON.stringify(data, null, 2))
 
         if (typeof data === 'object') {
+          axios.defaults.headers.common.authorization = `Bearer ${data.token}`
+
           return {
             ...initialState,
             errorMessage: '',
@@ -104,6 +108,7 @@ export const refreshToken = createAsyncThunk(
 
         return {
           ...initialState,
+          token: storageData.token,
           errorMessage: data,
         }
       }
@@ -111,7 +116,10 @@ export const refreshToken = createAsyncThunk(
       return storageData
     }
 
-    throw new Error('failed to fetch data')
+    return {
+      ...initialState,
+      errorMessage: 'failed to fetch resources',
+    }
   },
 )
 
@@ -206,7 +214,12 @@ export const authSlice = createSlice({
 
       state.user = user ? deserialize(user) : initialState.user
       state.token = token
+      // console.log('setting token.............................', token)
       state.errorMessage = errorMessage
+
+      if (token) {
+        axios.defaults.headers.common.authorization = `Bearer ${token}`
+      }
     },
     [refreshToken.rejected.toString()]: state => {
       state.errorMessage = GENERIC_SERVER_ERROR

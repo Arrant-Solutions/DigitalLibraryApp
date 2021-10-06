@@ -7,23 +7,24 @@ import modalReducer from './slices/modalSlice'
 import themeReducer from './slices/themeSlice'
 import {resourcesApi} from './apis/resourceApi'
 import {unauthenticatedMiddleware} from './middleware'
-import { mediaResourceApi } from './apis/mediaResourceApi'
+// import {mediaResourceApi} from './apis/mediaResourceApi'
+import mediaResourceReducer from './slices/mediaResourceSlice'
 
 export const store = configureStore({
   reducer: {
-    // resources: resourcesReducer,
+    media: mediaResourceReducer,
     auth: authReducer,
     homeResources: homeResourcesReducer,
     categories: categoriesReducer,
     modal: modalReducer,
     theme: themeReducer,
     resources: resourcesApi.reducer,
-    media: mediaResourceApi.reducer,
+    // media: mediaResourceApi.reducer,
   },
   middleware: gDM =>
     gDM()
       .concat(resourcesApi.middleware)
-      .concat(mediaResourceApi.middleware)
+      // .concat(mediaResourceApi.middleware)
       .concat([unauthenticatedMiddleware]) as any, // not the cleanest solution
 })
 

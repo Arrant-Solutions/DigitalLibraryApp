@@ -6,7 +6,8 @@ export const unauthenticatedMiddleware: Middleware =
   ({dispatch}) =>
   next =>
   action => {
-    if (/^user/.test(action.type) && isFulfilled(action)) {
+    if (action && /^user/.test(action.type) && isFulfilled(action)) {
+      // console.log('running store middleware.....', action.payload.token)
       storeAsyncData(Storage.AUTH_STORAGE, action.payload)
     }
 

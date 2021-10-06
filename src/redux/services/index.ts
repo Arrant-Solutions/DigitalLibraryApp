@@ -1,5 +1,5 @@
 import {APP_BASE_URL} from '@env'
-import axios, {AxiosError, AxiosRequestConfig} from 'axios'
+import axios, {AxiosError, AxiosRequestConfig, CancelToken} from 'axios'
 import {UNEXPECTED_STATUS_EXCEPTION} from '../../constants/errors'
 import {ResponseI} from '../../types/Response'
 
@@ -9,7 +9,11 @@ axios.defaults.baseURL = APP_BASE_URL
 // axios.interceptors.request.use(
 //   function (config) {
 //     // Do something before request is sent
-//     console.log(config.url, config.baseURL)
+//     console.log(config.baseURL, config.url, config.method)
+//     console.log(config.headers.token)
+//     if (config.url === '/resources/home' && !config.headers.token) {
+//       throw new axios.Cancel('Operation canceled by the user.')
+//     }
 //     return config
 //   },
 //   function (error) {
