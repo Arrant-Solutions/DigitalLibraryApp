@@ -37,7 +37,7 @@ const Tile: React.FC<{radius?: number; source: any}> = ({
   </View>
 )
 
-const tile = (radius?: number): any => ({
+export const tile = (radius?: number): any => ({
   height: 100,
   width: 80,
   marginRight: 5,

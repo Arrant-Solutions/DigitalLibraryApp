@@ -7,28 +7,57 @@ import {
   SafeAreaView,
   StatusBar,
   Platform,
-  Alert,
+  useWindowDimensions,
 } from 'react-native'
 import {ScrollView} from 'react-native-gesture-handler'
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
-import {flexColumn, pcl} from 'components/screens/common/style'
+import {flexColumn} from 'components/screens/common/style'
 import Tile from '../../common/Tile'
-// import {useGetMediaQuery} from 'redux/apis/mediaResourceApi'
-import Skeleton from 'components/Skeleton'
+import Skeleton, {tile} from 'components/Skeleton'
 import {data} from 'redux/services/data'
 import {selectAuth} from 'redux/slices/authSlice'
 import {selectMedia, fetchMedia} from 'redux/slices/mediaResourceSlice'
+import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight
+
+export const TileSkeleton: React.FC<{isLoading: boolean}> = ({isLoading}) => {
+  const {width} = useWindowDimensions()
+  return (
+    <SkeletonContent
+      isLoading={isLoading}
+      layout={[
+        {
+          width,
+          height: 157,
+          children: [
+            {
+              width: width - 60,
+              height: 20,
+              alignSelf: 'center',
+            },
+            {
+              marginTop: 10,
+              width,
+              height: 20,
+              flexDirection: 'row',
+              children: [tile(), tile(), tile(), tile(), tile()],
+            },
+          ],
+        },
+      ]}
+    />
+  )
+}
 
 const Home = () => {
   const dispatch = useAppDispatch()
   const {token} = useAppSelector(selectAuth)
-  const {media, categories} = useAppSelector(selectMedia)
+  const {categories} = useAppSelector(selectMedia)
   const [error, setError] = useState(false)
   // const {data, error, isLoading} = useGetMediaQuery()
   // const [media, setMedia] = useState<HomeMediaItem[]>([])
-  console.log(JSON.stringify(Object.keys(categories), null, 2))
+  // console.log(JSON.stringify(Object.keys(categories), null, 2))
   const [loading, setLoading] = useState(false)
 
   // console.log(media, errorMessage)
@@ -39,12 +68,12 @@ const Home = () => {
       setLoading(true)
       dispatch(fetchMedia())
         .then((res: any) => {
-          if (res.type === '/media/home/fulfilled') {
+          if (res.type !== '/media/home/fulfilled') {
             setError(false)
           }
           // console.log(res)
         })
-        .catch(setError(true))
+        .catch(() => setError(true))
         .finally(() => setLoading(false))
     }
   }, [token])
@@ -82,7 +111,7 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>Videos</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories.Video.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.Video?.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
@@ -102,11 +131,11 @@ const Home = () => {
               </Text>
             </View>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories.Audio.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.Audio?.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
-                  imageStyle={{borderRadius: 0}}
+                  imageStyle={{borderRadius: 10}}
                   imageSrc={{uri: thumbnail_url}}
                   title={title}
                   onPress={() => console.log('pressed')}
@@ -118,11 +147,11 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>eBook</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories.eBook.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.eBook?.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   key={resource_id}
                   style={{marginRight: 10}}
-                  imageStyle={{borderRadius: 100}}
+                  imageStyle={{borderRadius: 0}}
                   imageSrc={{uri: thumbnail_url}}
                   title={title}
                   onPress={() => console.log('pressed')}

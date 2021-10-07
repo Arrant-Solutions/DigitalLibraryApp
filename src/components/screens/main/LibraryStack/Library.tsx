@@ -1,8 +1,6 @@
 import React, {useEffect, useState, PureComponent} from 'react'
 import {
   ActivityIndicator,
-  Pressable,
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -41,13 +39,13 @@ import {
   stretchedBox,
   pcl,
 } from 'components/screens/common/style'
-import {fetchCategories, selectCategories} from 'redux/slices/categoriesSlice'
 import Header from 'components/screens/common/Header'
 import {LibraryParamList} from '.'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {Divider, Icon} from 'react-native-elements'
-import {selectHomeResources} from 'redux/slices/homeResourcesSlice'
 import Tile from 'components/screens/common/Tile'
+import {fetchMedia, selectMedia} from 'redux/slices/mediaResourceSlice'
+import {selectAuth} from 'redux/slices/authSlice'
 
 interface ItemProps {
   style?: ViewStyle
@@ -56,9 +54,16 @@ interface ItemProps {
   onPress?: () => void
 }
 
-class Item extends PureComponent<Omit<CategoryI, 'categoryID'> & ItemProps> {
-  getIcon(icon: CategoryIconI | IconName) {
-    if (typeof icon === 'string') {
+class Item extends PureComponent<
+  {
+    name: string
+    id: string
+    numberOfItems: number
+    icon?: CategoryIconI | IconName
+  } & ItemProps
+> {
+  getIcon(icon?: CategoryIconI | IconName) {
+    if (typeof icon === 'string' || icon === undefined) {
       let iconColor = pcl.black
       switch (icon) {
         case 'anointing':
@@ -136,13 +141,28 @@ type LibraryProp = StackNavigationProp<LibraryParamList, 'LibraryScreen'>
 const Library = () => {
   const [loading, setLoading] = useState(false)
   const dispatch = useAppDispatch()
-  const {errorMessage, categories} = useAppSelector(selectCategories)
+  const {categories, errorMessage} = useAppSelector(selectMedia)
   const {navigate} = useNavigation<LibraryProp>()
-  const {errorMessage: err, latest} = useAppSelector(selectHomeResources)
+  const {token} = useAppSelector(selectAuth)
+  const [error, setError] = useState(false)
+
+  // console.log(media, errorMessage)
 
   useEffect(() => {
-    dispatch(fetchCategories())
-  }, [])
+    // console.log('effecting', token)
+    if (Boolean(token)) {
+      setLoading(true)
+      dispatch(fetchMedia())
+        .then((res: any) => {
+          if (res.type === '/media/home/fulfilled') {
+            setError(false)
+          }
+          // console.log(res)
+        })
+        .catch(setError(true))
+        .finally(() => setLoading(false))
+    }
+  }, [token])
 
   console.log('Error =====> ', errorMessage, categories)
   return (
@@ -152,14 +172,16 @@ const Library = () => {
         <ActivityIndicator />
       ) : (
         <ScrollView style={styles.container}>
-          {categories.map(item => (
-            <View key={item.categoryID}>
+          {Object.keys(categories).map(item => (
+            <View key={item}>
               <Item
-                {...item}
+                id={item}
+                name={item}
+                numberOfItems={categories[item].length}
                 onPress={() =>
                   navigate('Category', {
-                    id: item.categoryID,
-                    name: item.name,
+                    id: item,
+                    name: item,
                   })
                 }
               />
@@ -171,13 +193,13 @@ const Library = () => {
               Recently Played
             </Text>
             <ScrollView horizontal>
-              {latest.slice(0, 8).map(({thumbnail, title}) => (
+              {categories.Vidoes.map(({resource_id, title, thumbnail_url}) => (
                 <Tile
                   size={130}
-                  key={thumbnail}
+                  key={resource_id}
                   style={{marginRight: 10, marginLeft: 5}}
                   imageStyle={{borderRadius: 0}}
-                  imageSrc={{uri: thumbnail}}
+                  imageSrc={{uri: thumbnail_url}}
                   title={title}
                 />
               ))}
@@ -189,19 +211,21 @@ const Library = () => {
               Listening History
             </Text>
             <ScrollView>
-              {latest.slice(9, 15).map(({thumbnail, title}) => (
-                <View key={thumbnail}>
-                  <Tile
-                    horizontal
-                    size={70}
-                    style={{marginRight: 10, marginLeft: 5, padding: 5}}
-                    imageStyle={{borderRadius: 10}}
-                    imageSrc={{uri: thumbnail}}
-                    title={title}
-                  />
-                  <Divider width={2} color={pcl.background} />
-                </View>
-              ))}
+              {categories.Playlist.map(
+                ({resource_id, title, thumbnail_url}) => (
+                  <View key={resource_id}>
+                    <Tile
+                      horizontal
+                      size={70}
+                      style={{marginRight: 10, marginLeft: 5, padding: 5}}
+                      imageStyle={{borderRadius: 10}}
+                      imageSrc={{uri: thumbnail_url}}
+                      title={title}
+                    />
+                    <Divider width={2} color={pcl.background} />
+                  </View>
+                ),
+              )}
             </ScrollView>
           </View>
         </ScrollView>

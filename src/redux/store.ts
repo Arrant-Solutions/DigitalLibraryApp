@@ -25,7 +25,7 @@ export const store = configureStore({
     gDM()
       .concat(resourcesApi.middleware)
       // .concat(mediaResourceApi.middleware)
-      .concat([unauthenticatedMiddleware]) as any, // not the cleanest solution
+      .concat([unauthenticatedMiddleware]), // not the cleanest solution
 })
 
 export type AppDispatch = typeof store.dispatch

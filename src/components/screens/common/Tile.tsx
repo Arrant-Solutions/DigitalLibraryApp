@@ -4,15 +4,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Image,
   ImageSourcePropType,
   ViewStyle,
   ImageStyle,
 } from 'react-native'
-import {Icon} from 'react-native-elements'
+import {Image} from 'react-native-elements'
 import {TouchableOpacity} from 'react-native-gesture-handler'
-import {toPlayDate} from 'utils'
-import {flexColumn, flexRow, pcl} from './style'
 
 interface TileProps {
   size?: number

@@ -7,7 +7,10 @@ import {Media} from 'types/Media'
 
 export type LibraryParamList = {
   LibraryScreen: undefined
-  Category: {id: number; name: string}
+  Category: {
+    id: string | number
+    name: string
+  }
   'Media Player': Media
 }
 

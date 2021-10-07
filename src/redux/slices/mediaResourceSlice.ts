@@ -8,12 +8,16 @@ interface MediaResourceI {
   categories: Record<string, IResourceCategory[]>
   media: ResourceItemT[]
   errorMessage: string
+  downloaded: ResourceItemT[]
+  playlist: ResourceItemT[]
 }
 
 const initialState: MediaResourceI = {
   categories: {},
   media: [],
   errorMessage: '',
+  downloaded: [],
+  playlist: [],
 }
 
 export const fetchMedia = createAsyncThunk('/media/home', async () => {
@@ -55,17 +59,20 @@ export const mediaResourceSlice = createSlice({
 export const {setMedia} = mediaResourceSlice.actions
 
 export const selectMedia = (state: RootState) => ({
-  media: state.media.media,
-  errorMessage: state.media.errorMessage,
-  categories: state.media.media.reduce((acc, item) => {
-    if (acc[item.resource_category_name]) {
-      acc[item.resource_category_name].push(item)
-    } else {
-      acc[item.resource_category_name] = [item]
-    }
+  ...state.media,
+  categories: {
+    ...state.media.media.reduce((acc, item) => {
+      if (acc[item.resource_category_name]) {
+        acc[item.resource_category_name].push(item)
+      } else {
+        acc[item.resource_category_name] = [item]
+      }
 
-    return acc
-  }, {} as Record<string, ResourceItemT[]>),
+      return acc
+    }, {} as Record<string, ResourceItemT[]>),
+    Downloaded: state.media.downloaded,
+    Playlist: state.media.media,
+  } as Record<string, ResourceItemT[]>,
 })
 
 export default mediaResourceSlice.reducer
