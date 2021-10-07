@@ -71,7 +71,7 @@ export const selectMedia = (state: RootState) => ({
       return acc
     }, {} as Record<string, ResourceItemT[]>),
     Downloaded: state.media.downloaded,
-    Playlist: state.media.media,
+    Playlist: state.media.playlist,
   } as Record<string, ResourceItemT[]>,
 })
 

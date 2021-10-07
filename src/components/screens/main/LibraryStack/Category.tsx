@@ -13,7 +13,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaView} from 'react-native-safe-area-context'
 import {GENERIC_SERVER_ERROR} from '../../../../constants/errors'
 import {Media} from '../../../../types/Media'
-import {useAppDispatch} from '../../../../redux/hooks'
+import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
 import {fetchCategoryItems} from '../../../../redux/slices/categoriesSlice'
 import Header from 'components/screens/common/Header'
 import {
@@ -25,6 +25,8 @@ import {
 import Tile from 'components/screens/common/Tile'
 import {LibraryParamList} from '.'
 import {StackNavigationProp} from '@react-navigation/stack'
+import {selectMedia} from 'redux/slices/mediaResourceSlice'
+import {ResourceItemT} from 'types/Resource'
 
 interface ItemProps {
   playing?: boolean
@@ -37,11 +39,32 @@ interface ItemProps {
 const seperatorWidth = 8
 
 class Item extends PureComponent<
-  Pick<Media, 'title' | 'author' | 'thumbnail'> & ItemProps
+  Pick<
+    ResourceItemT,
+    | 'title'
+    | 'author_title'
+    | 'author_first_name'
+    | 'author_last_name'
+    | 'author_suffix'
+    | 'thumbnail_url'
+  > &
+    ItemProps
 > {
   render() {
     const width = (Dimensions.get('window').width - seperatorWidth) / 2
-    const {title, author, thumbnail, style, playing, onPress} = this.props
+    const {
+      title,
+      author_title,
+      author_first_name,
+      author_last_name,
+      author_suffix,
+      thumbnail_url,
+      style,
+      playing,
+      onPress,
+    } = this.props
+    const author =
+      `${author_title} ${author_first_name} ${author_last_name} ${author_suffix}`.trim()
     return (
       <Pressable
         onPress={onPress}
@@ -55,7 +78,7 @@ class Item extends PureComponent<
         ]}>
         <Tile
           size={width}
-          imageSrc={{uri: thumbnail}}
+          imageSrc={{uri: thumbnail_url}}
           title={title}
           subHeader={author}
           titleStyle={{
@@ -83,7 +106,7 @@ class Item extends PureComponent<
 type ParamList = {
   Category: {
     name: string
-    id: number
+    id: string
   }
 }
 
@@ -91,29 +114,21 @@ type LibraryProp = StackNavigationProp<LibraryParamList, 'Category'>
 
 const Category = () => {
   const {params} = useRoute<RouteProp<ParamList, 'Category'>>()
-  const dispatch = useAppDispatch()
-  const [media, setMedia] = useState<Media[]>([])
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [media, setMedia] = useState<ResourceItemT[]>([])
   const {navigate} = useNavigation<LibraryProp>()
+  const {categories} = useAppSelector(selectMedia)
 
   useEffect(() => {
-    if (typeof params === 'object' && !isNaN(params.id)) {
-      setLoading(true)
-      dispatch(fetchCategoryItems(9))
-        .then(({payload}) => {
-          if (Array.isArray(payload)) {
-            setMedia(payload)
-          } else {
-            setErrorMessage(GENERIC_SERVER_ERROR) // TODO: change to thunk response error
-          }
-        })
-        .catch(() => setErrorMessage(GENERIC_SERVER_ERROR))
-        .finally(() => setLoading(false))
+    console.log(params, ~Object.keys(categories).indexOf(params.id))
+    if (
+      typeof params === 'object' &&
+      ~Object.keys(categories).indexOf(params.id)
+    ) {
+      setMedia(categories[params.id])
     }
   }, [params.id])
 
-  const renderItem = ({item, index}: {item: Media; index: number}) => {
+  const renderItem = ({item, index}: {item: ResourceItemT; index: number}) => {
     return (
       <Item
         style={
@@ -124,8 +139,11 @@ const Category = () => {
             : undefined
         }
         title={item.title}
-        author={item.author}
-        thumbnail={item.thumbnail}
+        author_title={item.author_title}
+        author_first_name={item.author_first_name}
+        author_last_name={item.author_last_name}
+        author_suffix={item.author_suffix}
+        thumbnail_url={item.thumbnail_url}
         onPress={() => navigate('Media Player', item)}
       />
     )
@@ -140,22 +158,18 @@ const Category = () => {
     />
   )
 
-  const keyExtractor = ({id}: Media) => String(id)
+  const keyExtractor = ({resource_id}: ResourceItemT) => String(resource_id)
 
   return (
     <View style={stretchedBox}>
       <Header back title={params.name || ''} />
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <FlatList
-          data={media}
-          ItemSeparatorComponent={renderSeparator}
-          renderItem={renderItem}
-          numColumns={2}
-          keyExtractor={keyExtractor}
-        />
-      )}
+      <FlatList
+        data={media}
+        ItemSeparatorComponent={renderSeparator}
+        renderItem={renderItem}
+        numColumns={2}
+        keyExtractor={keyExtractor}
+      />
     </View>
   )
 }
