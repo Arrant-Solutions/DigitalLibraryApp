@@ -12,6 +12,8 @@ import {Platform} from 'react-native'
 import Header from '../common/Header'
 import IconButton from '../common/IconButton'
 import {gold, copper, purplePallet, purple, pcl} from '../common/style'
+import {RouteProp, useRoute} from '@react-navigation/native'
+import {ResourceItemT} from 'types/Resource'
 // import video from '../../../../assets/audio/audio.mp3'
 // const video = require('../../../../assets/videos/video.mp4')
 
@@ -67,12 +69,20 @@ interface MediaPlayerState {
   playInBackground: boolean
 }
 
+type ParamList = {
+  MediaPlayer: {
+    resource: ResourceItemT
+  }
+}
+
 const MediaPlayer: React.FC<MediaPlayerProps> = ({
   artist,
   album,
   title,
   type,
 }) => {
+  const {params} = useRoute<RouteProp<ParamList, 'MediaPlayer'>>()
+  const [resource] = useState(params?.resource)
   let loopingAnimation: Animated.CompositeAnimation | undefined
   const panResponder = React.useRef(
     PanResponder.create({
@@ -115,6 +125,7 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
       error: {code},
     } = meta
 
+    console.log(JSON.stringify(meta, null, 2))
     let error = 'error occurred playing video'
 
     switch (code) {
@@ -290,7 +301,9 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
               repeat={false}
               source={
                 {
-                  uri: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                  uri:
+                    params?.resource?.resource_url ||
+                    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
                 }
                 // video
               }
@@ -395,8 +408,10 @@ const MediaPlayer: React.FC<MediaPlayerProps> = ({
             display: 'flex',
           }}>
           <View style={styles.track}>
-            <Text style={styles.artist}>Pastor Choolwe</Text>
-            <Text style={styles.title}>The Finality of Destiny</Text>
+            <Text style={styles.artist}>
+              {`${resource?.author_title} ${resource?.author_first_name} ${resource?.author_last_name} `.trim()}
+            </Text>
+            <Text style={styles.title}>{resource?.title}</Text>
           </View>
           <Animated.View style={[styles.optionsMenu, optionsMenuStyle]}>
             <Pressable
@@ -542,7 +557,7 @@ const styles = StyleSheet.create({
   progressContainer: {
     backgroundColor: '#000',
     paddingVertical: 3,
-    marginTop: -1
+    marginTop: -1,
   },
   timersBox: {
     flexDirection: 'row',

@@ -3,7 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import Library from './Library'
 import Category from './Category'
 import MediaPlayer from '../MediaPlayer'
-import { ResourceItemT } from 'types/Resource'
+import {ResourceItemT} from 'types/Resource'
 
 export type LibraryParamList = {
   LibraryScreen: undefined
@@ -11,7 +11,7 @@ export type LibraryParamList = {
     id: string | number
     name: string
   }
-  'Media Player': ResourceItemT
+  'Media Player': {resource: ResourceItemT}
 }
 
 const Stack = createStackNavigator<LibraryParamList>()

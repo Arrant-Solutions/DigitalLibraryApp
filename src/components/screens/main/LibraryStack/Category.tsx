@@ -144,7 +144,7 @@ const Category = () => {
         author_last_name={item.author_last_name}
         author_suffix={item.author_suffix}
         thumbnail_url={item.thumbnail_url}
-        onPress={() => navigate('Media Player', item)}
+        onPress={() => navigate('Media Player', {resource: item})}
       />
     )
   }
