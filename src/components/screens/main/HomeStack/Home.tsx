@@ -18,6 +18,10 @@ import {data} from 'redux/services/data'
 import {selectAuth} from 'redux/slices/authSlice'
 import {selectMedia, fetchMedia} from 'redux/slices/mediaResourceSlice'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
+import {BaseParamList} from 'components/MainNavigation'
+import {StackNavigationProp} from '@react-navigation/stack'
+import {HomeParamList} from '.'
+import {useNavigation} from '@react-navigation/native'
 
 const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBar.currentHeight
 
@@ -50,7 +54,13 @@ export const TileSkeleton: React.FC<{isLoading: boolean}> = ({isLoading}) => {
   )
 }
 
+type HomeNavProps = StackNavigationProp<
+  HomeParamList & BaseParamList,
+  'HomeScreen'
+>
+
 const Home = () => {
+  const {navigate} = useNavigation<HomeNavProps>()
   const dispatch = useAppDispatch()
   const {token} = useAppSelector(selectAuth)
   const {categories} = useAppSelector(selectMedia)
@@ -111,13 +121,21 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>Videos</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories?.Video?.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.Video?.map(item => (
                 <Tile
-                  key={resource_id}
+                  key={item.resource_id}
                   style={{marginRight: 10}}
-                  imageSrc={{uri: thumbnail_url}}
-                  title={title}
-                  onPress={() => console.log('pressed')}
+                  imageSrc={{uri: item.thumbnail_url}}
+                  title={item.title}
+                  onPress={() => {
+                    console.log('=======>  ', item.resource_category_name)
+                    if (/ebook/i.test(item.resource_category_name)) {
+                      console.log('=======>  ', item.resource_category_name)
+                      navigate('PDF Viewer', {resource: item})
+                    } else {
+                      navigate('Media Player', {resource: item})
+                    }
+                  }}
                 />
               ))}
             </ScrollView>
@@ -131,14 +149,22 @@ const Home = () => {
               </Text>
             </View>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories?.Audio?.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.Audio?.map(item => (
                 <Tile
-                  key={resource_id}
+                  key={item.resource_id}
                   style={{marginRight: 10}}
                   imageStyle={{borderRadius: 10}}
-                  imageSrc={{uri: thumbnail_url}}
-                  title={title}
-                  onPress={() => console.log('pressed')}
+                  imageSrc={{uri: item.thumbnail_url}}
+                  title={item.title}
+                  onPress={() => {
+                    console.log('=======>  ', item.resource_category_name)
+                    if (/ebook/i.test(item.resource_category_name)) {
+                      console.log('=======>  ', item.resource_category_name)
+                      navigate('PDF Viewer', {resource: item})
+                    } else {
+                      navigate('Media Player', {resource: item})
+                    }
+                  }}
                 />
               ))}
             </ScrollView>
@@ -147,14 +173,22 @@ const Home = () => {
           <View style={styles.tileContainer}>
             <Text style={styles.tileHeader}>eBook</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
-              {categories?.eBook?.map(({resource_id, title, thumbnail_url}) => (
+              {categories?.eBook?.map(item => (
                 <Tile
-                  key={resource_id}
+                  key={item.resource_id}
                   style={{marginRight: 10}}
                   imageStyle={{borderRadius: 0}}
-                  imageSrc={{uri: thumbnail_url}}
-                  title={title}
-                  onPress={() => console.log('pressed')}
+                  imageSrc={{uri: item.thumbnail_url}}
+                  title={item.title}
+                  onPress={() => {
+                    console.log('=======>  ', item.resource_category_name)
+                    if (/ebook/i.test(item.resource_category_name)) {
+                      console.log('=======>  ', item.resource_category_name)
+                      navigate('PDF Viewer', {resource: item})
+                    } else {
+                      navigate('Media Player', {resource: item})
+                    }
+                  }}
                 />
               ))}
             </ScrollView>

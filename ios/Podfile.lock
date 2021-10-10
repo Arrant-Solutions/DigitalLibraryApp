@@ -762,6 +762,8 @@ PODS:
     - React-Core
   - react-native-sensitive-info (5.5.8):
     - React
+  - react-native-slider (4.1.8):
+    - React-Core
   - react-native-splash-screen (3.2.0):
     - React
   - react-native-video (5.1.1):
@@ -946,6 +948,7 @@ DEPENDENCIES:
   - "react-native-progress-view (from `../node_modules/@react-native-community/progress-view`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
+  - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
   - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-video (from `../node_modules/react-native-video`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
@@ -1068,6 +1071,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-sensitive-info:
     :path: "../node_modules/react-native-sensitive-info"
+  react-native-slider:
+    :path: "../node_modules/@react-native-community/slider"
   react-native-splash-screen:
     :path: "../node_modules/react-native-splash-screen"
   react-native-video:
@@ -1186,6 +1191,7 @@ SPEC CHECKSUMS:
   react-native-progress-view: 9e6b6a5305a9115c2157ae3b8852081aba0aab7c
   react-native-safe-area-context: 584dc04881deb49474363f3be89e4ca0e854c057
   react-native-sensitive-info: 400c6e3d27945e15c8cddb5b4b92233c85ee06f8
+  react-native-slider: 64c2214609cdcd4ca9ac7260007dfa023a1824f6
   react-native-splash-screen: 200d11d188e2e78cea3ad319964f6142b6384865
   react-native-video: 0bb76b6d6b77da3009611586c7dbf817b947f30e
   React-perflogger: fd28ee1f2b5b150b00043f0301d96bd417fdc339
