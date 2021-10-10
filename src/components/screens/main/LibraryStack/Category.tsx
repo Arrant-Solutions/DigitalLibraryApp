@@ -27,6 +27,7 @@ import {LibraryParamList} from '.'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {selectMedia} from 'redux/slices/mediaResourceSlice'
 import {ResourceItemT} from 'types/Resource'
+import { BaseParamList } from 'components/MainNavigation'
 
 interface ItemProps {
   playing?: boolean
@@ -110,7 +111,10 @@ type ParamList = {
   }
 }
 
-type LibraryProp = StackNavigationProp<LibraryParamList, 'Category'>
+type LibraryProp = StackNavigationProp<
+  LibraryParamList & BaseParamList,
+  'Category'
+>
 
 const Category = () => {
   const {params} = useRoute<RouteProp<ParamList, 'Category'>>()
@@ -144,7 +148,15 @@ const Category = () => {
         author_last_name={item.author_last_name}
         author_suffix={item.author_suffix}
         thumbnail_url={item.thumbnail_url}
-        onPress={() => navigate('Media Player', {resource: item})}
+        onPress={() => {
+          console.log('=======>  ', item.resource_category_name)
+          if (/ebook/i.test(item.resource_category_name)) {
+            console.log('=======>  ', item.resource_category_name)
+            navigate('PDF Viewer', {resource: item})
+          } else {
+            navigate('Media Player', {resource: item})
+          }
+        }}
       />
     )
   }

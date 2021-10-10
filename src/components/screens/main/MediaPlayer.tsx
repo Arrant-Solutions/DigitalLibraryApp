@@ -37,14 +37,6 @@ function secondsToTime(seconds: number) {
   return (isNegative ? '-' : '') + trailZero(absSeconds, 60) + ':' + secs
 }
 
-interface MediaPlayerProps {
-  artist: string
-  album: string
-  duration?: string
-  title: string
-  type: 'audio' | 'video'
-}
-
 interface Dims {
   height: number
   width: number
@@ -75,12 +67,7 @@ type ParamList = {
   }
 }
 
-const MediaPlayer: React.FC<MediaPlayerProps> = ({
-  artist,
-  album,
-  title,
-  type,
-}) => {
+const MediaPlayer = () => {
   const {params} = useRoute<RouteProp<ParamList, 'MediaPlayer'>>()
   const [resource] = useState(params?.resource)
   let loopingAnimation: Animated.CompositeAnimation | undefined

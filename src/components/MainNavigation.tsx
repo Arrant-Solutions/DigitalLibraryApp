@@ -10,6 +10,10 @@ import AuthStack from 'components/screens/auth/AuthStack'
 import StartupError from 'components/StartupError'
 import TabNavigator from './screens/main/TabNavigator'
 import Skeleton from './Skeleton'
+import {createStackNavigator} from '@react-navigation/stack'
+import {ResourceItemT} from 'types/Resource'
+import MediaPlayer from './screens/main/MediaPlayer'
+import PDFViewer from './screens/main/PDFViewer'
 
 export type AuthStackParamList = {
   AuthHome: undefined
@@ -17,6 +21,14 @@ export type AuthStackParamList = {
   Register: undefined
   Forgot: undefined
 }
+
+export type BaseParamList = {
+  TabNavigator: undefined
+  'Media Player': {resource: ResourceItemT}
+  'PDF Viewer': {resource: ResourceItemT}
+}
+
+const Stack = createStackNavigator<BaseParamList>()
 
 const MainNavigation = () => {
   const {isInternetReachable} = useNetInfo()
@@ -62,7 +74,15 @@ const MainNavigation = () => {
   }
 
   if (Boolean(token) && !user.has_missing) {
-    return <TabNavigator />
+    return (
+      <Stack.Navigator
+        initialRouteName="TabNavigator"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen name="TabNavigator" component={TabNavigator} />
+        <Stack.Screen name="Media Player" component={MediaPlayer} />
+        <Stack.Screen name="PDF Viewer" component={PDFViewer} />
+      </Stack.Navigator>
+    )
   }
 
   return <AuthStack />
