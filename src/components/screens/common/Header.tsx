@@ -36,7 +36,13 @@ const Header: React.FC<HeaderProps> = ({
   showActionButtons = true,
   handleBackButton,
 }) => {
-  const {background, text, active, inactive, barStyle: statusBarStyle} = useAppSelector(selectTheme)
+  const {
+    background,
+    text,
+    active,
+    inactive,
+    barStyle: statusBarStyle,
+  } = useAppSelector(selectTheme)
   const dispatch = useAppDispatch()
   const {width} = useWindowDimensions()
   const {goBack} = useNavigation()
@@ -50,7 +56,8 @@ const Header: React.FC<HeaderProps> = ({
         statusBarProps={{barStyle: barStyle || statusBarStyle}}
         backgroundColor={backgroundColor || background}
         leftComponent={
-          <View style={[flexRow, {width, alignItems: 'center'}]}>
+          <View
+            style={[flexRow, {flex: 1, width: width * .8, alignItems: 'center'}]}>
             {back ? (
               <Icon
                 name={'ios-chevron-back'}
@@ -66,10 +73,12 @@ const Header: React.FC<HeaderProps> = ({
               />
             )}
             <Text
+              numberOfLines={1}
               style={{
                 marginLeft: 10,
                 color: color || text,
                 fontSize: 20,
+                flex: 1,
               }}>
               {title}
             </Text>
