@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {StyleSheet} from 'react-native'
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import SplashScreen from 'react-native-splash-screen'
+import Toast from 'react-native-toast-message'
 import {useNetInfo} from '@react-native-community/netinfo'
 import {useAppSelector, useAppDispatch} from 'redux/hooks'
 import {refreshToken, selectAuth, setUserDetails} from 'redux/slices/authSlice'
@@ -75,13 +76,16 @@ const MainNavigation = () => {
 
   if (Boolean(token) && !user.has_missing) {
     return (
-      <Stack.Navigator
-        initialRouteName="TabNavigator"
-        screenOptions={{headerShown: false}}>
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-        <Stack.Screen name="Media Player" component={MediaPlayer} />
-        <Stack.Screen name="PDF Viewer" component={PDFViewer} />
-      </Stack.Navigator>
+      <>
+        <Stack.Navigator
+          initialRouteName="TabNavigator"
+          screenOptions={{headerShown: false}}>
+          <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          <Stack.Screen name="Media Player" component={MediaPlayer} />
+          <Stack.Screen name="PDF Viewer" component={PDFViewer} />
+        </Stack.Navigator>
+        <Toast ref={ref => Toast.setRef(ref)} />
+      </>
     )
   }
 

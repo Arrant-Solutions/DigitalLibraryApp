@@ -1,6 +1,16 @@
 import React, {useRef, useState} from 'react'
-import {GestureResponderEvent, PanResponder, Pressable} from 'react-native'
-import {Text, View, StyleSheet, Dimensions, Animated} from 'react-native'
+import {
+  GestureResponderEvent,
+  PanResponder,
+  Pressable,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  Animated,
+  useWindowDimensions,
+} from 'react-native'
+import Toast from 'react-native-toast-message'
 import Video, {
   OnBufferData,
   OnLoadData,
@@ -14,6 +24,12 @@ import IconButton from '../common/IconButton'
 import {gold, copper, purple, pcl} from '../common/style'
 import {RouteProp, useRoute} from '@react-navigation/native'
 import {ResourceItemT} from 'types/Resource'
+import {useAppDispatch, useAppSelector} from 'redux/hooks'
+import {
+  addFavoriteResource,
+  deleteFavoriteResource,
+  selectMedia,
+} from 'redux/slices/mediaResourceSlice'
 // import video from '../../../../assets/audio/audio.mp3'
 // const video = require('../../../../assets/videos/video.mp4')
 
@@ -51,6 +67,8 @@ interface MediaPlayerState {
   animated: Animated.Value
   animatedOptions: Animated.Value
   animatedControl: Animated.Value
+  animatedFavourites: Animated.Value
+  favouritesVisible: boolean
   optionsVisible: boolean
   muted: boolean
   paused: boolean
@@ -59,6 +77,7 @@ interface MediaPlayerState {
   currentTime: number
   orientation: 'landscape' | 'portrait'
   playInBackground: boolean
+  repeat: boolean
 }
 
 type ParamList = {
@@ -68,6 +87,9 @@ type ParamList = {
 }
 
 const MediaPlayer = () => {
+  const {width: windowWidth} = useWindowDimensions()
+  const dispatch = useAppDispatch()
+  const {favorites} = useAppSelector(selectMedia)
   const {params} = useRoute<RouteProp<ParamList, 'MediaPlayer'>>()
   const [resource] = useState(params?.resource)
   let loopingAnimation: Animated.CompositeAnimation | undefined
@@ -81,7 +103,6 @@ const MediaPlayer = () => {
   ).current
   const player = useRef<Video>(null)
   let hideTimeout: NodeJS.Timeout | undefined = undefined
-
   const [state, setState] = useState<MediaPlayerState>({
     fullScreen: false,
     error: '',
@@ -92,6 +113,8 @@ const MediaPlayer = () => {
     animatedControl: new Animated.Value(0),
     animated: new Animated.Value(0),
     animatedOptions: new Animated.Value(0),
+    animatedFavourites: new Animated.Value(0),
+    favouritesVisible: false,
     optionsVisible: false,
     paused: false,
     currentTime: 0,
@@ -99,6 +122,7 @@ const MediaPlayer = () => {
     duration: 0,
     orientation: getOrientation(),
     playInBackground: false,
+    repeat: false,
   })
 
   function getOrientation() {
@@ -216,6 +240,17 @@ const MediaPlayer = () => {
     }).start()
   }
 
+  const showFavourites = () => {
+    const visible = state.favouritesVisible
+    setState({...state, favouritesVisible: !visible})
+    console.log(visible, 'showing')
+    Animated.timing(state.animatedFavourites, {
+      toValue: visible ? 0 : 1,
+      duration: 250,
+      useNativeDriver: true,
+    }).start()
+  }
+
   const handleMute = () => {
     setState({...state, muted: !state.muted})
   }
@@ -225,7 +260,7 @@ const MediaPlayer = () => {
     buffering,
     paused,
     progress,
-    duration,
+    repeat,
     boxSize,
     videoSize,
     fullScreen,
@@ -255,8 +290,18 @@ const MediaPlayer = () => {
     inputRange: [0, 1],
     outputRange: [200, 0],
   })
+
   const optionsMenuStyle = {
     transform: [{translateX: interpolateOptionsMenu}],
+  }
+
+  const interpolateFavorites = state.animatedFavourites.interpolate({
+    inputRange: [0, 1],
+    outputRange: [windowWidth, 0],
+  })
+
+  const favoritesStyle = {
+    transform: [{translateX: interpolateFavorites}],
   }
 
   const hasError = Boolean(error)
@@ -280,12 +325,12 @@ const MediaPlayer = () => {
           setState({...state, boxSize: {width, height}})
         }}>
         <Header back title="Playing" />
-        <View style={{}}>
+        <View style={{backgroundColor: '#000'}}>
           <View
             {...panResponder.panHandlers}
             style={{overflow: 'hidden', height: 220}}>
             <Video
-              repeat={false}
+              repeat={repeat}
               source={
                 {
                   uri:
@@ -361,7 +406,7 @@ const MediaPlayer = () => {
             </View>
           </View>
           {!hasError && (
-            <View style={[styles.controlsContainer]}>
+            <View style={[styles.controlsContainer, {backgroundColor: '#fff'}]}>
               <Pressable
                 onPress={handleProgressBarPress}
                 style={styles.progressContainer}>
@@ -400,24 +445,52 @@ const MediaPlayer = () => {
             </Text>
             <Text style={styles.title}>{resource?.title}</Text>
           </View>
-          <Animated.View style={[styles.optionsMenu, optionsMenuStyle]}>
+          <Animated.View
+            style={[
+              styles.optionsMenu,
+              {
+                right: 0,
+              },
+              optionsMenuStyle,
+            ]}>
             <Pressable
               style={styles.menuItem}
               onPress={() => {
-                setState({
-                  ...state,
-                  animatedOptions: new Animated.Value(0),
-                  optionsVisible: false,
-                })
+                console.log('fired')
+                dispatch(addFavoriteResource(resource))
+                  .then(res => {
+                    console.log(res)
+                    if ((res.type = '/media/addFavorite/fulfilled')) {
+                      Toast.show({
+                        type: 'success',
+                        text1: 'Success',
+                        text2: 'Added successfully to favorites',
+                      })
+                    } else {
+                      Toast.show({
+                        type: 'error',
+                        text1: 'Failure',
+                        text2: 'Failed to add to favorites',
+                      })
+                    }
+                  })
+                  .catch(e => console.log(e))
+                  .finally(() =>
+                    setState({
+                      ...state,
+                      animatedOptions: new Animated.Value(0),
+                      optionsVisible: false,
+                    }),
+                  )
               }}>
               <IconButton
-                type="material"
-                name="playlist-add"
-                size={25}
-                color="white"
+                type="material-community"
+                name="playlist-star"
+                size={27}
+                color={pcl.black}
                 containerStyle={styles.menuItemIcon}
               />
-              <Text style={styles.menuItemText}>Add to playlist</Text>
+              <Text style={styles.menuItemText}>Add to Favorites</Text>
             </Pressable>
             <Divider />
             <Pressable
@@ -427,21 +500,23 @@ const MediaPlayer = () => {
                   ...state,
                   animatedOptions: new Animated.Value(0),
                   optionsVisible: false,
+                  repeat: !repeat,
                 })
               }}>
               <IconButton
-                type="entypo"
-                name="edit"
+                type="feather"
+                name="repeat"
                 size={20}
-                color="white"
+                color={pcl.black}
                 containerStyle={styles.menuItemIcon}
               />
-              <Text style={styles.menuItemText}>Properties</Text>
+              <Text style={styles.menuItemText}>Repeat</Text>
             </Pressable>
-            <Divider />
+            {/* <Divider />
             <Pressable
               style={styles.menuItem}
               onPress={() => {
+                dispatch(deleteFavoriteResource(resource.resource_id))
                 setState({
                   ...state,
                   animatedOptions: new Animated.Value(0),
@@ -452,12 +527,12 @@ const MediaPlayer = () => {
                 type="material"
                 name="delete-forever"
                 size={20}
-                color="white"
+                color={pcl.black}
                 containerStyle={styles.menuItemIcon}
               />
-              <Text style={styles.menuItemText}>Delete</Text>
-            </Pressable>
-            <Divider />
+              <Text style={styles.menuItemText}>Remove</Text>
+            </Pressable> */}
+            {/* <Divider />
             <Pressable
               style={styles.menuItem}
               onPress={() => {
@@ -471,11 +546,27 @@ const MediaPlayer = () => {
                 type="ionicon"
                 name="play"
                 size={20}
-                color="white"
+                color={pcl.black}
                 containerStyle={styles.menuItemIcon}
               />
               <Text style={styles.menuItemText}>Play in Background</Text>
-            </Pressable>
+            </Pressable> */}
+          </Animated.View>
+
+          <Animated.View
+            style={[
+              styles.optionsMenu,
+              {
+                left: -windowWidth,
+                borderLeftWidth: 0,
+                borderRightWidth: 0,
+                width: windowWidth,
+              },
+              favoritesStyle,
+            ]}>
+            {favorites.map(item => (
+              <Text>{item.title}</Text>
+            ))}
           </Animated.View>
           <View style={styles.control}>
             <IconButton
@@ -485,7 +576,9 @@ const MediaPlayer = () => {
               type="material"
               color={pcl.purple}
               size={40}
-              onPress={() => console.log('hello')}
+              onPress={() => {
+                showFavourites()
+              }}
             />
             <View style={styles.actions}>
               <IconButton
@@ -557,7 +650,7 @@ const styles = StyleSheet.create({
     color: pcl.black,
   },
   control: {
-    borderTopColor: gold[60],
+    borderTopColor: pcl.black, // gold[60],
     borderTopWidth: 3,
     flexDirection: 'row',
     paddingVertical: 5,
@@ -583,16 +676,16 @@ const styles = StyleSheet.create({
     color: pcl.black,
     fontSize: 17,
     marginTop: 10,
+    textAlign: 'center',
   },
   optionsMenu: {
     // height: 130,
-    backgroundColor: purple[60],
+    backgroundColor: pcl.background, // purple[60],
     width: 200,
     alignSelf: 'flex-end',
     position: 'absolute',
-    right: 0,
     bottom: 80,
-    borderColor: gold[60],
+    borderColor: pcl.black, // purple[60],// gold[60],
     borderWidth: 2,
     borderBottomWidth: 0,
   },
@@ -602,7 +695,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   menuItemText: {
-    color: 'white',
+    color: pcl.black,
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
   },

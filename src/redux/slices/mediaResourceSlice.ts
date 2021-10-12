@@ -1,5 +1,6 @@
 import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit'
-import {fetchData} from 'redux/services'
+import {deleteData, fetchData, postData} from 'redux/services'
+import {FavoriteCreateT, FavoriteItemT, IFavorite} from 'types/Favorite'
 import {ResourceItemT} from 'types/Resource'
 import {IResourceCategory} from 'types/ResourceCategory'
 import {RootState} from '../store'
@@ -9,7 +10,7 @@ interface MediaResourceI {
   media: ResourceItemT[]
   errorMessage: string
   downloaded: ResourceItemT[]
-  playlist: ResourceItemT[]
+  favorites: FavoriteItemT[]
 }
 
 const initialState: MediaResourceI = {
@@ -17,16 +18,51 @@ const initialState: MediaResourceI = {
   media: [],
   errorMessage: '',
   downloaded: [],
-  playlist: [],
+  favorites: [],
 }
 
+export const addFavoriteResource = createAsyncThunk(
+  '/media/addFavorite',
+  async (resource: ResourceItemT) => {
+    console.log('here.....')
+    const {data} = await postData<IFavorite, FavoriteCreateT>('/favorites', {
+      user_id: resource.user_id,
+      resource_id: resource.resource_id,
+    })
+    console.log('here.....', data)
+
+    if (typeof data === 'object') {
+      return {...resource, ...data}
+    }
+
+    throw new Error(data)
+  },
+)
+
+export const deleteFavoriteResource = createAsyncThunk(
+  '/media/deleteFavorite',
+  async (favorite_id: number) => {
+    const {data} = await deleteData<IFavorite>(`/favorites/${favorite_id}`)
+
+    if (typeof data === 'object') {
+      return data
+    }
+
+    throw new Error(data)
+  },
+)
+
 export const fetchMedia = createAsyncThunk('/media/home', async () => {
-  const {data} = await fetchData<ResourceItemT[]>('/resources/home')
+  const {data} = await fetchData<{
+    media: ResourceItemT[]
+    favorites: ResourceItemT[]
+  }>('/resources/home')
 
   if (typeof data === 'object') {
     return {
       ...initialState,
-      media: data,
+      media: data.media,
+      favorites: data.favorites,
     }
   }
 
@@ -34,12 +70,13 @@ export const fetchMedia = createAsyncThunk('/media/home', async () => {
 })
 
 export const mediaResourceSlice = createSlice({
-  name: 'theme',
+  name: 'media',
   initialState,
   reducers: {
     setMedia: (state, action: PayloadAction<ResourceItemT[]>) => {
       state.media = action.payload
     },
+
     // setCategories: (state, action: PayloadAction<IResourceCategory[]>) => {
     //   state.categories = action.payload
     // },
@@ -50,8 +87,25 @@ export const mediaResourceSlice = createSlice({
       action: PayloadAction<MediaResourceI>,
     ) => {
       state.media = action.payload.media
+      state.favorites = action.payload.favorites
       //   state.categories = action.payload.categories
       state.errorMessage = action.payload.errorMessage
+    },
+    [addFavoriteResource.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<FavoriteItemT>,
+    ) => {
+      state.favorites = [...state.favorites, action.payload]
+      state.errorMessage = ''
+    },
+    [deleteFavoriteResource.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<IFavorite>,
+    ) => {
+      state.favorites = state.favorites.filter(
+        ({resource_id}) => resource_id !== action.payload.resource_id,
+      )
+      state.errorMessage = ''
     },
   },
 })
@@ -71,7 +125,7 @@ export const selectMedia = (state: RootState) => ({
       return acc
     }, {} as Record<string, ResourceItemT[]>),
     Downloaded: state.media.downloaded,
-    Playlist: state.media.playlist,
+    favorites: state.media.favorites,
   } as Record<string, ResourceItemT[]>,
 })
 

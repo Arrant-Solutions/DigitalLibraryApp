@@ -142,3 +142,29 @@ export const fetchData = async <T = unknown, B = unknown>(
     return {statusCode: 500, data: UNEXPECTED_STATUS_EXCEPTION}
   }
 }
+
+export const deleteData = async <T = unknown, B = unknown>(
+  url: string,
+  params?: B,
+) => {
+  try {
+    const {data} = await axios.delete<ResponseI<T>>(url, params)
+
+    return data
+  } catch (error) {
+    const {response} = error as AxiosError<ResponseI<T>>
+
+    if (typeof response === 'object') {
+      const {data} = response
+
+      if (
+        typeof data === 'object' &&
+        typeof data.statusCode !== 'undefined' &&
+        typeof data.data !== 'undefined'
+      )
+        return data
+    }
+
+    return {statusCode: 500, data: UNEXPECTED_STATUS_EXCEPTION}
+  }
+}

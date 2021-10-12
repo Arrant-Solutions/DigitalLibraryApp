@@ -70,8 +70,6 @@ const Home = () => {
   // console.log(JSON.stringify(Object.keys(categories), null, 2))
   const [loading, setLoading] = useState(false)
 
-  // console.log(media, errorMessage)
-
   useEffect(() => {
     // console.log('effecting', token)
     if (Boolean(token)) {
