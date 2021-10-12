@@ -22,14 +22,12 @@ import {Platform} from 'react-native'
 import Header from '../common/Header'
 import IconButton from '../common/IconButton'
 import {gold, copper, purple, pcl} from '../common/style'
-import {RouteProp, useRoute} from '@react-navigation/native'
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {ResourceItemT} from 'types/Resource'
 import {useAppDispatch, useAppSelector} from 'redux/hooks'
-import {
-  addFavoriteResource,
-  deleteFavoriteResource,
-  selectMedia,
-} from 'redux/slices/mediaResourceSlice'
+import {addFavorite, selectMedia} from 'redux/slices/mediaResourceSlice'
+import {BaseParamList} from 'components/MainNavigation'
+import {StackNavigationProp} from '@react-navigation/stack'
 // import video from '../../../../assets/audio/audio.mp3'
 // const video = require('../../../../assets/videos/video.mp4')
 
@@ -67,8 +65,6 @@ interface MediaPlayerState {
   animated: Animated.Value
   animatedOptions: Animated.Value
   animatedControl: Animated.Value
-  animatedFavourites: Animated.Value
-  favouritesVisible: boolean
   optionsVisible: boolean
   muted: boolean
   paused: boolean
@@ -86,10 +82,11 @@ type ParamList = {
   }
 }
 
+type LibraryProp = StackNavigationProp<ParamList & BaseParamList, 'MediaPlayer'>
+
 const MediaPlayer = () => {
-  const {width: windowWidth} = useWindowDimensions()
+  const {navigate} = useNavigation<LibraryProp>()
   const dispatch = useAppDispatch()
-  const {favorites} = useAppSelector(selectMedia)
   const {params} = useRoute<RouteProp<ParamList, 'MediaPlayer'>>()
   const [resource] = useState(params?.resource)
   let loopingAnimation: Animated.CompositeAnimation | undefined
@@ -113,8 +110,6 @@ const MediaPlayer = () => {
     animatedControl: new Animated.Value(0),
     animated: new Animated.Value(0),
     animatedOptions: new Animated.Value(0),
-    animatedFavourites: new Animated.Value(0),
-    favouritesVisible: false,
     optionsVisible: false,
     paused: false,
     currentTime: 0,
@@ -240,17 +235,6 @@ const MediaPlayer = () => {
     }).start()
   }
 
-  const showFavourites = () => {
-    const visible = state.favouritesVisible
-    setState({...state, favouritesVisible: !visible})
-    console.log(visible, 'showing')
-    Animated.timing(state.animatedFavourites, {
-      toValue: visible ? 0 : 1,
-      duration: 250,
-      useNativeDriver: true,
-    }).start()
-  }
-
   const handleMute = () => {
     setState({...state, muted: !state.muted})
   }
@@ -293,15 +277,6 @@ const MediaPlayer = () => {
 
   const optionsMenuStyle = {
     transform: [{translateX: interpolateOptionsMenu}],
-  }
-
-  const interpolateFavorites = state.animatedFavourites.interpolate({
-    inputRange: [0, 1],
-    outputRange: [windowWidth, 0],
-  })
-
-  const favoritesStyle = {
-    transform: [{translateX: interpolateFavorites}],
   }
 
   const hasError = Boolean(error)
@@ -457,31 +432,17 @@ const MediaPlayer = () => {
               style={styles.menuItem}
               onPress={() => {
                 console.log('fired')
-                dispatch(addFavoriteResource(resource))
-                  .then(res => {
-                    console.log(res)
-                    if ((res.type = '/media/addFavorite/fulfilled')) {
-                      Toast.show({
-                        type: 'success',
-                        text1: 'Success',
-                        text2: 'Added successfully to favorites',
-                      })
-                    } else {
-                      Toast.show({
-                        type: 'error',
-                        text1: 'Failure',
-                        text2: 'Failed to add to favorites',
-                      })
-                    }
-                  })
-                  .catch(e => console.log(e))
-                  .finally(() =>
-                    setState({
-                      ...state,
-                      animatedOptions: new Animated.Value(0),
-                      optionsVisible: false,
-                    }),
-                  )
+                dispatch(addFavorite(resource))
+                Toast.show({
+                  type: 'success',
+                  text1: 'Success',
+                  text2: 'Added successfully to favorites',
+                })
+                setState({
+                  ...state,
+                  animatedOptions: new Animated.Value(0),
+                  optionsVisible: false,
+                })
               }}>
               <IconButton
                 type="material-community"
@@ -553,31 +514,16 @@ const MediaPlayer = () => {
             </Pressable> */}
           </Animated.View>
 
-          <Animated.View
-            style={[
-              styles.optionsMenu,
-              {
-                left: -windowWidth,
-                borderLeftWidth: 0,
-                borderRightWidth: 0,
-                width: windowWidth,
-              },
-              favoritesStyle,
-            ]}>
-            {favorites.map(item => (
-              <Text>{item.title}</Text>
-            ))}
-          </Animated.View>
           <View style={styles.control}>
             <IconButton
               containerStyle={{backgroundColor: 'transparent'}}
               raised
-              name="playlist-play"
-              type="material"
+              type="material-community"
+              name="playlist-star"
               color={pcl.purple}
               size={40}
               onPress={() => {
-                showFavourites()
+                navigate('Category', {id: 'favorites', name: 'favorites'})
               }}
             />
             <View style={styles.actions}>

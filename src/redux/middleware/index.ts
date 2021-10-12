@@ -10,6 +10,11 @@ export const unauthenticatedMiddleware: Middleware =
       // console.log('running store middleware.....', action.payload.token)
       storeAsyncData(Storage.AUTH_STORAGE, action.payload)
     }
+    if (action && /^media\/(add|remove)Favorite/.test(action.type)) {
+      storeAsyncData(Storage.FAVORITES_STORE, action.payload)
+
+      // sync with server and what not
+    }
 
     return next(action)
   }

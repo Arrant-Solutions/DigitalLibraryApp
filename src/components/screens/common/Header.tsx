@@ -79,6 +79,7 @@ const Header: React.FC<HeaderProps> = ({
                 color: color || text,
                 fontSize: 20,
                 flex: 1,
+                textTransform: 'capitalize'
               }}>
               {title}
             </Text>

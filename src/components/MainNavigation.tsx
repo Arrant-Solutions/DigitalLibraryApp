@@ -7,6 +7,7 @@ import {useNetInfo} from '@react-native-community/netinfo'
 import {useAppSelector, useAppDispatch} from 'redux/hooks'
 import {refreshToken, selectAuth, setUserDetails} from 'redux/slices/authSlice'
 import AuthStack from 'components/screens/auth/AuthStack'
+
 // import DrawerContainer from 'components/screens/home/DrawerContainer'
 import StartupError from 'components/StartupError'
 import TabNavigator from './screens/main/TabNavigator'
@@ -15,6 +16,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import {ResourceItemT} from 'types/Resource'
 import MediaPlayer from './screens/main/MediaPlayer'
 import PDFViewer from './screens/main/PDFViewer'
+import Category from './screens/main/Category'
 
 export type AuthStackParamList = {
   AuthHome: undefined
@@ -27,6 +29,10 @@ export type BaseParamList = {
   TabNavigator: undefined
   'Media Player': {resource: ResourceItemT}
   'PDF Viewer': {resource: ResourceItemT}
+  Category: {
+    id: string | number
+    name: string
+  }
 }
 
 const Stack = createStackNavigator<BaseParamList>()
@@ -83,6 +89,7 @@ const MainNavigation = () => {
           <Stack.Screen name="TabNavigator" component={TabNavigator} />
           <Stack.Screen name="Media Player" component={MediaPlayer} />
           <Stack.Screen name="PDF Viewer" component={PDFViewer} />
+          <Stack.Screen name="Category" component={Category} />
         </Stack.Navigator>
         <Toast ref={ref => Toast.setRef(ref)} />
       </>

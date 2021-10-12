@@ -5,16 +5,17 @@ import {
   Dimensions,
   Pressable,
   StyleSheet,
+  Text,
   View,
   ViewStyle,
 } from 'react-native'
 import {FlatList} from 'react-native-gesture-handler'
 import LinearGradient from 'react-native-linear-gradient'
 import {SafeAreaView} from 'react-native-safe-area-context'
-import {GENERIC_SERVER_ERROR} from '../../../../constants/errors'
-import {Media} from '../../../../types/Media'
-import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
-import {fetchCategoryItems} from '../../../../redux/slices/categoriesSlice'
+import {GENERIC_SERVER_ERROR} from '../../../constants/errors'
+import {Media} from '../../../types/Media'
+import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
+import {fetchCategoryItems} from '../../../redux/slices/categoriesSlice'
 import Header from 'components/screens/common/Header'
 import {
   greys,
@@ -23,11 +24,11 @@ import {
   stretchedBox,
 } from 'components/screens/common/style'
 import Tile from 'components/screens/common/Tile'
-import {LibraryParamList} from '.'
+import {LibraryParamList} from './LibraryStack'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {selectMedia} from 'redux/slices/mediaResourceSlice'
 import {ResourceItemT} from 'types/Resource'
-import { BaseParamList } from 'components/MainNavigation'
+import {BaseParamList} from 'components/MainNavigation'
 
 interface ItemProps {
   playing?: boolean
@@ -121,9 +122,10 @@ const Category = () => {
   const [media, setMedia] = useState<ResourceItemT[]>([])
   const {navigate} = useNavigation<LibraryProp>()
   const {categories} = useAppSelector(selectMedia)
+  console.log(categories.favorites.length)
 
   useEffect(() => {
-    console.log(params, ~Object.keys(categories).indexOf(params.id))
+    // console.log(params, ~Object.keys(categories).indexOf(params.id))
     if (
       typeof params === 'object' &&
       ~Object.keys(categories).indexOf(params.id)
@@ -175,13 +177,19 @@ const Category = () => {
   return (
     <View style={stretchedBox}>
       <Header back title={params.name || ''} />
-      <FlatList
-        data={media}
-        ItemSeparatorComponent={renderSeparator}
-        renderItem={renderItem}
-        numColumns={2}
-        keyExtractor={keyExtractor}
-      />
+      {params.name === 'favorites' && !media.length ? (
+        <Text style={{margin: 8, color: pcl.black}}>
+          You do not have any favorites
+        </Text>
+      ) : (
+        <FlatList
+          data={media}
+          ItemSeparatorComponent={renderSeparator}
+          renderItem={renderItem}
+          numColumns={2}
+          keyExtractor={keyExtractor}
+        />
+      )}
     </View>
   )
 }
