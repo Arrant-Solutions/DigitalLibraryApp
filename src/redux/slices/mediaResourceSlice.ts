@@ -96,11 +96,11 @@ export const mediaResourceSlice = createSlice({
       state.media = action.payload
     },
     addFavorite: (state, action: PayloadAction<ResourceItemT>) => {
-      console.log(action.payload)
       const found = state.favorites.find(
         ({resource_id}) => resource_id === action.payload.resource_id,
       )
-      if (found) {
+      // state.favorites = []
+      if (!found) {
         state.favorites = [...state.favorites, action.payload]
       }
     },

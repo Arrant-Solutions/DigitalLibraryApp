@@ -81,7 +81,7 @@ const Signup: React.FC<SignupProps> = () => {
       gender_name: '',
     },
     date_of_birth: user.date_of_birth || new Date(), // moment().subtract(5, 'years').toDate(),
-    country: user.country.country_id
+    country: user.country?.country_id
       ? user.country
       : {
           country_id: 0,
@@ -90,6 +90,9 @@ const Signup: React.FC<SignupProps> = () => {
         },
     branch: user.branch || {branch_id: 0, branch_name: ''},
     isMember: true,
+    user_group: undefined,
+    user_status: undefined,
+    has_missing: undefined,
   })
 
   useEffect(() => {
@@ -220,8 +223,8 @@ const Signup: React.FC<SignupProps> = () => {
                           ...values,
                           email: values.email.toLowerCase(),
                           branch_id: values.branch.branch_id,
-                          gender_id: values.gender.gender_id,
-                          country_id: values.country.country_id,
+                          gender_id: Number(values.gender?.gender_id),
+                          country_id: Number(values.country?.country_id),
                         })
                           .then(({data, statusCode}) => {
                             console.log(data)
@@ -459,7 +462,7 @@ const Signup: React.FC<SignupProps> = () => {
                               options={data?.genders.map(
                                 value => value.gender_name,
                               )}
-                              defaultValue={values.gender.gender_name}
+                              defaultValue={String(values.gender?.gender_name)}
                               errorMessage={
                                 Boolean(errors.gender) ? 'Pick a gender' : ''
                               }
@@ -501,7 +504,7 @@ const Signup: React.FC<SignupProps> = () => {
                                     country: {
                                       country_name: '',
                                       country_id: undefined,
-                                    },
+                                    } as any,
                                   })
                                 } else {
                                   setFieldValue('branch', {
@@ -571,7 +574,7 @@ const Signup: React.FC<SignupProps> = () => {
                                 labelField="name"
                                 valueField="id"
                                 placeholder="Select Country"
-                                value={values.country.country_id}
+                                value={values.country?.country_id}
                                 onChange={(item: ListItemI) => {
                                   const country = data?.countries.find(
                                     ({country_id}) => country_id === item.id,
@@ -604,7 +607,7 @@ const Signup: React.FC<SignupProps> = () => {
                                       !values.branch.branch_id)) ||
                                   (!values.isMember &&
                                     (errors.country ||
-                                      !values.country.country_id)),
+                                      !values.country?.country_id)),
                               )}
                               title="Register"
                               onPress={handleSubmit}

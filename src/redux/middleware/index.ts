@@ -11,6 +11,7 @@ export const unauthenticatedMiddleware: Middleware =
       storeAsyncData(Storage.AUTH_STORAGE, action.payload)
     }
     if (action && /^media\/(add|remove)Favorite/.test(action.type)) {
+      console.log(action, action.payload)
       storeAsyncData(Storage.FAVORITES_STORE, action.payload)
 
       // sync with server and what not
