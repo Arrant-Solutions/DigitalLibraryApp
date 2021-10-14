@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native'
+import {Alert, StyleSheet, View} from 'react-native'
 import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../types/User'

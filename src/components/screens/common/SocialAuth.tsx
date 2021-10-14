@@ -1,17 +1,14 @@
-import { AppleButton } from '@invertase/react-native-apple-authentication'
-import {FirebaseAuthTypes} from '@react-native-firebase/auth'
 import {useNavigation} from '@react-navigation/core'
 import {StackNavigationProp} from '@react-navigation/stack'
-import {AuthStackParamList} from 'components/MainNavigation'
 import React from 'react'
-import {Alert, Platform, StyleSheet, Text, View} from 'react-native'
-import {Button, SocialIcon} from 'react-native-elements'
+import {Alert, Platform, Text, View} from 'react-native'
+import {SocialIcon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
-import {appleSignIn, facebookAuth, googleAuth} from 'redux/services/auth'
+import {facebookAuth, googleAuth} from 'redux/services/auth'
 import {updateAuth, setUserDetails, setCredential} from 'redux/slices/authSlice'
-import { IFbCredential } from 'types'
+import {IFbCredential} from 'types'
 import {GenericUserI} from 'types/User'
-import {pcl, flexRow, socialButton, googleBlue, shadow} from './style'
+import {pcl, flexRow, socialButton, googleBlue} from './style'
 
 type StackNavProp = StackNavigationProp<any, ''>
 
@@ -70,12 +67,6 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
     }
   }
 
-  const handleAppleLogin = async () => {
-    setLoading(true)
-    const {data} = await appleSignIn()
-    processLoginRequest(data)
-  }
-
   const handleFacebookLogin = async () => {
     setLoading(true)
     const {data} = await facebookAuth()
@@ -91,22 +82,6 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
   if (largeButton) {
     return (
       <View>
-        {Platform.OS === 'ios' && (
-          <AppleButton
-            buttonStyle={AppleButton.Style.WHITE}
-            buttonType={AppleButton.Type.SIGN_IN}
-            style={[
-              {
-                borderRadius: 10,
-                marginHorizontal: 8,
-                marginBottom: 8,
-                height: 50,
-              },
-              shadow,
-            ]}
-            onPress={handleAppleLogin}
-          />
-        )}
         <SocialIcon
           style={{borderRadius: 10}}
           title="Sign-In With Facebook"
@@ -145,25 +120,6 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
             width: '100%',
           },
         ]}>
-        {Platform.OS === 'ios' && (
-          <Button
-            containerStyle={[socialButton, {marginRight: 10}]}
-            buttonStyle={[
-              {
-                backgroundColor: '#fff',
-                paddingVertical: 10,
-              },
-            ]}
-            raised
-            iconContainerStyle={{minWidth: 25}}
-            icon={{
-              name: 'logo-apple',
-              type: 'ionicon',
-              size: 25,
-            }}
-            onPress={handleAppleLogin}
-          />
-        )}
         <SocialIcon
           style={socialButton}
           underlayColor={`${googleBlue}60`}
