@@ -117,7 +117,7 @@ const Home = () => {
           </View>
           <View style={styles.divider}></View>
           <View style={styles.tileContainer}>
-            <Text style={styles.tileHeader}>Videos</Text>
+            <Text style={styles.tileHeader}>Trending</Text>
             <ScrollView horizontal style={styles.tileContentContainer}>
               {categories?.Video?.map(item => (
                 <Tile
@@ -141,7 +141,7 @@ const Home = () => {
           <View style={styles.divider}></View>
           <View style={styles.tileContainer}>
             <View style={{...flexColumn, paddingHorizontal: 30}}>
-              <Text style={{fontSize: 20}}>Audio</Text>
+              <Text style={{fontSize: 20}}>More of what you like</Text>
               <Text style={{fontSize: 12, color: '#777'}}>
                 Suggestions based on your previous views
               </Text>
