@@ -1,11 +1,6 @@
 import React from 'react'
 import 'react-native-gesture-handler'
-import {
-  NavigationContainer,
-  DefaultTheme,
-  NavigationContainerRef,
-} from '@react-navigation/native'
-import analytics from '@react-native-firebase/analytics'
+import {NavigationContainer, DefaultTheme} from '@react-navigation/native'
 import MainNavigation from 'components/MainNavigation'
 import {pcl} from 'components/screens/common/style'
 import {StyleSheet} from 'react-native'
@@ -29,32 +24,12 @@ const MyTheme = {
 
 const App = () => {
   const routeNameRef = React.useRef()
-  const navigationRef =
-    React.useRef<
-      React.Ref<NavigationContainerRef<ReactNavigation.RootParamList>>
-    >()
+  const navigationRef = React.useRef()
 
   return (
     <SafeAreaProvider>
       <Provider store={store}>
-        <NavigationContainer
-          ref={navigationRef => void}
-          onReady={() => {
-            routeNameRef.current = navigationRef.current.getCurrentRoute().name
-          }}
-          onStateChange={async () => {
-            const previousRouteName = routeNameRef.current
-            const currentRouteName =
-              navigationRef?.current?.getCurrentRoute().name
-
-            if (previousRouteName !== currentRouteName) {
-              await analytics().logScreenView({
-                screen_name: currentRouteName,
-                screen_class: currentRouteName,
-              })
-            }
-            routeNameRef.current = currentRouteName
-          }}>
+        <NavigationContainer>
           <MainNavigation />
         </NavigationContainer>
       </Provider>
