@@ -15,6 +15,7 @@
 		7798D1016D082D8965305867 /* libPods-PCL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 72573F587B65147BAF779354 /* libPods-PCL.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		CC1B514927069F2E007D91FA /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = CC1B514827069F2D007D91FA /* GoogleService-Info.plist */; };
+		CCA47A56271EF5FF0037E244 /* main.jsbundle in Resources */ = {isa = PBXBuildFile; fileRef = CCA47A55271EF5FF0037E244 /* main.jsbundle */; };
 		CCBB7B1626E4A05800D8DA7E /* Roboto-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCBB7B0A26E4A05600D8DA7E /* Roboto-ThinItalic.ttf */; };
 		CCBB7B1726E4A05800D8DA7E /* Roboto-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCBB7B0B26E4A05700D8DA7E /* Roboto-BlackItalic.ttf */; };
 		CCBB7B1826E4A05800D8DA7E /* Roboto-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CCBB7B0C26E4A05700D8DA7E /* Roboto-Light.ttf */; };
@@ -74,6 +75,7 @@
 		CC0EC3A426DB27AB00904BD9 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		CC1B514827069F2D007D91FA /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "PCL/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		CC6C7F7D2705204300A02AAB /* PCL.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PCL.entitlements; path = PCL/PCL.entitlements; sourceTree = "<group>"; };
+		CCA47A55271EF5FF0037E244 /* main.jsbundle */ = {isa = PBXFileReference; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		CCBB7B0A26E4A05600D8DA7E /* Roboto-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-ThinItalic.ttf"; path = "../src/assets/fonts/Roboto-ThinItalic.ttf"; sourceTree = "<group>"; };
 		CCBB7B0B26E4A05700D8DA7E /* Roboto-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-BlackItalic.ttf"; path = "../src/assets/fonts/Roboto-BlackItalic.ttf"; sourceTree = "<group>"; };
 		CCBB7B0C26E4A05700D8DA7E /* Roboto-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Roboto-Light.ttf"; path = "../src/assets/fonts/Roboto-Light.ttf"; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 		13B07FAE1A68108700A75B9A /* PCL */ = {
 			isa = PBXGroup;
 			children = (
+				CCA47A55271EF5FF0037E244 /* main.jsbundle */,
 				CC6C7F7D2705204300A02AAB /* PCL.entitlements */,
 				CC0EC3A526DB27BC00904BD9 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -339,6 +342,7 @@
 				CCBB7B1926E4A05800D8DA7E /* Roboto-Black.ttf in Resources */,
 				CCBB7B1A26E4A05800D8DA7E /* Roboto-Italic.ttf in Resources */,
 				CCBB7B1B26E4A05800D8DA7E /* Roboto-Bold.ttf in Resources */,
+				CCA47A56271EF5FF0037E244 /* main.jsbundle in Resources */,
 				CCBB7B1C26E4A05800D8DA7E /* Roboto-BoldItalic.ttf in Resources */,
 				CCBB7B1D26E4A05800D8DA7E /* Roboto-LightItalic.ttf in Resources */,
 				CCBB7B1E26E4A05800D8DA7E /* Roboto-Medium.ttf in Resources */,
@@ -600,7 +604,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PCL/PCL.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LV5ZBJ3T44;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = PCL/Info.plist;
@@ -608,6 +612,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -629,13 +634,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = PCL/PCL.entitlements;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = LV5ZBJ3T44;
 				INFOPLIST_FILE = PCL/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.0.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
