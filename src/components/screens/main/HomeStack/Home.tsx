@@ -65,26 +65,21 @@ const Home = () => {
   const {token} = useAppSelector(selectAuth)
   const {categories} = useAppSelector(selectMedia)
   const [error, setError] = useState(false)
-  // const {data, error, isLoading} = useGetMediaQuery()
-  // const [media, setMedia] = useState<HomeMediaItem[]>([])
-  // console.log(JSON.stringify(Object.keys(categories), null, 2))
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // console.log('effecting', token)
-    if (Boolean(token)) {
-      setLoading(true)
-      dispatch(fetchMedia())
-        .then((res: any) => {
-          if (res.type !== '/media/home/fulfilled') {
-            setError(false)
-          }
-          // console.log(res)
-        })
-        .catch(() => setError(true))
-        .finally(() => setLoading(false))
-    }
-  }, [token])
+    console.log('effecting ==> ', Boolean(token))
+
+    setLoading(true)
+    dispatch(fetchMedia())
+      .then((res: any) => {
+        if (res.type !== '/media/home/fulfilled') {
+          setError(false)
+        }
+      })
+      .catch(err => setError(true))
+      .finally(() => setLoading(false))
+  }, [])
 
   if (loading) {
     return <Skeleton />

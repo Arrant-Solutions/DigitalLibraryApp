@@ -1,7 +1,6 @@
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import React, {PureComponent, useEffect, useState} from 'react'
 import {
-  ActivityIndicator,
   Dimensions,
   Pressable,
   StyleSheet,
@@ -10,12 +9,8 @@ import {
   ViewStyle,
 } from 'react-native'
 import {FlatList} from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {GENERIC_SERVER_ERROR} from '../../../constants/errors'
-import {Media} from '../../../types/Media'
-import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
-import {fetchCategoryItems} from '../../../redux/slices/categoriesSlice'
+import analytics from '@react-native-firebase/analytics'
+import {useAppSelector} from '../../../redux/hooks'
 import Header from 'components/screens/common/Header'
 import {
   greys,
@@ -29,6 +24,7 @@ import {StackNavigationProp} from '@react-navigation/stack'
 import {selectMedia} from 'redux/slices/mediaResourceSlice'
 import {ResourceItemT} from 'types/Resource'
 import {BaseParamList} from 'components/MainNavigation'
+import {selectAuth} from 'redux/slices/authSlice'
 
 interface ItemProps {
   playing?: boolean
@@ -122,7 +118,7 @@ const Category = () => {
   const [media, setMedia] = useState<ResourceItemT[]>([])
   const {navigate} = useNavigation<LibraryProp>()
   const {categories} = useAppSelector(selectMedia)
-  console.log(categories.favorites.length)
+  const {user} = useAppSelector(selectAuth)
 
   useEffect(() => {
     // console.log(params, ~Object.keys(categories).indexOf(params.id))
@@ -151,9 +147,14 @@ const Category = () => {
         author_suffix={item.author_suffix}
         thumbnail_url={item.thumbnail_url}
         onPress={() => {
-          console.log('=======>  ', item.resource_category_name)
+          analytics().logEvent('played', {
+            resource_url: item.resource_url,
+            thumbnail_url: item.thumbnail_url,
+            email: user?.email,
+            type: item.resource_type_name,
+            category: item.resource_category_name
+          })
           if (/ebook/i.test(item.resource_category_name)) {
-            console.log('=======>  ', item.resource_category_name)
             navigate('PDF Viewer', {resource: item})
           } else {
             navigate('Media Player', {resource: item})

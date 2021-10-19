@@ -8,7 +8,6 @@ import {
   StyleSheet,
   Dimensions,
   Animated,
-  useWindowDimensions,
 } from 'react-native'
 import Toast from 'react-native-toast-message'
 import Video, {
@@ -21,11 +20,11 @@ import {Divider, Icon} from 'react-native-elements'
 import {Platform} from 'react-native'
 import Header from '../common/Header'
 import IconButton from '../common/IconButton'
-import {gold, copper, purple, pcl} from '../common/style'
+import {copper, pcl} from '../common/style'
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {ResourceItemT} from 'types/Resource'
-import {useAppDispatch, useAppSelector} from 'redux/hooks'
-import {addFavorite, selectMedia} from 'redux/slices/mediaResourceSlice'
+import {useAppDispatch} from 'redux/hooks'
+import {addFavorite} from 'redux/slices/mediaResourceSlice'
 import {BaseParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 // import video from '../../../../assets/audio/audio.mp3'
@@ -363,6 +362,7 @@ const MediaPlayer = () => {
                     name="exclamation-triangle"
                     size={30}
                     color="red"
+                    tvParallaxProperties={false}
                   />
                   <Text style={{color: '#fff'}}>{error}</Text>
                 </>
@@ -375,6 +375,7 @@ const MediaPlayer = () => {
                     name="circle-o-notch"
                     size={30}
                     color="#fff"
+                    tvParallaxProperties={false}
                   />
                 </Animated.View>
               )}
