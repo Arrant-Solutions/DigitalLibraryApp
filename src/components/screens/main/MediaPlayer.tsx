@@ -193,6 +193,7 @@ const MediaPlayer = () => {
     if (Math.round(state.progress) >= 1) {
       player?.current?.seek(0)
     }
+    console.log('done loading')
     setState(state => ({...state, paused: true}))
   }
 
@@ -359,6 +360,7 @@ const MediaPlayer = () => {
               {hasError && (
                 <>
                   <Icon
+                    tvParallaxProperties={false}
                     type="font-awesome"
                     name="exclamation-triangle"
                     size={30}
@@ -368,11 +370,12 @@ const MediaPlayer = () => {
                 </>
               )}
 
-              {!hasError && buffering && (
+              {!hasError && buffering && false && (
                 <Animated.View style={rotateStyle}>
                   <Icon
+                    tvParallaxProperties={false}
                     type="font-awesome"
-                    name="circle-o-notch"
+                    name="exclamation-triangle"
                     size={30}
                     color="#fff"
                   />
