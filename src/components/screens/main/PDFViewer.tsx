@@ -160,7 +160,7 @@ const PDFViewer = () => {
               <>
                 <Slider
                   tapToSeek={true}
-                  style={{width: '100%', height: 32}}
+                  style={{width: '100%', height: 40}}
                   minimumValue={1}
                   maximumValue={totalPages}
                   step={1}
@@ -176,7 +176,7 @@ const PDFViewer = () => {
             ) : (
               <Slider
                 tapToSeek={true}
-                style={{width: '100%', height: 32}}
+                style={{width: '100%', height: 40}}
                 minimumValue={1}
                 maximumValue={3}
                 minimumTrackTintColor="#000000"

@@ -7,7 +7,9 @@
     "ios": "react-native run-ios --simulator=\"4005BEC2-1319-46D6-8AF1-9451EB65E288\"",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "gradle-clean": "cd android && ./gradlew clean",
+    "assemble": "cd android && ./gradlew assembleRelease"
   },
   "dependencies": {
     "@react-native-community/blur": "^3.6.0",

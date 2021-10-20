@@ -84,7 +84,7 @@ const Home = () => {
         .catch(() => setError(true))
         .finally(() => setLoading(false))
     }
-  }, [token])
+  }, [])
 
   if (loading) {
     return <Skeleton />
