@@ -21,11 +21,11 @@ import {Divider, Icon} from 'react-native-elements'
 import {Platform} from 'react-native'
 import Header from '../common/Header'
 import IconButton from '../common/IconButton'
-import {gold, copper, purple, pcl} from '../common/style'
+import {copper, pcl} from '../common/style'
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native'
 import {ResourceItemT} from 'types/Resource'
-import {useAppDispatch, useAppSelector} from 'redux/hooks'
-import {addFavorite, selectMedia} from 'redux/slices/mediaResourceSlice'
+import {useAppDispatch} from 'redux/hooks'
+import {addFavorite} from 'redux/slices/mediaResourceSlice'
 import {BaseParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 // import video from '../../../../assets/audio/audio.mp3'
@@ -285,7 +285,7 @@ const MediaPlayer = () => {
     inputRange: [0, 1],
     outputRange: [0, 360],
   })
-  const rotateStyle = {} // {transform: [{rotate: interpolatedAnimation}]}
+  const rotateStyle = {transform: [{rotate: interpolatedAnimation}]}
   // console.log('height: ' + videoSize.height)
 
   return (
@@ -307,14 +307,11 @@ const MediaPlayer = () => {
             style={{overflow: 'hidden', height: 220}}>
             <Video
               repeat={repeat}
-              source={
-                {
-                  uri:
-                    params?.resource?.resource_url ||
-                    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-                }
-                // video
-              }
+              source={{
+                uri:
+                  params?.resource?.resource_url ||
+                  'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+              }}
               onFullscreenPlayerDidDismiss={() =>
                 setState({...state, fullScreen: false})
               }
@@ -370,12 +367,12 @@ const MediaPlayer = () => {
                 </>
               )}
 
-              {!hasError && buffering && false && (
+              {!hasError && buffering && (
                 <Animated.View style={rotateStyle}>
                   <Icon
                     tvParallaxProperties={false}
                     type="font-awesome"
-                    name="exclamation-triangle"
+                    name="circle-o-notch"
                     size={30}
                     color="#fff"
                   />
