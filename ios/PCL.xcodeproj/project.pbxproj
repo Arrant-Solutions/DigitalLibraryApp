@@ -369,7 +369,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e\n\nexport NODE_BINARY=node\n/Users/willymilimo/.nvm/versions/node/v14.17.6/bin/node\n";
+			shellScript = "set -e\n\nexport NODE_BINARY=node\n/usr/local/bin/node\n";
 		};
 		10381D065C278E7AE2A6C650 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
