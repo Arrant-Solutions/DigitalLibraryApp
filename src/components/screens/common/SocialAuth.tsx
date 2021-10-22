@@ -43,11 +43,13 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
       setLoading(false)
     } else {
       // succcessful login
-      if (data.token && typeof data.user !== 'object') {
+      // console.log(JSON.stringify({data}, null, 5))
+      if (data.token && typeof data.user === 'object') {
+        console.log('dispatching.....')
         dispatch(
           updateAuth({
             token: data.token,
-            user: data.user,
+            user: data.user as any,
             synced: true,
             credential: data.credential,
           }),

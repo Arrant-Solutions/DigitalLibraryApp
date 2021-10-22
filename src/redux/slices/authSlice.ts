@@ -143,8 +143,12 @@ export const authSlice = createSlice({
       state.credential = credential || state.credential
       state.synced = typeof synced === 'boolean' ? synced : state.synced
       state.user = deserialize(user) || state.user
+      console.log(JSON.stringify({deser: state.user}, null, 4))
       state.token = token || state.token
       state.errorMessage = errorMessage || state.errorMessage
+      console.log(
+        JSON.stringify({deser: state.user, tok: state.token}, null, 4),
+      )
     },
     logout: state => {
       deleteAsyncData(Storage.AUTH_STORAGE)

@@ -81,6 +81,10 @@ const MainNavigation = () => {
     return <StartupError />
   }
 
+  // console.log(
+  //   JSON.stringify({user, token, has_missing: user.has_missing}, null, 2),
+  // )
+
   if (Boolean(token) && !user.has_missing) {
     return (
       <>

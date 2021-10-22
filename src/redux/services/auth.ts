@@ -342,6 +342,8 @@ export const googleAuth = async (): Promise<
       token: string
     }>(`/auth/fetchUser/${email}`)
 
+    // console.log(JSON.stringify({serverData, statusCode}, null, 3))
+
     if (typeof serverData === 'object') {
       axios.defaults.headers.common.authorization = `Bearer ${serverData.token}`
 
