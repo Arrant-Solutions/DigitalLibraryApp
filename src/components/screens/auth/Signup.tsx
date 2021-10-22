@@ -21,7 +21,7 @@ import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
 import LinearGradient from 'react-native-linear-gradient'
 import {ScrollView} from 'react-native-gesture-handler'
 import RadioGroup from '../common/RadioGroup'
-import {greys, stretchedBox, pcl} from '../common/style'
+import {greys, stretchedBox, pcl, shadow} from '../common/style'
 import PCLButton from '../common/PCLButton'
 import Header from '../common/Header'
 import {BranchI} from 'types/Branch'
@@ -181,10 +181,26 @@ const Signup: React.FC<SignupProps> = () => {
             ) ? (
               <>
                 <Toast
+                  style={{marginTop: 35}}
                   type="error-outline"
                   message="Unable to fetch required resources. Please refresh to try again."
                 />
-                <Text>Refresh Icon comes here...</Text>
+                <View
+                  style={[
+                    {
+                      padding: 10,
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      alignSelf: 'center',
+                      backgroundColor: 'white',
+                      borderRadius: 8,
+                    },
+                    shadow,
+                  ]}>
+                  <Ionicons name="refresh" size={30} color={pcl.lightBlue} />
+                  <Text style={{marginTop: 10}}>Refresh</Text>
+                </View>
               </>
             ) : (
               <ScrollView>
@@ -326,28 +342,30 @@ const Signup: React.FC<SignupProps> = () => {
                               value={values.last_name}
                               multiline={false}
                             />
-                            <Input
-                              inputContainerStyle={styles.inputContainerStyle}
-                              errorStyle={
-                                errors.email ? styles.inputErrorStyle : {}
-                              }
-                              disabled={Boolean(credential)}
-                              errorMessage={errors.email}
-                              labelStyle={styles.textStyle}
-                              placeholderTextColor={pcl.textPlaceholder}
-                              placeholder="Email"
-                              leftIcon={
-                                <Ionicons
-                                  name="mail-outline"
-                                  size={20}
-                                  color={pcl.textPlaceholder}
-                                />
-                              }
-                              onChangeText={handleChange('email')}
-                              onBlur={handleBlur('mail')}
-                              value={values.email}
-                              multiline={false}
-                            />
+                            {!Boolean(credential) && (
+                              <Input
+                                inputContainerStyle={styles.inputContainerStyle}
+                                errorStyle={
+                                  errors.email ? styles.inputErrorStyle : {}
+                                }
+                                disabled={Boolean(credential)}
+                                errorMessage={errors.email}
+                                labelStyle={styles.textStyle}
+                                placeholderTextColor={pcl.textPlaceholder}
+                                placeholder="Email"
+                                leftIcon={
+                                  <Ionicons
+                                    name="mail-outline"
+                                    size={20}
+                                    color={pcl.textPlaceholder}
+                                  />
+                                }
+                                onChangeText={handleChange('email')}
+                                onBlur={handleBlur('mail')}
+                                value={values.email}
+                                multiline={false}
+                              />
+                            )}
                             <Pressable
                               style={{position: 'relative', flex: 1}}
                               onPress={() => {

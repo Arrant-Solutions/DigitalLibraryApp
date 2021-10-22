@@ -1,5 +1,4 @@
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth'
-import {appleAuth} from '@invertase/react-native-apple-authentication'
 import {GoogleSignin} from '@react-native-google-signin/google-signin'
 import {LoginManager, AccessToken} from 'react-native-fbsdk-next'
 import {GENERIC_SERVER_ERROR, LOGIN_FAILURE} from 'constants/errors'
@@ -205,103 +204,6 @@ export const submitUserDetails = async (
   }
 }
 
-export const appleSignIn = async (): Promise<
-  ResponseI<{
-    credential: IFbCredential
-    user:
-      | Pick<GenericUserI, 'email' | 'first_name' | 'last_name' | 'avatar'>
-      | GenericUserI
-    token?: string
-  }>
-> => {
-  try {
-    // Start the sign-in request
-    const appleAuthRequestResponse = await appleAuth.performRequest({
-      requestedOperation: appleAuth.Operation.LOGIN,
-      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
-    })
-
-    // Ensure Apple returned a user identityToken
-    if (!appleAuthRequestResponse.identityToken) {
-      throw 'Apple Sign-In failed - no identify token returned'
-    }
-    // console.log('no exception')
-    // console.log(JSON.stringify(appleAuthRequestResponse, null, 2))
-
-    const {email, fullName} = appleAuthRequestResponse
-    // console.log(JSON.stringify({email, fullName}, null, 2))
-
-    // Create a Firebase credential from the response
-    const {identityToken, nonce} = appleAuthRequestResponse
-    const appleCredential = auth.AppleAuthProvider.credential(
-      identityToken,
-      nonce,
-    )
-
-    if (!email || email === 'null') {
-      return {
-        statusCode: 401,
-        data: 'Your email address is required to complete the registration proces.',
-      }
-    }
-
-    // Sign the user in with the credential
-    const response = await auth().signInWithCredential(appleCredential)
-
-    const {data, statusCode} = await fetchData<{
-      user: GenericUserI
-      token: string
-    }>(`/auth/fetchUser/${email}`)
-
-    if (typeof data === 'object') {
-      axios.defaults.headers.common.authorization = `Bearer ${data.token}`
-
-      return {
-        data: {
-          credential: {
-            refreshToken: '',
-            uid: response.user.uid,
-          },
-          user: data.user,
-          token: data.token,
-        },
-        statusCode,
-      }
-    }
-
-    return {
-      statusCode: 200,
-      data: {
-        credential: {
-          refreshToken: '',
-          uid: response.user.uid,
-        },
-        user: {
-          email: String(email),
-          first_name:
-            String(fullName?.givenName) || String(fullName?.familyName),
-          last_name:
-            String(fullName?.familyName) || String(fullName?.givenName),
-          avatar: '',
-        },
-      },
-    }
-  } catch (error) {
-    const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
-    if (code === '1001') {
-      return {
-        statusCode: 401,
-        data: 'Login failed. Please use your AppleID to login.',
-      }
-    }
-
-    return {
-      statusCode: 500,
-      data: LOGIN_FAILURE,
-    }
-  }
-}
-
 export const facebookAuth = async (): Promise<
   ResponseI<{
     credential: IFbCredential
@@ -456,7 +358,7 @@ export const googleAuth = async (): Promise<
       }
     }
 
-    const names = (displayName || '').split('')
+    const names = (displayName || '').split(' ')
 
     return {
       statusCode: 200,

@@ -1,13 +1,6 @@
 /** Using this guy until material ui Toast reaches a stable state */
 import React from 'react'
-import {
-  ColorValue,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native'
+import {ColorValue, StyleSheet, Text, View, ViewStyle} from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
@@ -40,6 +33,7 @@ export interface ToastType {
 interface ToastI {
   message: string
   type: keyof ToastType
+  style?: ViewStyle
 }
 
 interface ToastTypeI {
@@ -159,24 +153,30 @@ const styles: Record<keyof ToastType, ToastTypeI & ViewStyle> = {
   },
 }
 
-export const Toast = ({message, type}: ToastI) => {
+export const Toast = ({message, type, style}: ToastI) => {
   const item = styles[type]
   const {icon, borderWidth, borderColor, borderStyle, color, backgroundColor} =
     item
 
   return (
     <View
-      style={{
-        ...classes.root,
-        borderWidth,
-        borderColor,
-        borderStyle,
-        // color,
-        backgroundColor,
-        width: '100%',
-      }}>
+      style={[
+        {
+          ...classes.root,
+          borderWidth,
+          borderColor,
+          borderStyle,
+          // color,
+          backgroundColor,
+          // width: '95%',
+          marginHorizontal: 5,
+        },
+        style,
+      ]}>
       {icon}
-      <Text style={{color, fontSize: 12}}>{message}</Text>
+      <Text numberOfLines={2} style={{color, fontSize: 10}}>
+        {message}
+      </Text>
     </View>
   )
 }

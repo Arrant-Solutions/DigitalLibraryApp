@@ -58,6 +58,7 @@ const MainNavigation = () => {
         last_name: names.length > 1 ? names[1] : names[0],
       })
     }
+    // console.log(JSON.stringify({isInternetReachable}))
     await dispatch(refreshToken(isInternetReachable))
       .then((res: any) => {
         setError(false)

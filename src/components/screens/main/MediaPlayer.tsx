@@ -357,7 +357,7 @@ const MediaPlayer = () => {
               {hasError && (
                 <>
                   <Icon
-                    tvParallaxProperties={false}
+                    tvParallaxProperties={undefined}
                     type="font-awesome"
                     name="exclamation-triangle"
                     size={30}
@@ -370,7 +370,7 @@ const MediaPlayer = () => {
               {!hasError && buffering && (
                 <Animated.View style={rotateStyle}>
                   <Icon
-                    tvParallaxProperties={false}
+                    tvParallaxProperties={undefined}
                     type="font-awesome"
                     name="circle-o-notch"
                     size={30}

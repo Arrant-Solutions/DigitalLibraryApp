@@ -2,16 +2,12 @@ import React from 'react'
 import SkeletonContent from 'react-native-skeleton-content-nonexpo'
 import {
   Image,
-  StyleProp,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
-  ViewStyle,
 } from 'react-native'
-import {ScrollView} from 'react-native-gesture-handler'
-import Header from './screens/common/Header'
-import {flexColumn, pcl} from './screens/common/style'
+import {pcl} from './screens/common/style'
 
 const latest = [
   require('/assets/girly.jpg'),
@@ -56,7 +52,6 @@ const Skeleton = () => {
   const {width} = useWindowDimensions()
   return (
     <View style={styles.container}>
-      <Header title="PCL" showActionButtons={false} />
       <SkeletonContent
         containerStyle={{flex: 1, height: 300}}
         isLoading={true}

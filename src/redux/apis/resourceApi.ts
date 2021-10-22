@@ -103,6 +103,7 @@ interface ResourceI {
 //     }
 //   },
 // })
+console.log(JSON.stringify({APP_BASE_URL}, null, 2))
 
 export const resourcesApi = createApi({
   reducerPath: 'resources',
