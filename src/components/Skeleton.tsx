@@ -56,7 +56,6 @@ const Skeleton = () => {
   const {width} = useWindowDimensions()
   return (
     <View style={styles.container}>
-      <Header title="PCL" showActionButtons={false} />
       <SkeletonContent
         containerStyle={{flex: 1, height: 300}}
         isLoading={true}

@@ -26,7 +26,10 @@ export const requestPasswordReset = async (email: string) => {
     const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
 
     if (code === 'auth/user-not-found') {
-      return {statusCode: 404, data: 'User with specified email do not exist'}
+      return {
+        statusCode: 404,
+        data: 'User with specified email do not exist or you signed in with Apple, Google or Facebook.',
+      }
     }
 
     if (code === 'auth/invalid-email') {
@@ -456,7 +459,7 @@ export const googleAuth = async (): Promise<
       }
     }
 
-    const names = (displayName || '').split('')
+    const names = (displayName || '').split(' ')
 
     return {
       statusCode: 200,

@@ -57,14 +57,22 @@ const Header: React.FC<HeaderProps> = ({
         backgroundColor={backgroundColor || background}
         leftComponent={
           <View
-            style={[flexRow, {flex: 1, width: width * .8, alignItems: 'center'}]}>
+            style={[
+              flexRow,
+              {
+                flex: 1,
+                width: width * 0.8,
+                alignItems: 'center',
+              },
+            ]}>
             {back ? (
               <Icon
+                tvParallaxProperties={undefined}
                 name={'ios-chevron-back'}
                 color={color || text}
                 onPress={back ? handlePress : undefined}
                 type="ionicon"
-                size={30}
+                size={25}
               />
             ) : (
               <Image
@@ -79,7 +87,7 @@ const Header: React.FC<HeaderProps> = ({
                 color: color || text,
                 fontSize: 20,
                 flex: 1,
-                textTransform: 'capitalize'
+                textTransform: 'capitalize',
               }}>
               {title}
             </Text>
@@ -89,6 +97,7 @@ const Header: React.FC<HeaderProps> = ({
           showActionButtons ? (
             <View style={flexRow}>
               <Icon
+                tvParallaxProperties={undefined}
                 containerStyle={{marginRight: 10}}
                 name="search"
                 color={color || pcl.black}
@@ -96,6 +105,7 @@ const Header: React.FC<HeaderProps> = ({
                 // onPress={() => dispatch(setVisible(true))}
               />
               <Icon
+                tvParallaxProperties={undefined}
                 name="ios-ellipsis-vertical-sharp"
                 color={color || pcl.black}
                 type="ionicon"
@@ -103,7 +113,7 @@ const Header: React.FC<HeaderProps> = ({
               />
             </View>
           ) : (
-            <></>
+            <View style={{height: 25}} />
           )
         }
       />

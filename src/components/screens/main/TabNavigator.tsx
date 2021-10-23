@@ -1,18 +1,14 @@
 import React from 'react'
 import {StyleSheet, View} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
-import LinearGradient from 'react-native-linear-gradient'
 import LibraryStack from './LibraryStack/'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Favorites from './Favorites'
-import More from './More'
-import {RouteProp} from '@react-navigation/native'
 import HeaderOptionsMenu from '../common/HeaderOptionsMenu'
-import {pcl, purplePallet} from '../common/style'
 import HomeStack from './HomeStack'
 import GiftStack from './GiftStack'
 import {useAppSelector} from 'redux/hooks'
 import {selectTheme} from 'redux/slices/themeSlice'
+import MoreStack from './MoreStack'
 
 export type TabNavigatorParamList = {
   Home: undefined
@@ -25,26 +21,14 @@ const Tab = createBottomTabNavigator<TabNavigatorParamList>()
 
 const TabNavigator = () => {
   const {background, text, active, inactive} = useAppSelector(selectTheme)
-  const getTabBarVisibility = ({
-    name,
-  }: RouteProp<Record<string, object | undefined>, 'Home'>) => {
-    return name !== 'Home'
-  }
+  // const getTabBarVisibility = ({
+  //   name,
+  // }: RouteProp<Record<string, object | undefined>, 'Home'>) => {
+  //   return name !== 'Home'
+  // }
 
   return (
     <View style={styles.container}>
-      {/* <StatusBar barStyle="light-content" backgroundColor={pcl.blue} /> */}
-      {/* <LinearGradient
-        colors={[
-          purplePallet.purpleDarker,
-          purplePallet.purpleDarker,
-          purplePallet.purpleLight,
-        ]}
-        start={{x: 0, y: 1}}
-        end={{x: 1, y: 1}}
-        useAngle
-        angle={110}
-        style={[styles.card]}> */}
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -112,7 +96,7 @@ const TabNavigator = () => {
             ),
           }}
           name="More"
-          component={More}
+          component={MoreStack}
         />
       </Tab.Navigator>
       {/* </LinearGradient> */}

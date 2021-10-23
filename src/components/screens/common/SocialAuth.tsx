@@ -1,15 +1,13 @@
-import { AppleButton } from '@invertase/react-native-apple-authentication'
-import {FirebaseAuthTypes} from '@react-native-firebase/auth'
+import {AppleButton} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/core'
 import {StackNavigationProp} from '@react-navigation/stack'
-import {AuthStackParamList} from 'components/MainNavigation'
 import React from 'react'
-import {Alert, Platform, StyleSheet, Text, View} from 'react-native'
+import {Alert, Platform, Text, View} from 'react-native'
 import {Button, SocialIcon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
 import {appleSignIn, facebookAuth, googleAuth} from 'redux/services/auth'
 import {updateAuth, setUserDetails, setCredential} from 'redux/slices/authSlice'
-import { IFbCredential } from 'types'
+import {IFbCredential} from 'types'
 import {GenericUserI} from 'types/User'
 import {pcl, flexRow, socialButton, googleBlue, shadow} from './style'
 
@@ -46,11 +44,11 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
       setLoading(false)
     } else {
       // succcessful login
-      if (data.token && typeof data.user !== 'object') {
+      if (data.token && typeof data.user === 'object') {
         dispatch(
           updateAuth({
             token: data.token,
-            user: data.user,
+            user: data.user as any, // NOTE: if you are wise you'll fix this
             synced: true,
             credential: data.credential,
           }),

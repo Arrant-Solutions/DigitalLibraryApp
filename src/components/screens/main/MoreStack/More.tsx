@@ -1,21 +1,64 @@
-import React from 'react'
-import {StyleSheet, Text, View} from 'react-native'
+import React, {useState} from 'react'
+import {Alert, StyleSheet, Text, View} from 'react-native'
 import {Avatar, Button, Icon} from 'react-native-elements'
 import {ScrollView} from 'react-native-gesture-handler'
-import LinearGradient from 'react-native-linear-gradient'
-import {SafeAreaView} from 'react-native-safe-area-context'
-import {useAppDispatch, useAppSelector} from '../../../redux/hooks'
-import {selectAuth, logout} from '../../../redux/slices/authSlice'
+import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
+import {selectAuth, logout} from '../../../../redux/slices/authSlice'
 import {Dimensions} from 'react-native'
 import {BlurView} from '@react-native-community/blur'
-import {black, copper, gold, greys, pcl, stretchedBox} from '../common/style'
-import Header from '../common/Header'
+import {black, greys, pcl} from '../../common/style'
+import Header from '../../common/Header'
+import ModalLoader from 'components/screens/common/ModalLoader'
+import {requestPasswordReset} from 'redux/services/auth'
+import {GENERIC_SERVER_ERROR} from 'constants/errors'
+import {StackNavigationProp} from '@react-navigation/stack'
+import {MoreParamList} from '.'
+import {useNavigation} from '@react-navigation/native'
 
 const {height, width} = Dimensions.get('window')
 
+type MoreNavProp = StackNavigationProp<MoreParamList, 'MoreScreen'>
+
 const More = () => {
+  const [loading, setLoading] = useState(false)
   const {user} = useAppSelector(selectAuth)
   const dispatch = useAppDispatch()
+  const {navigate} = useNavigation<MoreNavProp>()
+
+  const onlyPremium = () => {
+    Alert.alert(
+      'Not Available',
+      'Activity Reports are only available to premium customers',
+    )
+  }
+
+  const comingSoon = () => {
+    Alert.alert(
+      'Comming Soon!',
+      'Coming soon with even more exciting and uplifting sermons, teachings and books.',
+    )
+  }
+
+  const handleResetRequest = () => {
+    setLoading(true)
+    requestPasswordReset(user.email)
+      .then(({data, statusCode}) => {
+        if (statusCode === 200) {
+          Alert.alert(
+            'Reset Password',
+            'A password reset email has been sent. Check your email to complete the reset process.',
+            [{text: 'Cancel'}],
+            {cancelable: true},
+          )
+        } else {
+          Alert.alert('Reset Failed', data)
+        }
+      })
+      .catch(() => {
+        Alert.alert('Reset Failed', GENERIC_SERVER_ERROR)
+      })
+      .finally(() => setLoading(false))
+  }
 
   const handleLogout = () => dispatch(logout())
   return (
@@ -30,6 +73,7 @@ const More = () => {
           borderTopWidth: 70,
           borderRightColor: 'transparent',
           borderTopColor: pcl.gold,
+          zIndex: 999,
         }}></View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.shadowed}>
@@ -99,6 +143,7 @@ const More = () => {
                   style={{alignItems: 'flex-start'}}
                   icon={
                     <Icon
+                      tvParallaxProperties={undefined}
                       type="material-community"
                       name="account-edit-outline"
                       size={25}
@@ -111,8 +156,10 @@ const More = () => {
                 <Button
                   type="clear"
                   style={{alignItems: 'flex-start'}}
+                  onPress={comingSoon}
                   icon={
                     <Icon
+                      tvParallaxProperties={undefined}
                       name="credit-card"
                       size={20}
                       color={black[60]}
@@ -124,8 +171,10 @@ const More = () => {
                 <Button
                   type="clear"
                   style={{alignItems: 'flex-start'}}
+                  onPress={onlyPremium}
                   icon={
                     <Icon
+                      tvParallaxProperties={undefined}
                       type="fontisto"
                       name="bar-chart"
                       size={15}
@@ -136,10 +185,12 @@ const More = () => {
                   title="Activity Reports"
                 />
                 <Button
+                  onPress={handleResetRequest}
                   type="clear"
                   style={{alignItems: 'flex-start'}}
                   icon={
                     <Icon
+                      tvParallaxProperties={undefined}
                       type="ionicon"
                       name="key-sharp"
                       size={20}
@@ -165,6 +216,7 @@ const More = () => {
                   containerStyle={{
                     margin: 0,
                   }}
+                  onPress={() => navigate('Feedback')}
                   type="clear"
                   style={{alignItems: 'flex-start'}}
                   title="Give us your feedback"
@@ -203,6 +255,7 @@ const More = () => {
             </View>
           </View>
         </View>
+        <ModalLoader transparent={true} visible={loading} />
       </ScrollView>
     </View>
   )
