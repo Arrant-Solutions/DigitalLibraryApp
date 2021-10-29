@@ -5,6 +5,7 @@ import {UserGroupI} from './userGroup'
 import {UserStatusI} from './UserStatus'
 
 export interface GenericUserI {
+  user_id?: number
   avatar?: string
   first_name: string
   last_name: string
@@ -38,6 +39,7 @@ export type RegularUserI = Omit<GenericUserI, 'password' | 'branch'>
 export type GEMemberI = Omit<GenericUserI, 'password' | 'country'>
 
 export class GenericUser implements GenericUserI {
+  user_id?: number
   avatar?: string
   first_name: string
   last_name: string
@@ -55,6 +57,7 @@ export class GenericUser implements GenericUserI {
   branch: BranchI
 
   constructor({
+    user_id,
     avatar,
     first_name,
     last_name,
@@ -71,6 +74,7 @@ export class GenericUser implements GenericUserI {
     password,
     branch,
   }: GenericUserI) {
+    this.user_id = user_id
     this.avatar = avatar
     this.first_name = first_name
     this.last_name = last_name

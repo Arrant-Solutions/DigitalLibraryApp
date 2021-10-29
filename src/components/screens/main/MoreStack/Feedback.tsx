@@ -1,11 +1,21 @@
 import React, {useState} from 'react'
 import Header from 'components/screens/common/Header'
-import {StyleSheet, Text, TextInput, View} from 'react-native'
+import {Alert, StyleSheet, Text, TextInput, View} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {black, pcl, shadow} from 'components/screens/common/style'
 import PCLButton from 'components/screens/common/PCLButton'
+import {useAppSelector} from 'redux/hooks'
+import {selectAuth} from 'redux/slices/authSlice'
+import {postData} from 'redux/services'
+import {FeedbackI} from 'types/Feedback'
+import {useNavigation} from '@react-navigation/core'
+import {StackNavigationProp} from '@react-navigation/stack'
+import {MoreParamList} from '.'
+
+type FeedbackNavProps = StackNavigationProp<MoreParamList, 'Feedback'>
 
 const Feedback = () => {
+  const {navigate} = useNavigation<FeedbackNavProps>()
   const [stars, setStars] = useState<{selected: boolean}[]>([
     {selected: false},
     {selected: false},
@@ -15,8 +25,42 @@ const Feedback = () => {
   ])
   const [message, setMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const {
+    user: {user_id},
+  } = useAppSelector(selectAuth)
 
-  const handleSubmit = () => {}
+  const handleSubmit = async () => {
+    const feedback = {
+      user_id: Number(user_id),
+      message,
+      rating: stars.reduce((acc, rating) => {
+        return acc + (rating.selected ? 1 : 0)
+      }, 0),
+    }
+    // console.log(JSON.stringify(feedback, null, 2))
+    try {
+      setLoading(true)
+      const {statusCode, data} = await postData<FeedbackI, FeedbackI>(
+        '/feedback',
+        feedback,
+      )
+
+      if (statusCode === 200) {
+        Alert.alert(
+          'Success',
+          'You feedback has been received. We will revert on your email address provided.',
+          [{text: 'Continue', onPress: () => navigate('MoreScreen')}],
+          {cancelable: false},
+        )
+      } else {
+        throw new Error('failed to submit')
+      }
+    } catch (error) {
+      Alert.alert('Unable to submit your feedback, please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <View style={{flex: 1}}>
