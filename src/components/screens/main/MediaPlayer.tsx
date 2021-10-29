@@ -307,9 +307,7 @@ const MediaPlayer = () => {
               repeat={repeat}
               source={
                 {
-                  uri:
-                    params?.resource?.resource_url ||
-                    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+                  uri: params?.resource?.resource_url,
                 }
                 // video
               }
