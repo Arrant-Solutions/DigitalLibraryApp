@@ -305,6 +305,13 @@ const MediaPlayer = () => {
             style={{overflow: 'hidden', height: 220}}>
             <Video
               repeat={repeat}
+              poster={params?.resource?.thumbnail_url}
+              bufferConfig={{
+                minBufferMs: 25000,
+                maxBufferMs: 75000,
+                bufferForPlaybackMs: 5000,
+                bufferForPlaybackAfterRebufferMs: 10000,
+              }}
               source={
                 {
                   uri: params?.resource?.resource_url,
