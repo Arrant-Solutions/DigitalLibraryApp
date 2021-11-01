@@ -101,7 +101,7 @@ const Home = () => {
         <ScrollView style={styles.scrollView}>
           <View style={{display: 'flex', height: 265}}>
             <Image
-              source={require('assets/banner.png')}
+              source={require('assets/banner.jpeg')}
               resizeMode="cover"
               style={{
                 flex: 1,
@@ -121,9 +121,9 @@ const Home = () => {
                   imageSrc={{uri: item.thumbnail_url}}
                   title={item.title}
                   onPress={() => {
-                    console.log('=======>  ', item.resource_category_name)
+                    // console.log('=======>  ', item.resource_category_name)
                     if (/ebook/i.test(item.resource_category_name)) {
-                      console.log('=======>  ', item.resource_category_name)
+                      // console.log('=======>  ', item.resource_category_name)
                       navigate('PDF Viewer', {resource: item})
                     } else {
                       navigate('Media Player', {resource: item})
@@ -150,9 +150,9 @@ const Home = () => {
                   imageSrc={{uri: item.thumbnail_url}}
                   title={item.title}
                   onPress={() => {
-                    console.log('=======>  ', item.resource_category_name)
+                    // console.log('=======>  ', item.resource_category_name)
                     if (/ebook/i.test(item.resource_category_name)) {
-                      console.log('=======>  ', item.resource_category_name)
+                      // console.log('=======>  ', item.resource_category_name)
                       navigate('PDF Viewer', {resource: item})
                     } else {
                       navigate('Media Player', {resource: item})

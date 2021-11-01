@@ -294,10 +294,7 @@ const MediaPlayer = () => {
           nativeEvent: {
             layout: {width, height},
           },
-        }) => {
-          console.log(width)
-          setState({...state, boxSize: {width, height}})
-        }}>
+        }) => setState({...state, boxSize: {width, height}})}>
         <Header back title="Playing" />
         <View style={{backgroundColor: '#000'}}>
           <View
