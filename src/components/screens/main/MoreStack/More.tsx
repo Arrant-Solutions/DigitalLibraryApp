@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Alert, StyleSheet, Text, View} from 'react-native'
-import {Avatar, Button, Icon} from 'react-native-elements'
+import {Accessory, Avatar, Button, Icon} from 'react-native-elements'
 import {ScrollView} from 'react-native-gesture-handler'
 import {useAppDispatch, useAppSelector} from '../../../../redux/hooks'
 import {selectAuth, logout} from '../../../../redux/slices/authSlice'
@@ -94,22 +94,64 @@ const More = () => {
                   zIndex: 9999,
                 },
               ]}>
-              <Avatar
-                containerStyle={{
-                  backgroundColor: `${pcl.gold}40`,
-                  padding: 1,
-                  alignSelf: 'center',
-                }}
-                size={120}
-                rounded
-                source={
-                  user.avatar
-                    ? {
-                        uri: user.avatar,
-                      }
-                    : require('assets/girly.jpg')
-                }
-              />
+              {user.avatar ? (
+                <Avatar
+                  containerStyle={{
+                    backgroundColor: `${pcl.gold}40`,
+                    padding: 1,
+                    alignSelf: 'center',
+                  }}
+                  size={120}
+                  rounded
+                  title={`${user.first_name.charAt(0)}${user.last_name.charAt(
+                    0,
+                  )}`}
+                  source={{
+                    uri: user.avatar,
+                  }}>
+                  <Avatar.Accessory
+                    backgroundColor="pink"
+                    height={30}
+                    width={30}
+                    tvParallaxProperties={undefined}
+                    name="ios-pencil-outline"
+                    type="ionicon"
+                    size={30}
+                    color="red"
+                  />
+                </Avatar>
+              ) : (
+                <Avatar
+                  containerStyle={{
+                    backgroundColor: `${pcl.gold}60`,
+                    alignSelf: 'center',
+                  }}
+                  size="xlarge"
+                  rounded
+                  title={`${user.first_name.charAt(0)}${user.last_name.charAt(
+                    0,
+                  )}`}
+                  activeOpacity={0.7}>
+                  <Accessory
+                    containerStyle={{
+                      height: 80,
+                      width: 80,
+                    }}
+                    iconStyle={{
+                      alignSelf: 'center',
+                    }}
+                    backgroundColor={greys[40]}
+                    borderRadius={20}
+                    height={30}
+                    width={30}
+                    tvParallaxProperties={undefined}
+                    name="edit"
+                    type="material"
+                    size={30}
+                    color={pcl.textPlaceholder}
+                  />
+                </Avatar>
+              )}
             </BlurView>
           </View>
           <View
