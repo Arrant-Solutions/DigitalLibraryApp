@@ -131,26 +131,8 @@ const More = () => {
                   title={`${user.first_name.charAt(0)}${user.last_name.charAt(
                     0,
                   )}`}
-                  activeOpacity={0.7}>
-                  <Accessory
-                    containerStyle={{
-                      height: 80,
-                      width: 80,
-                    }}
-                    iconStyle={{
-                      alignSelf: 'center',
-                    }}
-                    backgroundColor={greys[40]}
-                    borderRadius={20}
-                    height={30}
-                    width={30}
-                    tvParallaxProperties={undefined}
-                    name="edit"
-                    type="material"
-                    size={30}
-                    color={pcl.textPlaceholder}
-                  />
-                </Avatar>
+                  activeOpacity={0.7}
+                />
               )}
             </BlurView>
           </View>

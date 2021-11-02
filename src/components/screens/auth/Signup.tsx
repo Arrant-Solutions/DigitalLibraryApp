@@ -74,7 +74,7 @@ const Signup: React.FC<SignupProps> = () => {
     first_name: user.first_name || '',
     last_name: user.last_name || '',
     email: user.email || '',
-    password: credential ? 'R@nd0MGarbage' : '',
+    password: Boolean(credential?.refreshToken) ? 'R@nd0MGarbage' : '',
     fullname: user.fullname || '',
     gender: user.gender || {
       gender_id: 0,
@@ -99,6 +99,7 @@ const Signup: React.FC<SignupProps> = () => {
     setLoading(false)
   }, [focused])
 
+  console.log(credential)
   // const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} =
 
   const renderItem = (item: ListItemI) => <ListItem {...item} />
@@ -225,10 +226,19 @@ const Signup: React.FC<SignupProps> = () => {
                           ),
                         )
 
-                        console.log({
-                          ...values,
-                          email: values.email.toLowerCase(),
-                        })
+                        console.log(
+                          JSON.stringify(
+                            {
+                              ...values,
+                              email: values.email.toLowerCase(),
+                              branch_id: values.branch.branch_id,
+                              gender_id: Number(values.gender?.gender_id),
+                              country_id: Number(values.country?.country_id),
+                            },
+                            null,
+                            2,
+                          ),
+                        )
 
                         const action =
                           /(.*)@(.*).(.*)/.test(user.email) && credential
@@ -342,7 +352,7 @@ const Signup: React.FC<SignupProps> = () => {
                               value={values.last_name}
                               multiline={false}
                             />
-                            {!Boolean(credential) && (
+                            {!Boolean(credential?.refreshToken) && (
                               <Input
                                 inputContainerStyle={styles.inputContainerStyle}
                                 errorStyle={
@@ -430,7 +440,7 @@ const Signup: React.FC<SignupProps> = () => {
                                 setShowDatePicker(false)
                               }}
                             />
-                            {!credential && (
+                            {!Boolean(credential?.refreshToken) && (
                               <Input
                                 inputContainerStyle={styles.inputContainerStyle}
                                 errorStyle={
