@@ -1,5 +1,6 @@
 import {AppleButton} from '@invertase/react-native-apple-authentication'
 import {useNavigation} from '@react-navigation/core'
+import {useRoute} from '@react-navigation/native'
 import {StackNavigationProp} from '@react-navigation/stack'
 import React from 'react'
 import {Alert, Platform, Text, View} from 'react-native'
@@ -23,6 +24,7 @@ interface SocialAuthProps {
 function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
   const dispatch = useAppDispatch()
   const {navigate} = useNavigation<StackNavProp>()
+  const route = useRoute()
 
   const processLoginRequest = (
     data:
@@ -38,6 +40,7 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
         }
       | string,
   ) => {
+    // console.log(JSON.stringify(route, null, 2), 'route.....')
     if (typeof data === 'string') {
       // Alert.alert('Login Failed', data, [{text: 'Ok', style: 'default'}], {
       //   cancelable: true,
@@ -61,6 +64,7 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
             credential: data.credential,
           }),
         )
+        setLoading(false)
       } else {
         dispatch(
           setUserDetails({
@@ -71,7 +75,8 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
           }),
         )
         dispatch(setCredential(data.credential))
-        navigate('Register')
+        setLoading(false)
+        if (route.name !== 'Register') navigate('Register')
       }
     }
   }

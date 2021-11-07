@@ -6,13 +6,10 @@ import {
   View,
   Text,
   KeyboardAvoidingView,
-  Pressable,
   ActivityIndicator,
-  Alert,
 } from 'react-native'
 import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'
 import * as Yup from 'yup'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import moment from 'moment'
@@ -28,8 +25,6 @@ import {BranchI} from 'types/Branch'
 import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
-import DatePicker from 'react-native-date-picker'
-import DateTimePicker from '@react-native-community/datetimepicker'
 import {selectAuth, setUser, updateAuth} from 'redux/slices/authSlice'
 import {Toast} from '../common/Toast'
 import {deserialize} from 'utils'
@@ -68,17 +63,18 @@ const Signup: React.FC<SignupProps> = () => {
   const dispatch = useAppDispatch()
   const {user, credential} = useAppSelector(selectAuth)
   const {data, error, isLoading} = useGetInitResourcesQuery()
-  const [showDatePicker, setShowDatePicker] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const focused = useIsFocused()
   const [loading, setLoading] = useState(false)
-  const [initialValues] = useState<
+  const [initialValues, setInitialValues] = useState<
     SignupUserI & {isMember: boolean; branch: BranchI}
   >({
     first_name: user.first_name || '',
     last_name: user.last_name || '',
     email: user.email || '',
-    password: Boolean(credential?.refreshToken) ? 'R@nd0MGarbage' : '',
+    password: Boolean(credential?.refreshToken || credential?.uid)
+      ? 'R@nd0MGarbage'
+      : '',
     fullname: user.fullname || '',
     gender: user.gender || {
       gender_id: 0,
@@ -100,10 +96,39 @@ const Signup: React.FC<SignupProps> = () => {
   })
 
   useEffect(() => {
+    setInitialValues({
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      email: user.email || '',
+      password: Boolean(credential?.refreshToken || credential?.uid)
+        ? 'R@nd0MGarbage'
+        : '',
+      fullname: user.fullname || '',
+      gender: user.gender || {
+        gender_id: 0,
+        gender_name: '',
+      },
+      date_of_birth: user.date_of_birth || new Date(), // moment().subtract(5, 'years').toDate(),
+      country: user.country?.country_id
+        ? user.country
+        : {
+            country_id: 0,
+            country_name: '',
+            flag: '',
+          },
+      branch: user.branch || {branch_id: 0, branch_name: ''},
+      isMember: true,
+      user_group: undefined,
+      user_status: undefined,
+      has_missing: undefined,
+    })
+  }, [user])
+
+  useEffect(() => {
     setLoading(false)
   }, [focused])
 
-  console.log(credential)
+  // console.log(JSON.stringify(initialValues, undefined, 2), 'initial')
   // const initialValues: SignupUserI & {isMember: boolean; branch: BranchI} =
 
   const renderItem = (item: ListItemI) => <ListItem {...item} />
@@ -218,6 +243,7 @@ const Signup: React.FC<SignupProps> = () => {
                     angle={110}
                     style={stretchedBox}>
                     <Formik
+                      enableReinitialize
                       validationSchema={SignupSchema}
                       initialValues={initialValues}
                       onSubmit={(values, helpers) => {
@@ -283,21 +309,6 @@ const Signup: React.FC<SignupProps> = () => {
                                     ],
                                   }),
                                 )
-                                // Alert.alert(
-                                //   'Success',
-                                //   `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
-                                //   [
-                                //     {
-                                //       text: 'Login',
-                                //       onPress: () => {
-                                //         helpers.resetForm()
-                                //         navigate('Login')
-                                //       },
-                                //       style: 'default',
-                                //     },
-                                //   ],
-                                //   {cancelable: false},
-                                // )
                               }
                             } else {
                               dispatch(
@@ -306,17 +317,6 @@ const Signup: React.FC<SignupProps> = () => {
                                   message: data as string,
                                 }),
                               )
-                              // Alert.alert(
-                              //   'Failure',
-                              //   data as string, // always a string here
-                              //   [
-                              //     {
-                              //       text: 'Cancel',
-                              //       style: 'default',
-                              //     },
-                              //   ],
-                              //   {cancelable: true},
-                              // )
                             }
                           })
                           .catch(() =>
@@ -340,6 +340,11 @@ const Signup: React.FC<SignupProps> = () => {
                         setFieldError,
                         setErrors,
                       }) => {
+                        console.log(JSON.stringify(values, null, 2), 'values')
+                        console.log(
+                          JSON.stringify(initialValues, null, 2),
+                          'initialValues',
+                        )
                         return (
                           <ScrollView style={styles.container}>
                             <SocialAuth setLoading={setLoading} signup />
@@ -482,7 +487,9 @@ const Signup: React.FC<SignupProps> = () => {
                               }}
                             />
 
-                            {!Boolean(credential?.refreshToken) && (
+                            {!Boolean(
+                              credential?.refreshToken || credential?.uid,
+                            ) && (
                               <Input
                                 inputContainerStyle={styles.inputContainerStyle}
                                 errorStyle={
