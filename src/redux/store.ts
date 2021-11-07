@@ -24,7 +24,11 @@ export const store = configureStore({
     // media: mediaResourceApi.reducer,
   },
   middleware: gDM =>
-    gDM()
+    gDM({
+      serializableCheck: {
+        ignoredPaths: ['alert'],
+      },
+    })
       .concat(resourcesApi.middleware)
       // .concat(mediaResourceApi.middleware)
       .concat([unauthenticatedMiddleware]), // not the cleanest solution

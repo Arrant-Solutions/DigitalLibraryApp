@@ -32,6 +32,10 @@ const Voucher: React.FC<VoucherProps> = ({
 
   const handleReedemVoucher = () => {
     if (voucher.length) {
+      console.log('fired...')
+      setVisible(false)
+      setShowModal(false)
+      setVoucher('')
       dispatch(
         setAlert({
           title: 'Invalid Voucher',

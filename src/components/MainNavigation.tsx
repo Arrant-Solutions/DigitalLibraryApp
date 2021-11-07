@@ -17,7 +17,6 @@ import {ResourceItemT} from 'types/Resource'
 import MediaPlayer from './screens/main/MediaPlayer'
 import PDFViewer from './screens/main/PDFViewer'
 import Category from './screens/main/Category'
-import AlertDialog from './screens/common/AlertDialog'
 
 export type AuthStackParamList = {
   AuthHome: undefined
@@ -59,6 +58,7 @@ const MainNavigation = () => {
         last_name: names.length > 1 ? names[1] : names[0],
       })
     }
+    // console.log('got here...')
     await dispatch(refreshToken(isInternetReachable))
       .then((res: any) => {
         setError(false)
