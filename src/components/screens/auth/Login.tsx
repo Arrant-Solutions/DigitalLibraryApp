@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Alert, Pressable, StyleSheet, Text, View} from 'react-native'
+import {Alert, StyleSheet, View} from 'react-native'
 import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import {UserCredential} from '../../../types/User'
@@ -14,6 +14,8 @@ import {AuthSliceI, login} from 'redux/slices/authSlice'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 import LinkText from '../common/LinkText'
+import {setAlert} from 'redux/slices/alertSlice'
+import {GENERIC_SERVER_ERROR} from 'constants/errors'
 
 type LoginNavProp = StackNavigationProp<AuthStackParamList, 'Login'>
 
@@ -42,26 +44,39 @@ const Login = () => {
   const handleLogin = () => {
     if (credential.email.length && credential.password.length) {
       setLoading(true)
-      dispatch(login(credential)).then(response => {
-        const {payload} = response as {payload: AuthSliceI}
-        if (payload.errorMessage.length) {
-          Alert.alert(
-            'Login Failed',
-            payload.errorMessage,
-            [
-              /Registration incomplete/i.test(payload.errorMessage)
-                ? {text: 'Register', onPress: () => navigate('Register')}
-                : {text: 'Close', style: 'cancel'},
-            ],
-            {cancelable: false},
+      dispatch(login(credential))
+        .then(response => {
+          const {payload} = response as {payload: AuthSliceI}
+          if (payload.errorMessage.length) {
+            dispatch(
+              setAlert({
+                message: payload.errorMessage,
+                title: 'Login Failed',
+                cancelable: true,
+                buttons: [
+                  /Registration incomplete/i.test(payload.errorMessage)
+                    ? {text: 'Register', onPress: () => navigate('Register')}
+                    : {text: 'Close'},
+                ],
+              }),
+            )
+
+            setLoading(false)
+            setCredential({
+              ...credential,
+              password: '',
+            })
+          }
+        })
+        .catch(err => {
+          dispatch(
+            setAlert({
+              message: GENERIC_SERVER_ERROR,
+              title: 'Internal Error',
+              cancelable: true,
+            }),
           )
-          setLoading(false)
-          setCredential({
-            ...credential,
-            password: '',
-          })
-        }
-      })
+        })
     }
   }
 

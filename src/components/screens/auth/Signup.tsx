@@ -36,6 +36,8 @@ import {emailRegistration, submitUserDetails} from 'redux/services/auth'
 import {useGetInitResourcesQuery} from 'redux/apis/resourceApi'
 import SocialAuth from '../common/SocialAuth'
 import ModalLoader from '../common/ModalLoader'
+import {setAlert} from 'redux/slices/alertSlice'
+import { GENERIC_SERVER_ERROR } from 'constants/errors'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -264,36 +266,65 @@ const Signup: React.FC<SignupProps> = () => {
                               ) {
                                 dispatch(updateAuth(data))
                               } else {
-                                Alert.alert(
-                                  'Success',
-                                  `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
-                                  [
-                                    {
-                                      text: 'Login',
-                                      onPress: () => {
-                                        helpers.resetForm()
-                                        navigate('Login')
+                                dispatch(
+                                  setAlert({
+                                    title: 'Success',
+                                    message: `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
+                                    buttons: [
+                                      {
+                                        text: 'Login',
+                                        onPress: () => {
+                                          helpers.resetForm()
+                                          navigate('Login')
+                                        },
                                       },
-                                    },
-                                  ],
-                                  {cancelable: false},
+                                    ],
+                                  }),
                                 )
+                                // Alert.alert(
+                                //   'Success',
+                                //   `You account has been created successfully. A verification link will be sent to ${values.email}. Please verify your account to access the app.`,
+                                //   [
+                                //     {
+                                //       text: 'Login',
+                                //       onPress: () => {
+                                //         helpers.resetForm()
+                                //         navigate('Login')
+                                //       },
+                                //       style: 'default',
+                                //     },
+                                //   ],
+                                //   {cancelable: false},
+                                // )
                               }
                             } else {
-                              Alert.alert(
-                                'Failure',
-                                data as string, // always a string here
-                                [
-                                  {
-                                    text: 'Cancel',
-                                    style: 'cancel',
-                                  },
-                                ],
-                                {cancelable: true},
+                              dispatch(
+                                setAlert({
+                                  title: 'Failed',
+                                  message: data as string,
+                                }),
                               )
+                              // Alert.alert(
+                              //   'Failure',
+                              //   data as string, // always a string here
+                              //   [
+                              //     {
+                              //       text: 'Cancel',
+                              //       style: 'default',
+                              //     },
+                              //   ],
+                              //   {cancelable: true},
+                              // )
                             }
                           })
-                          .catch()
+                          .catch(() =>
+                            dispatch(
+                              setAlert({
+                                title: 'Error Occured',
+                                message: GENERIC_SERVER_ERROR,
+                              }),
+                            ),
+                          )
                           .finally(() => helpers.setSubmitting(false))
                       }}>
                       {({

@@ -6,6 +6,7 @@ import {Alert, Platform, Text, View} from 'react-native'
 import {Button, SocialIcon} from 'react-native-elements'
 import {useAppDispatch} from 'redux/hooks'
 import {appleSignIn, facebookAuth, googleAuth} from 'redux/services/auth'
+import {setAlert} from 'redux/slices/alertSlice'
 import {updateAuth, setUserDetails, setCredential} from 'redux/slices/authSlice'
 import {IFbCredential} from 'types'
 import {GenericUserI} from 'types/User'
@@ -38,9 +39,16 @@ function SocialAuth({signup, largeButton, setLoading}: SocialAuthProps) {
       | string,
   ) => {
     if (typeof data === 'string') {
-      Alert.alert('Login Failed', data, [{text: 'Ok', style: 'cancel'}], {
-        cancelable: true,
-      })
+      // Alert.alert('Login Failed', data, [{text: 'Ok', style: 'default'}], {
+      //   cancelable: true,
+      // })
+      dispatch(
+        setAlert({
+          message: 'Login Failed',
+          title: 'Login failed',
+          cancelable: true,
+        }),
+      )
       setLoading(false)
     } else {
       // succcessful login

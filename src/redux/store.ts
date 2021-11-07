@@ -5,6 +5,7 @@ import homeResourcesReducer from './slices/homeResourcesSlice'
 import categoriesReducer from './slices/categoriesSlice'
 import modalReducer from './slices/modalSlice'
 import themeReducer from './slices/themeSlice'
+import alertReducer from './slices/alertSlice'
 import {resourcesApi} from './apis/resourceApi'
 import {unauthenticatedMiddleware} from './middleware'
 // import {mediaResourceApi} from './apis/mediaResourceApi'
@@ -18,6 +19,7 @@ export const store = configureStore({
     categories: categoriesReducer,
     modal: modalReducer,
     theme: themeReducer,
+    alert: alertReducer,
     resources: resourcesApi.reducer,
     // media: mediaResourceApi.reducer,
   },

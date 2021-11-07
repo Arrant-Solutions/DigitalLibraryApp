@@ -17,6 +17,7 @@ import {ResourceItemT} from 'types/Resource'
 import MediaPlayer from './screens/main/MediaPlayer'
 import PDFViewer from './screens/main/PDFViewer'
 import Category from './screens/main/Category'
+import AlertDialog from './screens/common/AlertDialog'
 
 export type AuthStackParamList = {
   AuthHome: undefined

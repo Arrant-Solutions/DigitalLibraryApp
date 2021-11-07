@@ -10,7 +10,7 @@ import {linkText, pcl} from '../common/style'
 import {useAppDispatch} from 'redux/hooks'
 import ModalLoader from '../common/ModalLoader'
 import SocialAuth from '../common/SocialAuth'
-const logo = require('assets/icon.jpg')
+const logo = require('../../../assets/icon.jpg')
 
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
 

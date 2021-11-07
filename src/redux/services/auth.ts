@@ -142,7 +142,7 @@ export const emailPasswordLogin = async ({email, password}: UserCredential) => {
       password,
     )
 
-    console.log(JSON.stringify(credential, null, 2))
+    // console.log(JSON.stringify(credential, null, 2), 'xxxxxxxxxxx')
 
     if (credential.user) {
       return {
@@ -158,7 +158,6 @@ export const emailPasswordLogin = async ({email, password}: UserCredential) => {
 
     return {statusCode: 401, data: 'Failed to login'}
   } catch (error) {
-    console.log(error)
     const {code} = error as FirebaseAuthTypes.NativeFirebaseAuthError
 
     if (code === 'auth/user-not-found') {
@@ -179,6 +178,13 @@ export const emailPasswordLogin = async ({email, password}: UserCredential) => {
       return {
         statusCode: 401,
         data: 'Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.',
+      }
+    }
+
+    if (code === 'auth/invalid-email') {
+      return {
+        statusCode: 422,
+        data: 'Please input a valid email address',
       }
     }
 

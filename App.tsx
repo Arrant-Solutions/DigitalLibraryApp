@@ -7,6 +7,7 @@ import {StyleSheet} from 'react-native'
 import {Provider} from 'react-redux'
 import {store} from './src/redux/store'
 import {SafeAreaProvider} from 'react-native-safe-area-context'
+import AlertDialog from 'components/screens/common/AlertDialog'
 
 const MyTheme = {
   ...DefaultTheme,
@@ -31,6 +32,7 @@ const App = () => {
       <Provider store={store}>
         <NavigationContainer>
           <MainNavigation />
+          <AlertDialog />
         </NavigationContainer>
       </Provider>
     </SafeAreaProvider>
