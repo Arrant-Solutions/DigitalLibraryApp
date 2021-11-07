@@ -340,11 +340,6 @@ const Signup: React.FC<SignupProps> = () => {
                         setFieldError,
                         setErrors,
                       }) => {
-                        console.log(JSON.stringify(values, null, 2), 'values')
-                        console.log(
-                          JSON.stringify(initialValues, null, 2),
-                          'initialValues',
-                        )
                         return (
                           <ScrollView style={styles.container}>
                             <SocialAuth setLoading={setLoading} signup />
