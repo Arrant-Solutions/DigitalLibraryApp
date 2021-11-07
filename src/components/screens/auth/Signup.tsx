@@ -29,6 +29,7 @@ import {useIsFocused, useNavigation} from '@react-navigation/native'
 import {AuthStackParamList} from 'components/MainNavigation'
 import {StackNavigationProp} from '@react-navigation/stack'
 import DatePicker from 'react-native-date-picker'
+import DateTimePicker from '@react-native-community/datetimepicker'
 import {selectAuth, setUser, updateAuth} from 'redux/slices/authSlice'
 import {Toast} from '../common/Toast'
 import {deserialize} from 'utils'
@@ -37,7 +38,8 @@ import {useGetInitResourcesQuery} from 'redux/apis/resourceApi'
 import SocialAuth from '../common/SocialAuth'
 import ModalLoader from '../common/ModalLoader'
 import {setAlert} from 'redux/slices/alertSlice'
-import { GENERIC_SERVER_ERROR } from 'constants/errors'
+import {GENERIC_SERVER_ERROR} from 'constants/errors'
+import PCLDatePicker from '../common/PCLDatePicker'
 
 type SignupProp = StackNavigationProp<AuthStackParamList, 'Register'>
 
@@ -383,30 +385,28 @@ const Signup: React.FC<SignupProps> = () => {
                               value={values.last_name}
                               multiline={false}
                             />
-                            {!Boolean(credential?.refreshToken) && (
-                              <Input
-                                inputContainerStyle={styles.inputContainerStyle}
-                                errorStyle={
-                                  errors.email ? styles.inputErrorStyle : {}
-                                }
-                                errorMessage={errors.email}
-                                labelStyle={styles.textStyle}
-                                placeholderTextColor={pcl.textPlaceholder}
-                                placeholder="Email"
-                                leftIcon={
-                                  <Ionicons
-                                    name="mail-outline"
-                                    size={20}
-                                    color={pcl.textPlaceholder}
-                                  />
-                                }
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('mail')}
-                                value={values.email}
-                                multiline={false}
-                              />
-                            )}
-                            <Pressable
+                            <Input
+                              inputContainerStyle={styles.inputContainerStyle}
+                              errorStyle={
+                                errors.email ? styles.inputErrorStyle : {}
+                              }
+                              errorMessage={errors.email}
+                              labelStyle={styles.textStyle}
+                              placeholderTextColor={pcl.textPlaceholder}
+                              placeholder="Email"
+                              leftIcon={
+                                <Ionicons
+                                  name="mail-outline"
+                                  size={20}
+                                  color={pcl.textPlaceholder}
+                                />
+                              }
+                              onChangeText={handleChange('email')}
+                              onBlur={handleBlur('mail')}
+                              value={values.email}
+                              multiline={false}
+                            />
+                            {/* <Pressable
                               style={{position: 'relative', flex: 1}}
                               onPress={() => {
                                 console.log('pressed')
@@ -447,8 +447,9 @@ const Signup: React.FC<SignupProps> = () => {
                                   backgroundColor: 'transparent',
                                 }}
                               />
-                            </Pressable>
-                            <DatePicker
+                            </Pressable> */}
+
+                            {/* <DatePicker
                               mode="date"
                               maximumDate={moment()
                                 .subtract(5, 'years')
@@ -470,7 +471,17 @@ const Signup: React.FC<SignupProps> = () => {
                               onCancel={() => {
                                 setShowDatePicker(false)
                               }}
+                            /> */}
+
+                            <PCLDatePicker
+                              errorMessage={errors.date_of_birth}
+                              value={values.date_of_birth}
+                              onChange={date => {
+                                console.log(date)
+                                setFieldValue('date_of_birth', date)
+                              }}
                             />
+
                             {!Boolean(credential?.refreshToken) && (
                               <Input
                                 inputContainerStyle={styles.inputContainerStyle}

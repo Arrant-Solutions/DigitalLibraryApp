@@ -24,9 +24,6 @@ const MyTheme = {
 }
 
 const App = () => {
-  const routeNameRef = React.useRef()
-  const navigationRef = React.useRef()
-
   return (
     <SafeAreaProvider>
       <Provider store={store}>
