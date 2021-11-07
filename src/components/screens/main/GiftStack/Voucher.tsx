@@ -2,6 +2,8 @@ import {pcl} from 'components/screens/common/style'
 import React, {useEffect, useState} from 'react'
 import {Alert, Image, StyleSheet, Text, View} from 'react-native'
 import {Button, Icon, Input, Overlay} from 'react-native-elements'
+import {useAppDispatch} from 'redux/hooks'
+import {setAlert} from 'redux/slices/alertSlice'
 
 interface VoucherProps {
   visible: boolean
@@ -15,6 +17,7 @@ const Voucher: React.FC<VoucherProps> = ({
   const [visible, setVisible] = useState(showModal)
   const [showLabel, setShowLabel] = useState(false)
   const [voucher, setVoucher] = useState('')
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     setVisible(showModal)
@@ -28,7 +31,15 @@ const Voucher: React.FC<VoucherProps> = ({
   }
 
   const handleReedemVoucher = () => {
-    if (voucher.length) Alert.alert('Invalid Voucher Code')
+    if (voucher.length) {
+      dispatch(
+        setAlert({
+          title: 'Invalid Voucher',
+          message: 'Invalid Voucher Code',
+        }),
+      )
+      // Alert.alert('Invalid Voucher Code')
+    }
   }
 
   return (
@@ -80,7 +91,13 @@ const Voucher: React.FC<VoucherProps> = ({
               label={showLabel ? 'Gift Voucher Code' : '  '}
               placeholder={showLabel ? '' : 'Gift Voucher Code'}
               leftIcon={
-                <Icon name="gift" type="octicon" size={24} color="black" />
+                <Icon
+                  tvParallaxProperties={undefined}
+                  name="gift"
+                  type="octicon"
+                  size={24}
+                  color="black"
+                />
               }
             />
 

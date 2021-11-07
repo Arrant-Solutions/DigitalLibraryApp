@@ -1,20 +1,22 @@
 import React, {useState} from 'react'
 import Header from 'components/screens/common/Header'
-import {Alert, StyleSheet, Text, TextInput, View} from 'react-native'
+import {StyleSheet, Text, TextInput, View} from 'react-native'
 import {Icon} from 'react-native-elements'
 import {black, pcl, shadow} from 'components/screens/common/style'
 import PCLButton from 'components/screens/common/PCLButton'
-import {useAppSelector} from 'redux/hooks'
+import {useAppDispatch, useAppSelector} from 'redux/hooks'
 import {selectAuth} from 'redux/slices/authSlice'
 import {postData} from 'redux/services'
 import {FeedbackI} from 'types/Feedback'
 import {useNavigation} from '@react-navigation/core'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {MoreParamList} from '.'
+import {setAlert} from 'redux/slices/alertSlice'
 
 type FeedbackNavProps = StackNavigationProp<MoreParamList, 'Feedback'>
 
 const Feedback = () => {
+  const dispatch = useAppDispatch()
   const {navigate} = useNavigation<FeedbackNavProps>()
   const [stars, setStars] = useState<{selected: boolean}[]>([
     {selected: false},
@@ -46,17 +48,34 @@ const Feedback = () => {
       )
 
       if (statusCode === 200) {
-        Alert.alert(
-          'Success',
-          'You feedback has been received. We will revert on your email address provided.',
-          [{text: 'Continue', onPress: () => navigate('MoreScreen')}],
-          {cancelable: false},
+        // Alert.alert(
+        //   'Success',
+        //   'You feedback has been received. We will revert on your email address provided.',
+        //   [{text: 'Continue', onPress: () => navigate('MoreScreen')}],
+        //   {cancelable: false},
+        // )
+        dispatch(
+          setAlert({
+            title: 'Success',
+            message:
+              'You feedback has been received. We will revert on your email address provided.',
+            buttons: [
+              {text: 'Continue', onPress: () => navigate('MoreScreen')},
+            ],
+            cancelable: false,
+          }),
         )
       } else {
         throw new Error('failed to submit')
       }
     } catch (error) {
-      Alert.alert('Unable to submit your feedback, please try again.')
+      dispatch(
+        setAlert({
+          title: 'Error',
+          message: 'Unable to submit your feedback, please try again.',
+        }),
+      )
+      // Alert.alert('Unable to submit your feedback, please try again.')
     } finally {
       setLoading(false)
     }

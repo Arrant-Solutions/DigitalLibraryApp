@@ -12,8 +12,11 @@ import {Button} from 'react-native-elements'
 import Offer from 'assets/offer.svg'
 // import ConfettiCannon from 'react-native-confetti-cannon'
 import Voucher from './Voucher'
+import { useAppDispatch } from 'redux/hooks'
+import { setAlert } from 'redux/slices/alertSlice'
 
 const GiftsHome = () => {
+  const dispatch = useAppDispatch()
   //   const confetti = useRef<ConfettiCannon | null>(null)
   const [showVoucherDialog, setShowVoucherDialog] = useState(false)
 
@@ -62,7 +65,15 @@ const GiftsHome = () => {
             />
           }
           title="Special Offer"
-          onPress={() => Alert.alert('You do not have any special offers.')}
+          onPress={() => {
+            dispatch(
+              setAlert({
+                title: 'No Offers',
+                message: 'You do not have any special offers.',
+              }),
+            )
+            // Alert.alert('You do not have any special offers.')
+          }}
         />
         {/* <ConfettiCannon
           autoStart={false}

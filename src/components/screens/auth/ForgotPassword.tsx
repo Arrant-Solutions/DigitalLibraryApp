@@ -6,7 +6,9 @@ import React, {useState} from 'react'
 import {Alert, StyleSheet, Text, View} from 'react-native'
 import {Input} from 'react-native-elements'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import {useAppDispatch} from 'redux/hooks'
 import {requestPasswordReset} from 'redux/services/auth'
+import {setAlert} from 'redux/slices/alertSlice'
 import GlassyCard from '../common/GlassyCard'
 import ModalLoader from '../common/ModalLoader'
 import PCLButton from '../common/PCLButton'
@@ -16,6 +18,7 @@ import {flexColumn, pcl} from '../common/style'
 type NavProp = StackNavigationProp<AuthStackParamList, 'Login'>
 
 const ForgotPassword = () => {
+  const dispatch = useAppDispatch()
   const {navigate} = useNavigation<NavProp>()
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
@@ -25,15 +28,30 @@ const ForgotPassword = () => {
     requestPasswordReset(email)
       .then(({data, statusCode}) => {
         if (statusCode === 200) {
-          Alert.alert('Success', data, [
-            {text: 'Continue', onPress: () => navigate('Login')},
-          ])
+          dispatch(
+            setAlert({
+              title: 'Success',
+              message: data,
+              buttons: [{text: 'Continue', onPress: () => navigate('Login')}],
+            }),
+          )
+          // Alert.alert('Success', data, [
+          //   {text: 'Continue', onPress: () => navigate('Login')},
+          // ])
         } else {
-          Alert.alert('Reset Failed', data)
+          setAlert({
+            title: 'Reset Failed',
+            message: data,
+          })
+          // Alert.alert('Reset Failed', data)
         }
       })
       .catch(() => {
-        Alert.alert('Reset Failed', GENERIC_SERVER_ERROR)
+        setAlert({
+          title: 'Reset Failed',
+          message: GENERIC_SERVER_ERROR,
+        })
+        // Alert.alert('Reset Failed', GENERIC_SERVER_ERROR)
       })
       .finally(() => setLoading(false))
   }

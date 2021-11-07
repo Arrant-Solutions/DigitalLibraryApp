@@ -14,6 +14,7 @@ import {GENERIC_SERVER_ERROR} from 'constants/errors'
 import {StackNavigationProp} from '@react-navigation/stack'
 import {MoreParamList} from '.'
 import {useNavigation} from '@react-navigation/native'
+import {setAlert} from 'redux/slices/alertSlice'
 
 const {height, width} = Dimensions.get('window')
 
@@ -26,16 +27,29 @@ const More = () => {
   const {navigate} = useNavigation<MoreNavProp>()
 
   const onlyPremium = () => {
-    Alert.alert(
-      'Not Available',
-      'Activity Reports are only available to premium customers',
+    // Alert.alert(
+    //   'Not Available',
+    //   'Activity Reports are only available to premium customers',
+    // )
+    dispatch(
+      setAlert({
+        title: 'Not Available',
+        message: 'Activity Reports are only available to premium customers',
+      }),
     )
   }
 
   const comingSoon = () => {
-    Alert.alert(
-      'Comming Soon!',
-      'Coming soon with even more exciting and uplifting sermons, teachings and books.',
+    // Alert.alert(
+    //   'Comming Soon!',
+    //   'Coming soon with even more exciting and uplifting sermons, teachings and books.',
+    // )
+    dispatch(
+      setAlert({
+        title: 'Comming Soon!',
+        message:
+          'Coming soon with even more exciting and uplifting sermons, teachings and books.',
+      }),
     )
   }
 
@@ -44,18 +58,38 @@ const More = () => {
     requestPasswordReset(user.email)
       .then(({data, statusCode}) => {
         if (statusCode === 200) {
-          Alert.alert(
-            'Reset Password',
-            'A password reset email has been sent. Check your email to complete the reset process.',
-            [{text: 'Cancel'}],
-            {cancelable: true},
+          // Alert.alert(
+          //   'Reset Password',
+          //   'A password reset email has been sent. Check your email to complete the reset process.',
+          //   [{text: 'Cancel'}],
+          //   {cancelable: true},
+          // )
+          dispatch(
+            setAlert({
+              title: 'Reset Password',
+              message:
+                'A password reset email has been sent. Check your email to complete the reset process.',
+              buttons: [{text: 'Cancel'}],
+            }),
           )
         } else {
-          Alert.alert('Reset Failed', data)
+          // Alert.alert('Reset Failed', data)
+          dispatch(
+            setAlert({
+              title: 'Reset Failed',
+              message: data,
+            }),
+          )
         }
       })
       .catch(() => {
-        Alert.alert('Reset Failed', GENERIC_SERVER_ERROR)
+        // Alert.alert('Reset Failed', GENERIC_SERVER_ERROR)
+        dispatch(
+          setAlert({
+            title: 'Reset Failed',
+            message: GENERIC_SERVER_ERROR,
+          }),
+        )
       })
       .finally(() => setLoading(false))
   }
