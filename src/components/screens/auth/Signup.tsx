@@ -104,8 +104,8 @@ const Signup: React.FC<SignupProps> = () => {
       last_name: user.last_name || '',
       email: user.email || '',
       password: Boolean(credential?.refreshToken || credential?.uid)
-        ? ''
-        : 'R@nd0MGarbage',
+        ? 'R@nd0MGarbage'
+        : '',
       fullname: user.fullname || '',
       gender: user.gender || {
         gender_id: 0,

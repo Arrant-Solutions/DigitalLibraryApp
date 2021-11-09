@@ -1,6 +1,6 @@
 import {isFulfilled, Middleware} from '@reduxjs/toolkit'
 import {Storage} from 'constants/storage'
-import {storeAsyncData} from 'utils/storage'
+import {deleteAsyncData, storeAsyncData} from 'utils/storage'
 
 export const unauthenticatedMiddleware: Middleware =
   ({dispatch}) =>
@@ -11,8 +11,12 @@ export const unauthenticatedMiddleware: Middleware =
       ((/^user/.test(action.type) && isFulfilled(action)) ||
         /^auth/.test(action.type)) // social login does not have a fulful
     ) {
-      // console.log('running store middleware.....', typeof action.payload)
-      storeAsyncData(Storage.AUTH_STORAGE, action.payload)
+      console.log('running store middleware.....', action.payload)
+      if (action.payload) {
+        storeAsyncData(Storage.AUTH_STORAGE, action.payload)
+      } else {
+        deleteAsyncData(Storage.AUTH_STORAGE)
+      }
     }
     if (action && /^media\/(add|remove)Favorite/.test(action.type)) {
       // console.log(action, action.payload)

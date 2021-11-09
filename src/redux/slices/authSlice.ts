@@ -147,7 +147,7 @@ export const authSlice = createSlice({
       state.errorMessage = errorMessage || state.errorMessage
     },
     logout: state => {
-      deleteAsyncData(Storage.AUTH_STORAGE)
+      // deleteAsyncData(Storage.AUTH_STORAGE)
 
       state.user = initialState.user
       state.token = ''
