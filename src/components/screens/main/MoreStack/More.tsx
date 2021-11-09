@@ -198,7 +198,8 @@ const More = () => {
               <View style={styles.box}>
                 <Button
                   type="clear"
-                  style={{alignItems: 'flex-start'}}
+                  style={{ alignItems: 'flex-start' }}
+                  onPress={() => navigate('Edit Profile')}
                   icon={
                     <Icon
                       tvParallaxProperties={undefined}

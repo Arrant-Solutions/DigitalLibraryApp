@@ -76,14 +76,15 @@ const Signup: React.FC<SignupProps> = () => {
       ? 'R@nd0MGarbage'
       : '',
     fullname: user.fullname || '',
-    gender: user.gender || {
-      gender_id: 0,
-      gender_name: '',
-    },
+    gender: user.gender ||
+      data?.genders.find(({gender_name}) => gender_name === 'Female') || {
+        gender_id: 0,
+        gender_name: '',
+      },
     date_of_birth: user.date_of_birth || new Date(), // moment().subtract(5, 'years').toDate(),
     country: user.country?.country_id
       ? user.country
-      : {
+      : data?.countries.find(({country_name}) => country_name === 'Zambia') || {
           country_id: 0,
           country_name: '',
           flag: '',
@@ -95,14 +96,16 @@ const Signup: React.FC<SignupProps> = () => {
     has_missing: undefined,
   })
 
+  console.log(JSON.stringify(initialValues, null, 2))
+
   useEffect(() => {
     setInitialValues({
       first_name: user.first_name || '',
       last_name: user.last_name || '',
       email: user.email || '',
       password: Boolean(credential?.refreshToken || credential?.uid)
-        ? 'R@nd0MGarbage'
-        : '',
+        ? ''
+        : 'R@nd0MGarbage',
       fullname: user.fullname || '',
       gender: user.gender || {
         gender_id: 0,
@@ -136,6 +139,10 @@ const Signup: React.FC<SignupProps> = () => {
   const nameValidator = Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
+    .matches(
+      /^(?!.*([A-Za-z0-9])\1{2})[\p{L}'][ \p{L}'-]*[\p{L}]$/u,
+      'Please input a valid name',
+    )
     .required('Required')
   const dobLower = moment().subtract(110, 'years')
   const dobUpper = moment().subtract(2, 'years')

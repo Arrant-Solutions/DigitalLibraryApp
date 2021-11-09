@@ -7,7 +7,6 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import GlassyCard from '../common/GlassyCard'
 import PCLButton from '../common/PCLButton'
 import {linkText, pcl} from '../common/style'
-import {useAppDispatch} from 'redux/hooks'
 import ModalLoader from '../common/ModalLoader'
 import SocialAuth from '../common/SocialAuth'
 const logo = require('../../../assets/icon.jpg')
@@ -15,7 +14,6 @@ const logo = require('../../../assets/icon.jpg')
 type AuthHomeProp = StackNavigationProp<AuthStackParamList, 'AuthHome'>
 
 const AuthHome = () => {
-  const dispatch = useAppDispatch()
   const {navigate} = useNavigation<AuthHomeProp>()
   const focused = useIsFocused()
   const [loading, setLoading] = useState(false)

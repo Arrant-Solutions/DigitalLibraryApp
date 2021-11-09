@@ -73,7 +73,12 @@ export class GenericUser implements GenericUserI {
     user_status_name,
     password,
     branch,
+    gender,
+    user_group,
+    user_status,
+    country
   }: GenericUserI) {
+
     this.user_id = user_id
     this.avatar = avatar
     this.first_name = first_name
@@ -82,14 +87,14 @@ export class GenericUser implements GenericUserI {
     this.date_of_birth = Number.isNaN(new Date(date_of_birth).valueOf())
       ? new Date()
       : new Date(date_of_birth)
-    this.country_id = country_id
-    this.country_name = country_name
-    this.gender_id = gender_id
-    this.gender_name = gender_name
-    this.user_group_id = user_group_id
-    this.user_group_name = user_group_name
-    this.user_status_id = user_status_id
-    this.user_status_name = user_status_name
+    this.country_id = country_id || country?.country_id
+    this.country_name = country_name || country?.country_name
+    this.gender_id = gender_id || gender?.gender_id
+    this.gender_name = gender_name || gender?.gender_name
+    this.user_group_id = String(user_group_id || user_group?.user_group_id)
+    this.user_group_name = user_group_name || user_group?.user_group_name
+    this.user_status_id = user_status_id || user_status?.user_status_id
+    this.user_status_name = user_status_name || user_status?.user_status_name
     this.password = password
     this.branch = branch
   }

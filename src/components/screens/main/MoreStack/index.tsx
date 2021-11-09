@@ -5,6 +5,7 @@ import Category from '../Category'
 import Feedback from './Feedback'
 import PaymentDetails from './PaymentDetails'
 import TermsAndConditions from './TermsAndConditions'
+import EditProfile from './EditProfile'
 
 export type MoreParamList = {
   MoreScreen: undefined
@@ -12,6 +13,7 @@ export type MoreParamList = {
   Feedback: undefined
   'Payment Details': undefined
   'Terms & Conditions': undefined
+  'Edit Profile': undefined
 }
 
 const Stack = createStackNavigator<MoreParamList>()
@@ -23,6 +25,7 @@ export default function index() {
       screenOptions={{
         headerShown: false,
       }}>
+      <Stack.Screen name="Edit Profile" component={EditProfile} />
       <Stack.Screen name="MoreScreen" component={More} />
       <Stack.Screen name="Activity Reports" component={Category} />
       <Stack.Screen name="Feedback" component={Feedback} />
