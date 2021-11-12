@@ -1,3 +1,4 @@
+import moment from 'moment'
 import React, {useState} from 'react'
 import {
   ActivityIndicator,
@@ -7,58 +8,104 @@ import {
   Text,
   View,
 } from 'react-native'
+import {Dropdown} from 'react-native-element-dropdown'
 import {Input} from 'react-native-elements'
 import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import {useGetInitResourcesQuery} from 'redux/apis/resourceApi'
-import {GenericUserI} from 'types/User'
+import {BranchI} from 'types/Branch'
+import {CountryI} from 'types/Country'
+import {GenderI} from 'types/Gender'
 import Header from '../common/Header'
+import PCLButton from '../common/PCLButton'
 import PCLDatePicker from '../common/PCLDatePicker'
+import RadioGroup from '../common/RadioGroup'
 import SocialAuth from '../common/SocialAuth'
-import {pcl, shadow, stretchedBox} from '../common/style'
+import {greys, pcl, shadow, stretchedBox} from '../common/style'
 import {Toast} from '../common/Toast'
 
-interface FormItem {
-  value: string | number | Date
+interface FormItem<T = string> {
+  value: T
   error: string
 }
 
-type FormKey =
-  | 'first_name'
-  | 'last_name'
-  | 'email'
-  | 'date_of_birth'
-  | 'gender_id'
-  | 'country_id'
-  | 'user_group_id'
-  | 'password'
-  | 'branch_id'
+interface FormI {
+  first_name: FormItem
+  last_name: FormItem
+  email: FormItem
+  date_of_birth: FormItem<Date>
+  password: FormItem
+  is_member: FormItem<boolean>
+  country: FormItem<CountryI>
+  gender: FormItem<GenderI>
+  branch: FormItem<BranchI>
+}
+
+interface ListItemI {
+  name: string
+  id: number
+}
+
+const Item = (item: ListItemI) => (
+  <View
+    style={{
+      flexDirection: 'row',
+      borderBottomWidth: 0.5,
+      borderBottomColor: greys[40],
+    }}>
+    <Text style={{fontSize: 13, padding: 12}}>{item.name}</Text>
+  </View>
+)
+
+const ListItem = React.memo(Item)
 
 const EmailSignup = () => {
   const {data, error, isLoading} = useGetInitResourcesQuery()
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
-  const [form, setForm] = useState<Record<FormKey, FormItem>>({
+  const [form, setForm] = useState<FormI>({
     first_name: {value: '', error: ''},
     last_name: {value: '', error: ''},
     email: {value: '', error: ''},
-    date_of_birth: {value: '', error: ''},
-    country_id: {value: '', error: ''},
-    gender_id: {value: '', error: ''},
-    user_group_id: {value: '', error: ''},
+    date_of_birth: {value: new Date(), error: ''},
     password: {value: '', error: ''},
-    branch_id: {value: '', error: ''},
+    is_member: {value: false, error: ''},
+    country: {
+      value: data?.countries.find(
+        ({country_name}) => country_name === 'Zambia',
+      ) || {country_id: 2, country_name: 'Zambia'},
+      error: '',
+    },
+    gender: {
+      value: data?.genders.find(
+        ({gender_name}) => gender_name === 'Female',
+      ) || {gender_id: 249, gender_name: 'Female'},
+      error: '',
+    },
+    branch: {value: {branch_id: 0, branch_name: ''}, error: ''},
   })
 
-  const handleChange = (key: FormKey, value: string | number | Date) => {
-    let data = form[key]
+  const handleChange = (
+    key: keyof FormI,
+    inputValue: string | number | Date | boolean,
+  ) => {
+    let result:
+      | FormItem<string>
+      | FormItem<Date>
+      | FormItem<boolean>
+      | FormItem<CountryI>
+      | FormItem<GenderI>
+      | FormItem<BranchI>
+      | Partial<FormI> = form[key]
+
+    const value: string | number | Date = inputValue as string
 
     switch (key) {
       case 'first_name':
       case 'last_name':
         if (!value) {
-          data = {
+          result = {
             value,
             error: key.replace('_', ' ') + ' is required',
           }
@@ -67,31 +114,33 @@ const EmailSignup = () => {
             value as string,
           )
         ) {
-          data = {
+          result = {
             value,
             error: 'Please input a valid name',
           }
         } else if (String(value).length < 2) {
-          data = {
+          result = {
             value,
             error: key.replace('_', ' ') + ' is too short',
           }
         } else if (String(value).length > 50) {
-          data = {
+          result = {
             value,
             error: key.replace('_', ' ') + ' is too long',
           }
         } else {
-          data = {
+          result = {
             value,
             error: '',
           }
         }
+
+        result = {[key]: result}
         break
 
       case 'email':
         if (!value) {
-          data = {
+          result = {
             value,
             error: 'email address is required',
           }
@@ -100,24 +149,140 @@ const EmailSignup = () => {
             value as string,
           )
         ) {
-          data = {
+          result = {
             value,
             error: 'Please input a valid email address',
           }
         } else {
-          data = {
+          result = {
             value,
             error: '',
           }
         }
+        result = {[key]: result}
+        break
+
+      case 'date_of_birth':
+        if (!value) {
+          result = {
+            value,
+            error: 'date of birth is required',
+          }
+        }
+
+        const dobLower = moment().subtract(110, 'years')
+        const dobUpper = moment().subtract(2, 'years')
+
+        const dob = moment(value)
+
+        if (!dob.isValid()) {
+          result = {
+            value,
+            error: 'Please input a valid date of birth',
+          }
+        } else if (dob.isSameOrBefore(dobLower)) {
+          result = {
+            value,
+            error: 'Might be too old',
+          }
+        } else if (dob.isSameOrAfter(dobUpper)) {
+          result = {
+            value,
+            error: 'Might be too young',
+          }
+        } else {
+          result = {value, error: ''}
+        }
+
+        result = {[key]: result}
+        break
+
+      case 'password':
+        if (!value) {
+          result = {
+            value,
+            error: 'Password is required',
+          }
+        } else if ((value as string).length < 8) {
+          result = {
+            value,
+            error: 'Password must be at least 8 characters long',
+          }
+        } else if (!/(?=(.*[!@#$%^&*()\-__+.]){1,})/.test(value as string)) {
+          result = {
+            value,
+            error:
+              'Password must contain at least one special charactor (e.g. !@#$%^&*()-__+.)',
+          }
+        } else {
+          result = {value, error: ''}
+        }
+        break
+
+      case 'is_member':
+        result = {value: Boolean(value), error: ''}
+        result = {[key]: result}
+        break
+
+      case 'gender':
+        const gender = data?.genders.find(item => (item.gender_name = value))
+
+        if (!gender) {
+          result = {
+            value: {gender_id: 0, gender_name: 'Invalid'},
+            error: 'Please pick a valid gender',
+          }
+        } else {
+          result = {value: gender, error: ''}
+        }
+        result = {[key]: result}
+        break
+
+      case 'country':
+        const country = data?.countries.find(
+          item => (item.country_name = value),
+        )
+
+        if (!country) {
+          result = {
+            value: {country_id: 0, country_name: 'Invalid'},
+            error: 'Please pick a valid country',
+          }
+        } else {
+          result = {value: country, error: ''}
+        }
+
+        result = {
+          [key]: result,
+          branch: {
+            value: {branch_id: 0, branch_name: ''},
+            error: '',
+          },
+        }
+        break
+
+      case 'branch':
+        const branch = data?.branches.find(item => (item.branch_name = value))
+
+        if (!branch) {
+          result = {
+            value: {branch_id: 0, branch_name: 'Invalid'},
+            error: 'Please pick a valid branch',
+          }
+        } else {
+          result = {value: branch, error: ''}
+        }
+
         break
     }
 
     setForm({
       ...form,
-      [key]: data,
+      ...result,
     })
   }
+
+  const renderItem = (item: ListItemI) => <ListItem {...item} />
 
   return (
     <View style={styles.container}>
@@ -272,6 +437,101 @@ const EmailSignup = () => {
                     onChangeText={value => handleChange('password', value)}
                     // onBlur={handleBlur('password')}
                     value={form.password.value as string}
+                  />
+                  <RadioGroup
+                    labelStyle={{color: pcl.black}}
+                    label="Gender"
+                    checkedColor={pcl.lightBlue}
+                    uncheckedColor={pcl.textPlaceholder}
+                    titleStyle={{color: pcl.textPlaceholder}}
+                    options={data?.genders.map(value => value.gender_name)}
+                    defaultValue={String(form.gender.value.gender_name)}
+                    errorMessage={
+                      Boolean(form.gender.error) ? 'Pick a gender' : ''
+                    }
+                    errorStyle={
+                      Boolean(form.gender.error)
+                        ? styles.inputErrorStyle
+                        : styles.inputErrorStyle
+                    }
+                    setSelectedValue={value => handleChange('gender', value)}
+                  />
+
+                  <RadioGroup
+                    labelStyle={{color: pcl.black}}
+                    label="Are you a member of Gospel Envoy's Church?"
+                    checkedColor={pcl.lightBlue}
+                    uncheckedColor={pcl.textPlaceholder}
+                    titleStyle={{color: pcl.textPlaceholder}}
+                    options={['Yes', 'No']}
+                    defaultValue="Yes"
+                    setSelectedValue={value => {
+                      if (value === 'Yes') {
+                        handleChange('country', 'Zambia')
+                        handleChange('branch', '')
+                      } else {
+                        handleChange('country', '')
+                      }
+                      handleChange('is_member', value === 'Yes')
+                    }}
+                  />
+
+                  {form.is_member.value ? (
+                    <Dropdown
+                      style={styles.dropdown}
+                      data={data.branches.map(item => ({
+                        id: item.branch_id,
+                        name: item.branch_name,
+                      }))}
+                      search
+                      searchPlaceholder="Search"
+                      labelField="name"
+                      valueField="id"
+                      placeholder="Select Church/Organization"
+                      value={form.branch.value.branch_id}
+                      onChange={(item: ListItemI) => {
+                        console.log(item)
+                        handleChange('branch', item.name)
+                        handleChange('country', 'Zambia')
+                      }}
+                      renderItem={item => renderItem(item)}
+                    />
+                  ) : (
+                    <Dropdown
+                      style={styles.dropdown}
+                      data={data?.countries.map(item => ({
+                        id: item.country_id,
+                        name: item.country_name,
+                      }))}
+                      search
+                      searchPlaceholder="Search"
+                      labelField="name"
+                      valueField="id"
+                      placeholder="Select Country"
+                      value={form.country.value.country_id}
+                      onChange={(item: ListItemI) =>
+                        handleChange('country', item.name)
+                      }
+                      renderItem={item => renderItem(item)}
+                    />
+                  )}
+
+                  <PCLButton
+                    loading={isSubmitting}
+                    disabled={Boolean(
+                      errors.first_name ||
+                        errors.last_name ||
+                        errors.email ||
+                        errors.gender ||
+                        errors.date_of_birth ||
+                        (!credential && errors.password) ||
+                        (values.isMember &&
+                          (errors.branch || !values.branch.branch_id)) ||
+                        (!values.isMember &&
+                          (errors.country || !values.country?.country_id)),
+                    )}
+                    title="Register"
+                    onPress={handleSubmit}
                   />
                 </LinearGradient>
               </KeyboardAvoidingView>
