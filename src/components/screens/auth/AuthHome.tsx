@@ -61,7 +61,7 @@ const AuthHome = () => {
             />
           }
           title="Sign Up With Email"
-          onPress={() => navigate('Register')}
+          onPress={() => navigate('Email Signup')}
         />
       </View>
       <ModalLoader transparent={true} visible={loading} />

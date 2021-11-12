@@ -23,6 +23,7 @@ export type AuthStackParamList = {
   Login: undefined
   Register: undefined
   Forgot: undefined
+  'Email Signup': undefined
 }
 
 export type BaseParamList = {

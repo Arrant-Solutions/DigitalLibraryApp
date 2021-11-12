@@ -11,7 +11,7 @@ export const unauthenticatedMiddleware: Middleware =
       ((/^user/.test(action.type) && isFulfilled(action)) ||
         /^auth/.test(action.type)) // social login does not have a fulful
     ) {
-      console.log('running store middleware.....', action.payload)
+      // console.log('running store middleware.....', action.payload)
       if (action.payload) {
         storeAsyncData(Storage.AUTH_STORAGE, action.payload)
       } else {

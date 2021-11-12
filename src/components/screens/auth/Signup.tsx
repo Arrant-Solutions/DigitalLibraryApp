@@ -96,7 +96,7 @@ const Signup: React.FC<SignupProps> = () => {
     has_missing: undefined,
   })
 
-  console.log(JSON.stringify(initialValues, null, 2))
+  // console.log(JSON.stringify(initialValues, null, 2))
 
   useEffect(() => {
     setInitialValues({
