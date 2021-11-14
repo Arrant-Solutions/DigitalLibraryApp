@@ -1,3 +1,7 @@
+import {useNavigation} from '@react-navigation/native'
+import {StackNavigationProp} from '@react-navigation/stack'
+import {AuthStackParamList} from 'components/MainNavigation'
+import {GENERIC_SERVER_ERROR} from 'constants/errors'
 import moment from 'moment'
 import React, {useState} from 'react'
 import {
@@ -14,6 +18,10 @@ import LinearGradient from 'react-native-linear-gradient'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import {useGetInitResourcesQuery} from 'redux/apis/resourceApi'
+import {useAppDispatch} from 'redux/hooks'
+import {emailRegistration} from 'redux/services/auth'
+import {setAlert} from 'redux/slices/alertSlice'
+import {updateAuth} from 'redux/slices/authSlice'
 import {BranchI} from 'types/Branch'
 import {CountryI} from 'types/Country'
 import {GenderI} from 'types/Gender'
@@ -60,17 +68,37 @@ const Item = (item: ListItemI) => (
 
 const ListItem = React.memo(Item)
 
+type SignupProp = StackNavigationProp<AuthStackParamList, 'Email Signup'>
+
+const defaults = {
+  first_name: {value: '', error: ''},
+  last_name: {value: '', error: ''},
+  email: {value: '', error: ''},
+  date_of_birth: {value: new Date(), error: ''},
+  password: {value: '', error: ''},
+  is_member: {value: false, error: ''},
+  country: {
+    value: {country_id: 2, country_name: 'Zambia'},
+    error: '',
+  },
+  gender: {
+    value: {
+      gender_id: 249,
+      gender_name: 'Female',
+    },
+    error: '',
+  },
+  branch: {value: {branch_id: 0, branch_name: ''}, error: ''},
+}
+
 const EmailSignup = () => {
+  const dispatch = useAppDispatch()
+  const {navigate} = useNavigation<SignupProp>()
   const {data, error, isLoading} = useGetInitResourcesQuery()
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState<FormI>({
-    first_name: {value: '', error: ''},
-    last_name: {value: '', error: ''},
-    email: {value: '', error: ''},
-    date_of_birth: {value: new Date(), error: ''},
-    password: {value: '', error: ''},
-    is_member: {value: false, error: ''},
+    ...defaults,
     country: {
       value: data?.countries.find(
         ({country_name}) => country_name === 'Zambia',
@@ -80,10 +108,12 @@ const EmailSignup = () => {
     gender: {
       value: data?.genders.find(
         ({gender_name}) => gender_name === 'Female',
-      ) || {gender_id: 249, gender_name: 'Female'},
+      ) || {
+        gender_id: 249,
+        gender_name: 'Female',
+      },
       error: '',
     },
-    branch: {value: {branch_id: 0, branch_name: ''}, error: ''},
   })
 
   const handleChange = (
@@ -191,10 +221,10 @@ const EmailSignup = () => {
             error: 'Might be too young',
           }
         } else {
-          result = {value, error: ''}
+          result = {value: new Date(value), error: ''}
         }
 
-        result = {[key]: result}
+        result = {[key]: result as FormItem<Date>}
         break
 
       case 'password':
@@ -217,6 +247,7 @@ const EmailSignup = () => {
         } else {
           result = {value, error: ''}
         }
+        result = {[key]: result}
         break
 
       case 'is_member':
@@ -240,7 +271,7 @@ const EmailSignup = () => {
 
       case 'country':
         const country = data?.countries.find(
-          item => (item.country_name = value),
+          item => item.country_name === value,
         )
 
         if (!country) {
@@ -262,7 +293,7 @@ const EmailSignup = () => {
         break
 
       case 'branch':
-        const branch = data?.branches.find(item => (item.branch_name = value))
+        const branch = data?.branches.find(item => item.branch_name === value)
 
         if (!branch) {
           result = {
@@ -282,7 +313,70 @@ const EmailSignup = () => {
     })
   }
 
+  const handleSubmit = () => {
+    emailRegistration({
+      // ...values,
+      first_name: form.first_name.value,
+      last_name: form.last_name.value,
+      date_of_birth: form.date_of_birth.value,
+      email: form.email.value.toLowerCase(),
+      password: form.password.value,
+      gender_id: form.gender.value.gender_id,
+      branch_id: form.branch.value.branch_id,
+      country_id: form.country.value.country_id,
+    })
+      .then(({data, statusCode}) => {
+        console.log(data)
+        if (statusCode === 200 && typeof data === 'object') {
+          dispatch(
+            setAlert({
+              title: 'Success',
+              message: `You account has been created successfully. A verification link will be sent to ${form.email.value}. Please verify your account to access the app.`,
+              buttons: [
+                {
+                  text: 'Login',
+                  onPress: () => {
+                    setForm(defaults)
+                    navigate('Login')
+                  },
+                },
+              ],
+            }),
+          )
+        } else {
+          dispatch(
+            setAlert({
+              title: 'Failed',
+              message: data as string,
+            }),
+          )
+        }
+      })
+      .catch(() =>
+        dispatch(
+          setAlert({
+            title: 'Error Occured',
+            message: GENERIC_SERVER_ERROR,
+          }),
+        ),
+      )
+      .finally(() => setLoading(false))
+  }
+
   const renderItem = (item: ListItemI) => <ListItem {...item} />
+
+  console.log(
+    JSON.stringify(
+      {
+        is_member: form.is_member.value,
+        branch: !form.branch.value.branch_id,
+        b: form.is_member.value && !form.branch.value.branch_id,
+        c: !form.is_member.value && !form.country.value.country_id,
+      },
+      null,
+      2,
+    ),
+  )
 
   return (
     <View style={styles.container}>
@@ -340,7 +434,13 @@ const EmailSignup = () => {
                   end={{x: 1, y: 1}}
                   useAngle
                   angle={110}
-                  style={stretchedBox}>
+                  style={[
+                    stretchedBox,
+                    {
+                      paddingHorizontal: 10,
+                      paddingVertical: 10,
+                    },
+                  ]}>
                   <SocialAuth setLoading={setLoading} signup />
                   <Input
                     inputContainerStyle={styles.inputContainerStyle}
@@ -517,18 +617,18 @@ const EmailSignup = () => {
                   )}
 
                   <PCLButton
-                    loading={isSubmitting}
+                    loading={loading}
                     disabled={Boolean(
-                      errors.first_name ||
-                        errors.last_name ||
-                        errors.email ||
-                        errors.gender ||
-                        errors.date_of_birth ||
-                        (!credential && errors.password) ||
-                        (values.isMember &&
-                          (errors.branch || !values.branch.branch_id)) ||
-                        (!values.isMember &&
-                          (errors.country || !values.country?.country_id)),
+                      form.first_name.error ||
+                        form.last_name.error ||
+                        form.email.error ||
+                        form.gender.error ||
+                        form.date_of_birth.error ||
+                        form.password.error ||
+                        (form.is_member.value &&
+                          !form.branch.value.branch_id) ||
+                        (!form.is_member.value &&
+                          !form.country.value.country_id),
                     )}
                     title="Register"
                     onPress={handleSubmit}
