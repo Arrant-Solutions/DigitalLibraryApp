@@ -76,7 +76,7 @@ const defaults = {
   email: {value: '', error: ''},
   date_of_birth: {value: new Date(), error: ''},
   password: {value: '', error: ''},
-  is_member: {value: false, error: ''},
+  is_member: {value: true, error: ''},
   country: {
     value: {country_id: 2, country_name: 'Zambia'},
     error: '',
@@ -102,14 +102,14 @@ const EmailSignup = () => {
     country: {
       value: data?.countries.find(
         ({country_name}) => country_name === 'Zambia',
-      ) || {country_id: 2, country_name: 'Zambia'},
+      ) || {country_id: 249, country_name: 'Zambia'},
       error: '',
     },
     gender: {
       value: data?.genders.find(
         ({gender_name}) => gender_name === 'Female',
       ) || {
-        gender_id: 249,
+        gender_id: 2,
         gender_name: 'Female',
       },
       error: '',
@@ -314,6 +314,7 @@ const EmailSignup = () => {
   }
 
   const handleSubmit = () => {
+    setLoading(true)
     emailRegistration({
       // ...values,
       first_name: form.first_name.value,
@@ -364,19 +365,6 @@ const EmailSignup = () => {
   }
 
   const renderItem = (item: ListItemI) => <ListItem {...item} />
-
-  console.log(
-    JSON.stringify(
-      {
-        is_member: form.is_member.value,
-        branch: !form.branch.value.branch_id,
-        b: form.is_member.value && !form.branch.value.branch_id,
-        c: !form.is_member.value && !form.country.value.country_id,
-      },
-      null,
-      2,
-    ),
-  )
 
   return (
     <View style={styles.container}>

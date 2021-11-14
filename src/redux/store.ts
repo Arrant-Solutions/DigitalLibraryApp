@@ -8,7 +8,6 @@ import themeReducer from './slices/themeSlice'
 import alertReducer from './slices/alertSlice'
 import {resourcesApi} from './apis/resourceApi'
 import {unauthenticatedMiddleware} from './middleware'
-// import {mediaResourceApi} from './apis/mediaResourceApi'
 import mediaResourceReducer from './slices/mediaResourceSlice'
 
 export const store = configureStore({
@@ -26,7 +25,7 @@ export const store = configureStore({
   middleware: gDM =>
     gDM({
       serializableCheck: {
-        ignoredPaths: ['alert'],
+        ignoredActions: ['alert/setAlert'],
       },
     })
       .concat(resourcesApi.middleware)
